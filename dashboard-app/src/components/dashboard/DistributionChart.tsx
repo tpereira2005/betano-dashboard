@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { TrendingUp, TrendingDown, Camera } from 'lucide-react';
+import { PieChart as PieChartIcon, Camera } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatters';
 import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
@@ -68,8 +68,7 @@ export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({
         <div ref={chartRef} id="chart-distribution" className="card" aria-label="Gráfico circular mostrando a distribuição entre depósitos e levantamentos">
             <div className="chart-header">
                 <div className="section-title" style={{ marginBottom: 0 }}>
-                    {data[0]?.name === 'Depósitos' && <TrendingDown size={20} />}
-                    {data[1]?.name === 'Levantamentos' && <TrendingUp size={20} />}
+                    <PieChartIcon size={20} style={{ color: '#FF3D00' }} />
                     Distribuição de Transações
                 </div>
                 <button

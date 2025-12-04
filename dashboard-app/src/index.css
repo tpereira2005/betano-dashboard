@@ -853,6 +853,18 @@ body,
   color: #FF6E40 !important;
 }
 
+/* Light mode stat icons - all Betano orange */
+.stat-icon {
+  color: #FF3D00 !important;
+}
+
+.stat-icon.success,
+.stat-icon.danger,
+.stat-icon.primary,
+.stat-icon.neutral {
+  color: #FF3D00 !important;
+}
+
 /* ===========================================
    COMPACT STAT CARDS
    =========================================== */

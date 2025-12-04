@@ -63,7 +63,7 @@ export const HistogramChart: React.FC<HistogramChartProps> = React.memo(({ data 
         <div ref={chartRef} id="chart-histogram" className="card" aria-label="Histograma mostrando a distribuição de valores por faixa">
             <div className="chart-header">
                 <div className="section-title" style={{ marginBottom: 0 }}>
-                    <BarChart2 size={20} />
+                    <BarChart2 size={20} style={{ color: '#FF3D00' }} />
                     Distribuição de Valores
                 </div>
                 <button
