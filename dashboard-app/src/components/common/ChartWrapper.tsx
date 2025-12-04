@@ -47,41 +47,21 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
             toast.loading('A exportar gráfico...', { id: 'chart-export' });
 
             const element = chartRef.current;
-
-            // Store original styles
-            const originalWidth = element.style.width;
-            const originalMinWidth = element.style.minWidth;
-            const originalPosition = element.style.position;
-
-            // Temporarily expand to desktop size
-            element.style.width = '1200px';
-            element.style.minWidth = '1200px';
-            element.style.position = 'absolute';
-            element.style.left = '-9999px'; // Move off-screen
             element.classList.add('exporting');
 
-            // Wait for reflow
-            await new Promise(resolve => setTimeout(resolve, 100));
-
+            // Capture the chart as-is with high quality
             const canvas = await html2canvas(element, {
                 backgroundColor: '#ffffff',
-                scale: 2,
+                scale: 3, // High resolution for quality
                 logging: false,
                 useCORS: true,
                 allowTaint: true,
-                width: 1200,
-                height: element.scrollHeight,
                 ignoreElements: (el) => {
                     return el.classList.contains('chart-header-buttons') ||
                         el.classList.contains('chart-fullscreen-overlay');
                 }
             });
 
-            // Restore original styles
-            element.style.width = originalWidth;
-            element.style.minWidth = originalMinWidth;
-            element.style.position = originalPosition;
-            element.style.left = '';
             element.classList.remove('exporting');
 
             const link = document.createElement('a');
@@ -92,10 +72,6 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
             toast.success('Gráfico exportado!', { id: 'chart-export' });
         } catch (error) {
             if (chartRef.current) {
-                chartRef.current.style.width = '';
-                chartRef.current.style.minWidth = '';
-                chartRef.current.style.position = '';
-                chartRef.current.style.left = '';
                 chartRef.current.classList.remove('exporting');
             }
             toast.error('Erro ao exportar gráfico', { id: 'chart-export' });
