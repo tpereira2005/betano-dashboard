@@ -46,25 +46,43 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
         try {
             toast.loading('A exportar gráfico...', { id: 'chart-export' });
 
-            // Add exporting class for potential CSS hooks
-            chartRef.current.classList.add('exporting');
+            const element = chartRef.current;
 
-            const canvas = await html2canvas(chartRef.current, {
+            // Store original styles
+            const originalWidth = element.style.width;
+            const originalMinWidth = element.style.minWidth;
+            const originalPosition = element.style.position;
+
+            // Temporarily expand to desktop size
+            element.style.width = '1200px';
+            element.style.minWidth = '1200px';
+            element.style.position = 'absolute';
+            element.style.left = '-9999px'; // Move off-screen
+            element.classList.add('exporting');
+
+            // Wait for reflow
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const canvas = await html2canvas(element, {
                 backgroundColor: '#ffffff',
                 scale: 2,
                 logging: false,
                 useCORS: true,
                 allowTaint: true,
-                windowWidth: 1200, // Force desktop landscape width
-                windowHeight: 600,
-                ignoreElements: (element) => {
-                    // Ignore the buttons container and fullscreen overlay
-                    return element.classList.contains('chart-header-buttons') ||
-                        element.classList.contains('chart-fullscreen-overlay');
+                width: 1200,
+                height: element.scrollHeight,
+                ignoreElements: (el) => {
+                    return el.classList.contains('chart-header-buttons') ||
+                        el.classList.contains('chart-fullscreen-overlay');
                 }
             });
 
-            chartRef.current.classList.remove('exporting');
+            // Restore original styles
+            element.style.width = originalWidth;
+            element.style.minWidth = originalMinWidth;
+            element.style.position = originalPosition;
+            element.style.left = '';
+            element.classList.remove('exporting');
 
             const link = document.createElement('a');
             link.download = `${chartId}-${new Date().toISOString().split('T')[0]}.png`;
@@ -74,6 +92,10 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
             toast.success('Gráfico exportado!', { id: 'chart-export' });
         } catch (error) {
             if (chartRef.current) {
+                chartRef.current.style.width = '';
+                chartRef.current.style.minWidth = '';
+                chartRef.current.style.position = '';
+                chartRef.current.style.left = '';
                 chartRef.current.classList.remove('exporting');
             }
             toast.error('Erro ao exportar gráfico', { id: 'chart-export' });
