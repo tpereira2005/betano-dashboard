@@ -1,8 +1,6 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AlertTriangle } from 'lucide-react';
-import { isSupabaseConfigured } from './lib/supabase';
 import { RawTransaction } from '@/types';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
@@ -136,14 +134,6 @@ function App() {
 
     return (
         <ErrorBoundary>
-            {!isSupabaseConfigured && (
-                <div className="bg-red-500 text-white p-4 text-center font-bold flex items-center justify-center gap-2">
-                    <AlertTriangle size={24} />
-                    <span>
-                        Configuração do Supabase em falta! Por favor configure as variáveis de ambiente VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY.
-                    </span>
-                </div>
-            )}
             <Toaster
                 position="top-right"
                 toastOptions={{
