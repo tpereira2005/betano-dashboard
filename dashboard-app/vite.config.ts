@@ -20,7 +20,7 @@ export default defineConfig({
                 manualChunks: {
                     'vendor-react': ['react', 'react-dom', 'react-router-dom'],
                     'vendor-charts': ['recharts'],
-                    'vendor-utils': ['papaparse', 'date-fns', 'lucide-react'],
+                    'vendor-utils': ['papaparse', 'lucide-react'],
                     'vendor-supabase': ['@supabase/supabase-js'],
                 },
             },

@@ -74,7 +74,7 @@ export default function Auth() {
                             htmlFor="email"
                             style={{
                                 display: 'block',
-                                fontSize: '0.875rem',
+
                                 fontWeight: 600,
                                 color: 'var(--color-text-secondary)',
                                 marginBottom: '8px',
@@ -119,7 +119,7 @@ export default function Auth() {
                             htmlFor="password"
                             style={{
                                 display: 'block',
-                                fontSize: '0.875rem',
+
                                 fontWeight: 600,
                                 color: 'var(--color-text-secondary)',
                                 marginBottom: '8px',
