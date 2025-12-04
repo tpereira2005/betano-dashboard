@@ -1,15 +1,33 @@
+<div align="center">
+
 # 📊 Betano Dashboard
 
-Uma aplicação web moderna para análise detalhada do histórico de transações da Betano. Importe o seu ficheiro CSV e obtenha insights instantâneos sobre os seus ganhos, perdas e performance ao longo do tempo.
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
+![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-5-purple?logo=vite)
+
+**Aplicação web moderna para análise detalhada do histórico de transações da Betano.**
+
+Importe o seu ficheiro CSV e obtenha insights instantâneos sobre os seus ganhos, perdas e performance ao longo do tempo.
+
+[🚀 Demo](#) • [📖 Documentação](#-como-começar) • [🐛 Reportar Bug](https://github.com/tpereira2005/betano-dashboard/issues)
+
+</div>
+
+---
 
 ## ✨ Funcionalidades
 
-- **📈 Análise Visual**: Gráficos interativos de saldo acumulado, resultados mensais e distribuição de transações.
-- **👥 Comparação de Perfis**: Compare estatísticas lado-a-lado entre diferentes contas ou períodos.
-- **📱 Design Responsivo**: Interface otimizada para Desktop, Tablet e Mobile.
-- **⌨️ Acessibilidade**: Navegação por teclado, atalhos (`Ctrl+E` exportar, `Ctrl+K` comparar) e suporte a leitores de ecrã.
-- **⬇️ Exportação**: Exporte os seus dados filtrados para CSV, PDF ou PNG.
-- **🔒 Privacidade**: Processamento de dados seguro e gestão de perfis locais.
+| Funcionalidade | Descrição |
+|----------------|-----------|
+| 📈 **Análise Visual** | Gráficos interativos de saldo acumulado, resultados mensais e distribuição |
+| 💡 **Insights Automáticos** | Dicas inteligentes baseadas no seu histórico de transações |
+| 👥 **Comparação de Perfis** | Compare estatísticas lado-a-lado entre diferentes contas |
+| 📱 **Design Responsivo** | Interface otimizada para Desktop, Tablet e Mobile |
+| 🌙 **Modo Escuro** | Tema claro e escuro para maior conforto visual |
+| ⬇️ **Exportação** | Exporte dados para CSV, PDF ou PNG |
+| 🔒 **Privacidade** | Processamento local e seguro dos seus dados |
 
 ## 🚀 Como Começar
 
@@ -19,31 +37,33 @@ Uma aplicação web moderna para análise detalhada do histórico de transaçõe
 
 ### Instalação
 
-1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-utilizador/betano-dashboard.git
-```
+# Clone o repositório
+git clone https://github.com/tpereira2005/betano-dashboard.git
 
-2. Instale as dependências:
-```bash
-cd dashboard-app
+# Entre na pasta do projeto
+cd betano-dashboard/dashboard-app
+
+# Instale as dependências
 npm install
-```
 
-3. Inicie o servidor de desenvolvimento:
-```bash
+# Inicie o servidor de desenvolvimento
 npm run dev
 ```
 
-A aplicação estará disponível em `http://localhost:5173`.
+A aplicação estará disponível em `http://localhost:5173`
 
 ## 🛠️ Tecnologias
 
-- **Core**: React, TypeScript, Vite
-- **Estilos**: CSS Moderno (Variaveis, Flexbox, Grid)
-- **Gráficos**: Recharts
-- **Ícones**: Lucide React
-- **Dados**: PapaParse (CSV), Supabase (Auth/Storage opcional)
+<div align="center">
+
+| Core | Estilos | Dados | Extras |
+|------|---------|-------|--------|
+| React 18 | CSS Moderno | PapaParse | Lucide Icons |
+| TypeScript | Glassmorphism | Supabase | html2canvas |
+| Vite 5 | Animações | Local Storage | jsPDF |
+
+</div>
 
 ## ⌨️ Atalhos de Teclado
 
@@ -51,7 +71,45 @@ A aplicação estará disponível em `http://localhost:5173`.
 |--------|------|
 | `Ctrl + E` | Exportar dados para CSV |
 | `Ctrl + K` | Abrir comparador de perfis |
-| `Tab` | Navegação acessível (Skip-to-content) |
+| `Tab` | Navegação acessível |
+
+## 📁 Estrutura do Projeto
+
+```
+dashboard-app/
+├── src/
+│   ├── components/     # Componentes React
+│   │   ├── dashboard/  # Componentes do Dashboard
+│   │   └── common/     # Componentes reutilizáveis
+│   ├── utils/          # Funções utilitárias
+│   ├── types/          # Definições TypeScript
+│   └── lib/            # Configurações (Supabase, etc.)
+├── public/             # Assets estáticos
+└── index.html          # Ponto de entrada
+```
+
+## 👤 Autor
+
+<div align="center">
+
+**Tomás Pereira**
+
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/tomas._14)
+[![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/tomasp8705)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/tpereira2005)
+
+</div>
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o ficheiro [LICENSE](LICENSE) para mais detalhes.
 
 ---
-Desenvolvido para ajudar jogadores a gerir a sua banca de forma inteligente.
+
+<div align="center">
+
+Desenvolvido para ajudar jogadores a gerir a sua banca de forma inteligente. 🎰
+
+⭐ **Se este projeto te ajudou, deixa uma estrela!** ⭐
+
+</div>
