@@ -836,19 +836,13 @@ body,
 /* Stat icon containers - COMPLETELY TRANSPARENT, NO BAR */
 [data-theme="dark"] .stat-icon {
   background: transparent !important;
+  color: #FF6E40 !important;
 }
 
-[data-theme="dark"] .stat-icon.success {
-  background: transparent !important;
-  color: #00FF88 !important;
-}
-
-[data-theme="dark"] .stat-icon.danger {
-  background: transparent !important;
-  color: #FF5555 !important;
-}
-
-[data-theme="dark"] .stat-icon.primary {
+[data-theme="dark"] .stat-icon.success,
+[data-theme="dark"] .stat-icon.danger,
+[data-theme="dark"] .stat-icon.primary,
+[data-theme="dark"] .stat-icon.neutral {
   background: transparent !important;
   color: #FF6E40 !important;
 }
@@ -897,22 +891,16 @@ body,
   color: #9CA3AF !important;
 }
 
-/* Compact card icons - VIVID NEON COLORS */
+/* Compact card icons - Betano orange */
 [data-theme="dark"] .compact-icon-box {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 110, 64, 0.15);
+  color: #FF6E40 !important;
 }
 
-[data-theme="dark"] .compact-icon-box.success {
-  background: rgba(0, 255, 136, 0.15);
-  color: #00FF88 !important;
-}
-
-[data-theme="dark"] .compact-icon-box.danger {
-  background: rgba(255, 85, 85, 0.15);
-  color: #FF5555 !important;
-}
-
-[data-theme="dark"] .compact-icon-box.primary {
+[data-theme="dark"] .compact-icon-box.success,
+[data-theme="dark"] .compact-icon-box.danger,
+[data-theme="dark"] .compact-icon-box.primary,
+[data-theme="dark"] .compact-icon-box.neutral {
   background: rgba(255, 110, 64, 0.15);
   color: #FF6E40 !important;
 }
