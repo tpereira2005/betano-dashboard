@@ -869,6 +869,18 @@ body,
    COMPACT STAT CARDS
    =========================================== */
 
+/* Light mode compact icons - all Betano orange */
+.compact-icon-box {
+  color: #FF3D00 !important;
+}
+
+.compact-icon-box.success,
+.compact-icon-box.danger,
+.compact-icon-box.primary,
+.compact-icon-box.neutral {
+  color: #FF3D00 !important;
+}
+
 [data-theme="dark"] .card.compact {
   background: rgba(28, 30, 46, 0.95) !important;
 }
