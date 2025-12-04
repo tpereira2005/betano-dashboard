@@ -55,8 +55,8 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
                 logging: false,
                 useCORS: true,
                 allowTaint: true,
-                width: chartRef.current.scrollWidth,
-                height: chartRef.current.scrollHeight,
+                windowWidth: 1200, // Force desktop landscape width
+                windowHeight: 600,
                 ignoreElements: (element) => {
                     // Ignore the buttons container and fullscreen overlay
                     return element.classList.contains('chart-header-buttons') ||
