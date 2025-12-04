@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, cloneElement, isValidElement } from 'react';
+import { createRoot } from 'react-dom/client';
 import { Camera, Maximize2, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
@@ -41,39 +42,75 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
     }, [isFullscreen]);
 
     const handleDownload = async () => {
-        if (!chartRef.current) return;
-
         try {
-            toast.loading('A exportar gráfico...', { id: 'chart-export' });
+            toast.loading('A gerar gráfico HD...', { id: 'chart-export' });
 
-            const element = chartRef.current;
-            element.classList.add('exporting');
+            // Create temporary container with desktop dimensions
+            const tempContainer = document.createElement('div');
+            tempContainer.style.cssText = `
+                position: fixed;
+                left: -9999px;
+                top: 0;
+                width: 1200px;
+                background: white;
+                padding: 24px;
+                border-radius: 16px;
+            `;
+            document.body.appendChild(tempContainer);
 
-            // Capture the chart as-is with high quality
-            const canvas = await html2canvas(element, {
+            // Create header
+            const header = document.createElement('div');
+            header.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 16px;
+            `;
+            header.innerHTML = `
+                <div style="width: 4px; height: 24px; background: #FF3D00; border-radius: 2px;"></div>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #1a1a2e;">${title}</h3>
+            `;
+            tempContainer.appendChild(header);
+
+            // Create chart container with fixed height
+            const chartContainer = document.createElement('div');
+            chartContainer.style.cssText = 'width: 100%; height: 350px;';
+            tempContainer.appendChild(chartContainer);
+
+            // Clone the chart children with new dimensions
+            const chartRoot = createRoot(chartContainer);
+
+            // If children is a ResponsiveContainer, we need to render it
+            if (isValidElement(children)) {
+                chartRoot.render(cloneElement(children as React.ReactElement));
+            } else {
+                chartRoot.render(<>{children}</>);
+            }
+
+            // Wait for chart to fully render (Recharts needs time)
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Capture the temporary container
+            const canvas = await html2canvas(tempContainer, {
                 backgroundColor: '#ffffff',
-                scale: 3, // High resolution for quality
+                scale: 2,
                 logging: false,
                 useCORS: true,
                 allowTaint: true,
-                ignoreElements: (el) => {
-                    return el.classList.contains('chart-header-buttons') ||
-                        el.classList.contains('chart-fullscreen-overlay');
-                }
             });
 
-            element.classList.remove('exporting');
+            // Cleanup
+            chartRoot.unmount();
+            document.body.removeChild(tempContainer);
 
+            // Download
             const link = document.createElement('a');
             link.download = `${chartId}-${new Date().toISOString().split('T')[0]}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
 
-            toast.success('Gráfico exportado!', { id: 'chart-export' });
+            toast.success('Gráfico exportado em HD!', { id: 'chart-export' });
         } catch (error) {
-            if (chartRef.current) {
-                chartRef.current.classList.remove('exporting');
-            }
             toast.error('Erro ao exportar gráfico', { id: 'chart-export' });
             console.error('Chart export error:', error);
         }
