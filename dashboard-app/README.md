@@ -2,7 +2,7 @@
 
 # 📊 Betano Dashboard
 
-![Version](https://img.shields.io/badge/version-1.0.0-orange)
+![Version](https://img.shields.io/badge/version-2.2.4-orange)
 ![React](https://img.shields.io/badge/React-18-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-5-purple?logo=vite)
@@ -25,7 +25,7 @@ Importe o seu ficheiro CSV e obtenha insights instantâneos sobre os seus ganhos
 | 💡 **Insights Automáticos** | Dicas inteligentes baseadas no seu histórico de transações |
 | 👥 **Comparação de Perfis** | Compare estatísticas lado-a-lado entre diferentes contas |
 | 📱 **Design Responsivo** | Interface otimizada para Desktop, Tablet e Mobile |
-| 🌙 **Modo Escuro** | Tema claro e escuro para maior conforto visual |
+| 🌙 **Modo Escuro** | Alternância entre tema claro/escuro com cores vibrantes, scrollbar personalizada e preferência guardada |
 | ⬇️ **Exportação** | Exporte dados para CSV, PDF ou PNG |
 | 🔒 **Privacidade** | Processamento local e seguro dos seus dados |
 

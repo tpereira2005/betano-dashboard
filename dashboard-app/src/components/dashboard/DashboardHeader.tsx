@@ -1,8 +1,9 @@
 import React from 'react';
-import { LogOut, Calendar, RefreshCw } from 'lucide-react';
+import { LogOut, Calendar, RefreshCw, Sun, Moon } from 'lucide-react';
 import { DashboardHeaderProps } from '@/types';
 import { ProfileSelector } from '../ProfileSelector';
 import { ExportMenu } from '../common/ExportMenu';
+import { useTheme } from '@/context/ThemeContext';
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     startDate,
@@ -21,6 +22,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     onProfileChange,
     onManageProfiles
 }) => {
+    const { theme, toggleTheme } = useTheme();
+
     return (
         <header className="header header-redesigned">
             {/* Left Section: Logo + Profile */}
@@ -78,6 +81,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
             {/* Right Section: Actions */}
             <div className="header-section header-right">
+                <button
+                    className="btn btn-glass btn-theme-toggle"
+                    onClick={toggleTheme}
+                    aria-label={theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
+                    title={theme === 'light' ? 'Modo Escuro' : 'Modo Claro'}
+                >
+                    {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+                </button>
                 {onExportCSV && (
                     <ExportMenu
                         onExportPDF={onExportPDF}

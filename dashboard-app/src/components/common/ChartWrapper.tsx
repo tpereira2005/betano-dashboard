@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Camera } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Camera, Maximize2, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
 
@@ -19,6 +19,26 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
     ariaLabel
 }) => {
     const chartRef = useRef<HTMLDivElement>(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Check if mobile
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Handle body scroll when fullscreen
+    useEffect(() => {
+        if (isFullscreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isFullscreen]);
 
     const handleDownload = async () => {
         if (!chartRef.current) return;
@@ -44,6 +64,31 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
         }
     };
 
+    const toggleFullscreen = () => {
+        setIsFullscreen(!isFullscreen);
+    };
+
+    // Fullscreen overlay for mobile
+    if (isFullscreen) {
+        return (
+            <div className="chart-fullscreen-overlay">
+                <div className="chart-fullscreen-header">
+                    <h3>{title}</h3>
+                    <button
+                        className="btn btn-glass chart-fullscreen-close"
+                        onClick={toggleFullscreen}
+                        aria-label="Fechar tela cheia"
+                    >
+                        <X size={24} />
+                    </button>
+                </div>
+                <div className="chart-fullscreen-content">
+                    {children}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div
             className={`card chart-card ${className}`}
@@ -53,14 +98,26 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
         >
             <div className="chart-header">
                 <h3 className="section-title" style={{ marginBottom: 0 }}>{title}</h3>
-                <button
-                    className="btn btn-outline btn-icon chart-download-btn"
-                    onClick={handleDownload}
-                    title="Baixar este gráfico"
-                    aria-label={`Exportar ${title} como imagem`}
-                >
-                    <Camera size={16} />
-                </button>
+                <div className="chart-header-buttons">
+                    {isMobile && (
+                        <button
+                            className="btn btn-outline btn-icon chart-fullscreen-btn"
+                            onClick={toggleFullscreen}
+                            title="Ver em tela cheia"
+                            aria-label={`Ver ${title} em tela cheia`}
+                        >
+                            <Maximize2 size={16} />
+                        </button>
+                    )}
+                    <button
+                        className="btn btn-outline btn-icon chart-download-btn"
+                        onClick={handleDownload}
+                        title="Baixar este gráfico"
+                        aria-label={`Exportar ${title} como imagem`}
+                    >
+                        <Camera size={16} />
+                    </button>
+                </div>
             </div>
             <div className="chart-container" style={{ height: '300px' }}>
                 {children}

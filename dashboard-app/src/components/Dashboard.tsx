@@ -280,7 +280,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 </svg>
                             </a>
                         </div>
-                        <span className="footer-version">v1.0.0</span>
+                        <span className="footer-version">v2.2.4</span>
                     </div>
                 </footer>
             </div>

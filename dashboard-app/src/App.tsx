@@ -5,6 +5,7 @@ import { RawTransaction } from '@/types';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { fetchTransactions } from './services/transactionService';
 import './index.css';
 
@@ -56,7 +57,7 @@ function Home() {
         }
     };
 
-    const handleDataLoaded = (data: RawTransaction[]) => {
+    const handleDataLoaded = (_data: RawTransaction[]) => {
         // Reload from database after upload
         loadTransactions();
     };
@@ -134,36 +135,40 @@ function App() {
 
     return (
         <ErrorBoundary>
-            <Toaster
-                position="top-right"
-                toastOptions={{
-                    duration: 3000,
-                    style: {
-                        background: 'var(--color-white)',
-                        color: 'var(--color-text)',
-                        border: '1px solid var(--color-border)',
-                        boxShadow: 'var(--shadow-md)',
-                    },
-                    success: {
-                        iconTheme: {
-                            primary: 'var(--color-success)',
-                            secondary: 'var(--color-white)',
+            <ThemeProvider>
+                <Toaster
+                    position="top-right"
+                    containerClassName="toast-container"
+                    toastOptions={{
+                        duration: 3000,
+                        className: 'toast-notification',
+                        style: {
+                            background: 'var(--color-white)',
+                            color: 'var(--color-text)',
+                            border: '1px solid var(--color-border)',
+                            boxShadow: 'var(--shadow-md)',
                         },
-                    },
-                    error: {
-                        iconTheme: {
-                            primary: 'var(--color-danger)',
-                            secondary: 'var(--color-white)',
+                        success: {
+                            iconTheme: {
+                                primary: 'var(--color-success)',
+                                secondary: 'var(--color-white)',
+                            },
                         },
-                    },
-                }}
-            />
-            <Suspense fallback={<div className="container h-screen flex-center"><LoadingSpinner /></div>}>
-                <Routes>
-                    <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/" />} />
-                    <Route path="/" element={user ? <Home /> : <Navigate to="/auth" />} />
-                </Routes>
-            </Suspense>
+                        error: {
+                            iconTheme: {
+                                primary: 'var(--color-danger)',
+                                secondary: 'var(--color-white)',
+                            },
+                        },
+                    }}
+                />
+                <Suspense fallback={<div className="container h-screen flex-center"><LoadingSpinner /></div>}>
+                    <Routes>
+                        <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/" />} />
+                        <Route path="/" element={user ? <Home /> : <Navigate to="/auth" />} />
+                    </Routes>
+                </Suspense>
+            </ThemeProvider>
         </ErrorBoundary>
     );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, PieChart, User, ArrowLeftRight } from 'lucide-react';
 import { Profile, getProfiles } from '@/services/profileService';
 
@@ -50,6 +51,81 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
 
     const buttonRect = buttonRef.current?.getBoundingClientRect();
 
+    // Render dropdown menu in portal to escape header z-index stacking context
+    const dropdownContent = isOpen ? createPortal(
+        <>
+            <div className="dropdown-backdrop" onClick={() => setIsOpen(false)} />
+            <div
+                className="dropdown-menu"
+                style={{
+                    top: buttonRect ? `${buttonRect.bottom + 8}px` : undefined,
+                    left: buttonRect ? `${buttonRect.left}px` : undefined
+                }}
+            >
+                {/* Combined view - only show if multiple profiles */}
+                {profiles.length > 1 && (
+                    <>
+                        <button
+                            onClick={() => {
+                                onProfileChange(null);
+                                setIsOpen(false);
+                            }}
+                            className={`dropdown-item ${activeProfileId === null ? 'active' : ''}`}
+                        >
+                            <PieChart size={16} />
+                            Combinado
+                        </button>
+
+                        <div className="dropdown-divider" />
+                    </>
+                )}
+
+                {/* Individual profiles */}
+                {profiles.map(profile => (
+                    <button
+                        key={profile.id}
+                        onClick={() => {
+                            onProfileChange(profile.id);
+                            setIsOpen(false);
+                        }}
+                        className={`dropdown-item ${activeProfileId === profile.id ? 'active' : ''}`}
+                    >
+                        <User size={16} />
+                        {profile.name}
+                    </button>
+                ))}
+
+                <div className="dropdown-divider" />
+
+                {/* Compare profiles - only show if multiple profiles */}
+                {onCompareProfiles && profiles.length > 1 && (
+                    <button
+                        onClick={() => {
+                            setIsOpen(false);
+                            onCompareProfiles();
+                        }}
+                        className="dropdown-item"
+                    >
+                        <ArrowLeftRight size={14} />
+                        Comparar Perfis
+                    </button>
+                )}
+
+                {/* Manage profiles */}
+                <button
+                    onClick={() => {
+                        setIsOpen(false);
+                        onManageProfiles();
+                    }}
+                    className="dropdown-item accent"
+                >
+                    + Gerir Perfis
+                </button>
+            </div>
+        </>,
+        document.body
+    ) : null;
+
     return (
         <div className="dropdown-wrapper">
             <button
@@ -64,74 +140,7 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
                 <ChevronDown size={16} className={`chevron ${isOpen ? 'open' : ''}`} />
             </button>
 
-            {isOpen && (
-                <>
-                    <div className="dropdown-backdrop" onClick={() => setIsOpen(false)} />
-                    <div
-                        className="dropdown-menu"
-                        style={{
-                            top: buttonRect ? `${buttonRect.bottom + 8}px` : undefined,
-                            left: buttonRect ? `${buttonRect.left}px` : undefined
-                        }}
-                    >
-                        {/* Combined view */}
-                        <button
-                            onClick={() => {
-                                onProfileChange(null);
-                                setIsOpen(false);
-                            }}
-                            className={`dropdown-item ${activeProfileId === null ? 'active' : ''}`}
-                        >
-                            <PieChart size={16} />
-                            Combinado
-                        </button>
-
-                        <div className="dropdown-divider" />
-
-                        {/* Individual profiles */}
-                        {profiles.map(profile => (
-                            <button
-                                key={profile.id}
-                                onClick={() => {
-                                    onProfileChange(profile.id);
-                                    setIsOpen(false);
-                                }}
-                                className={`dropdown-item ${activeProfileId === profile.id ? 'active' : ''}`}
-                            >
-                                <User size={16} />
-                                {profile.name}
-                            </button>
-                        ))}
-
-                        <div className="dropdown-divider" />
-
-                        {/* Compare profiles */}
-                        {onCompareProfiles && (
-                            <button
-                                onClick={() => {
-                                    setIsOpen(false);
-                                    onCompareProfiles();
-                                }}
-                                className="dropdown-item"
-                            >
-                                <ArrowLeftRight size={14} />
-                                Comparar Perfis
-                            </button>
-                        )}
-
-                        {/* Manage profiles */}
-                        <button
-                            onClick={() => {
-                                setIsOpen(false);
-                                onManageProfiles();
-                            }}
-                            className="dropdown-item accent"
-                        >
-                            + Gerir Perfis
-                        </button>
-                    </div>
-                </>
-            )}
+            {dropdownContent}
         </div>
     );
 };
