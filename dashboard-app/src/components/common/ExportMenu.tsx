@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Download, FileText, Image, FileSpreadsheet, ChevronDown } from 'lucide-react';
 
 interface ExportMenuProps {
@@ -14,23 +15,19 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
-    const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node) &&
-                buttonRef.current && !buttonRef.current.contains(e.target as Node)) {
-                setIsOpen(false);
-            }
+        const handleScroll = () => {
+            if (isOpen) setIsOpen(false);
         };
-
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
+        
+        window.addEventListener('scroll', handleScroll, { capture: true });
+        window.addEventListener('resize', handleScroll);
+        
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('scroll', handleScroll, { capture: true });
+            window.removeEventListener('resize', handleScroll);
         };
     }, [isOpen]);
 
@@ -50,6 +47,57 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
         setIsOpen(false);
     };
 
+    const menu = (
+        <>
+            <div 
+                className="dropdown-backdrop" 
+                onClick={() => setIsOpen(false)}
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    zIndex: 9998,
+                    cursor: 'default'
+                }}
+            />
+            <div
+                className="dropdown-menu"
+                style={{
+                    position: 'fixed',
+                    top: `${menuPosition.top}px`,
+                    right: `${menuPosition.right}px`,
+                    zIndex: 9999,
+                    minWidth: '180px'
+                }}
+            >
+                <button
+                    className="dropdown-item"
+                    onClick={() => handleExport(onExportPDF)}
+                >
+                    <FileText size={16} />
+                    Exportar PDF
+                </button>
+                <button
+                    className="dropdown-item"
+                    onClick={() => handleExport(onExportPNG)}
+                >
+                    <Image size={16} />
+                    Exportar PNG
+                </button>
+                <div className="dropdown-divider" />
+                <button
+                    className="dropdown-item"
+                    onClick={() => handleExport(onExportCSV)}
+                >
+                    <FileSpreadsheet size={16} />
+                    Exportar CSV
+                </button>
+            </div>
+        </>
+    );
+
     return (
         <div className="dropdown-wrapper">
             <button
@@ -62,44 +110,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
                 <ChevronDown size={14} className={isOpen ? 'chevron open' : 'chevron'} />
             </button>
 
-            {isOpen && (
-                <>
-                    <div className="dropdown-backdrop" onClick={() => setIsOpen(false)} />
-                    <div
-                        ref={menuRef}
-                        className="dropdown-menu"
-                        style={{
-                            position: 'fixed',
-                            top: `${menuPosition.top}px`,
-                            right: `${menuPosition.right}px`,
-                            zIndex: 1001
-                        }}
-                    >
-                        <button
-                            className="dropdown-item"
-                            onClick={() => handleExport(onExportPDF)}
-                        >
-                            <FileText size={16} />
-                            Exportar PDF
-                        </button>
-                        <button
-                            className="dropdown-item"
-                            onClick={() => handleExport(onExportPNG)}
-                        >
-                            <Image size={16} />
-                            Exportar PNG
-                        </button>
-                        <div className="dropdown-divider" />
-                        <button
-                            className="dropdown-item"
-                            onClick={() => handleExport(onExportCSV)}
-                        >
-                            <FileSpreadsheet size={16} />
-                            Exportar CSV
-                        </button>
-                    </div>
-                </>
-            )}
+            {isOpen && createPortal(menu, document.body)}
         </div>
     );
 };

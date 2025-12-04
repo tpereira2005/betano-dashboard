@@ -1061,6 +1061,13 @@ body,
   border-color: var(--color-betano-orange) !important;
 }
 
+/* Hide buttons during export */
+.exporting .chart-header-buttons,
+.exporting .chart-download-btn,
+.exporting .chart-fullscreen-btn {
+  display: none !important;
+}
+
 /* ===========================================
    SELECT / DROPDOWN INPUTS
    =========================================== */
@@ -1137,12 +1144,12 @@ body {
 /* Skip to content link */
 .skip-link {
   position: absolute;
-  top: -40px;
+  top: -100px;
   left: 0;
   background: var(--color-betano-orange);
   color: white;
   padding: 8px;
-  z-index: 100;
+  z-index: 9999;
   transition: top 0.3s;
   text-decoration: none;
   font-weight: bold;

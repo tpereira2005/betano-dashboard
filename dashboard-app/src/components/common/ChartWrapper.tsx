@@ -46,11 +46,22 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
         try {
             toast.loading('A exportar gráfico...', { id: 'chart-export' });
 
+            // Add exporting class for potential CSS hooks
+            chartRef.current.classList.add('exporting');
+
             const canvas = await html2canvas(chartRef.current, {
                 backgroundColor: '#ffffff',
                 scale: 2,
-                logging: false
+                logging: false,
+                windowWidth: 1600, // Force desktop width
+                ignoreElements: (element) => {
+                    // Ignore the buttons container and fullscreen overlay
+                    return element.classList.contains('chart-header-buttons') ||
+                        element.classList.contains('chart-fullscreen-overlay');
+                }
             });
+
+            chartRef.current.classList.remove('exporting');
 
             const link = document.createElement('a');
             link.download = `${chartId}-${new Date().toISOString().split('T')[0]}.png`;
@@ -59,6 +70,9 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
 
             toast.success('Gráfico exportado!', { id: 'chart-export' });
         } catch (error) {
+            if (chartRef.current) {
+                chartRef.current.classList.remove('exporting');
+            }
             toast.error('Erro ao exportar gráfico', { id: 'chart-export' });
             console.error('Chart export error:', error);
         }
