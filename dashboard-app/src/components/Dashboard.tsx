@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { Instagram, Twitter } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DashboardProps } from '@/types';
 import { processTransactions, calculateStatistics, filterTransactions } from '@/utils/calculations';
@@ -252,7 +253,33 @@ const Dashboard: React.FC<DashboardProps> = ({
                 )}
 
                 <footer className="footer">
-                    <p>© {new Date().getFullYear()} Dashboard Financeiro. Desenvolvido por <strong>Tomás Pereira</strong>.</p>
+                    <div className="footer-content">
+                        <p className="footer-text">
+                            © {new Date().getFullYear()} Dashboard Financeiro. Desenvolvido com ❤️ por{' '}
+                            <strong className="footer-author">Tomás Pereira</strong>
+                        </p>
+                        <div className="footer-social">
+                            <a
+                                href="https://instagram.com/tomas._14"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="social-link"
+                                aria-label="Instagram"
+                            >
+                                <Instagram size={18} />
+                            </a>
+                            <a
+                                href="https://x.com/tomasp8705"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="social-link"
+                                aria-label="X (Twitter)"
+                            >
+                                <Twitter size={18} />
+                            </a>
+                        </div>
+                        <span className="footer-version">v1.0.0</span>
+                    </div>
                 </footer>
             </div>
 
