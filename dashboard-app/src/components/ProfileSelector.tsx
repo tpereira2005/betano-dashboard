@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Users } from 'lucide-react';
+import { ChevronDown, Users, PieChart, User, ArrowLeftRight } from 'lucide-react';
 import { Profile, getProfiles } from '@/services/profileService';
 
 interface ProfileSelectorProps {
@@ -58,7 +58,7 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Users size={16} />
+                    {activeProfileId === null ? <PieChart size={16} /> : <User size={16} />}
                     <span>{displayName}</span>
                 </div>
                 <ChevronDown size={16} style={{
@@ -105,6 +105,9 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
                                     background: activeProfileId === null ? 'var(--color-bg)' : 'transparent',
                                     border: 'none',
                                     cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
                                     fontWeight: activeProfileId === null ? 600 : 400,
                                     color: 'var(--color-text)',
                                     transition: 'background 0.2s'
@@ -112,7 +115,8 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
                                 onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
                                 onMouseLeave={(e) => e.currentTarget.style.background = activeProfileId === null ? 'var(--color-bg)' : 'transparent'}
                             >
-                                📊 Combinado
+                                <PieChart size={16} />
+                                Combinado
                             </button>
 
                             <div style={{
@@ -136,6 +140,9 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
                                         background: activeProfileId === profile.id ? 'var(--color-bg)' : 'transparent',
                                         border: 'none',
                                         cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
                                         fontWeight: activeProfileId === profile.id ? 600 : 400,
                                         color: 'var(--color-text)',
                                         transition: 'background 0.2s'
@@ -143,6 +150,7 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
                                     onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
                                     onMouseLeave={(e) => e.currentTarget.style.background = activeProfileId === profile.id ? 'var(--color-bg)' : 'transparent'}
                                 >
+                                    <User size={16} />
                                     {profile.name}
                                 </button>
                             ))}
@@ -177,7 +185,7 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
                                     onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
                                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                 >
-                                    <Users size={14} />
+                                    <ArrowLeftRight size={14} />
                                     Comparar Perfis
                                 </button>
                             )}
