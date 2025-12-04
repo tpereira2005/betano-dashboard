@@ -28,10 +28,18 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
         return 'neutral';
     };
 
-    const getTrendText = () => {
-        if (stats.trend === 'improving') return 'Em melhoria';
-        if (stats.trend === 'declining') return 'A piorar';
-        return 'Estável';
+    // Enhanced trend text with percentage and arrow
+    const getTrendSubValue = () => {
+        const arrow = stats.trend === 'improving' ? '↑' : stats.trend === 'declining' ? '↓' : '→';
+        const sign = stats.trendValue >= 0 ? '+' : '';
+        const percentage = `${sign}${stats.trendValue.toFixed(1)}%`;
+
+        if (stats.trend === 'improving') {
+            return `${arrow} ${percentage} vs período anterior`;
+        } else if (stats.trend === 'declining') {
+            return `${arrow} ${percentage} vs período anterior`;
+        }
+        return `${arrow} Estável vs período anterior`;
     };
 
     return (
@@ -126,7 +134,7 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
                 <StatCard
                     title="Tendência (3 Meses)"
                     value={formatCurrency(stats.last3MonthsAvg)}
-                    subValue={`${getTrendText()} vs 3 meses ant.`}
+                    subValue={getTrendSubValue()}
                     icon={getTrendIcon()}
                     type={getTrendType()}
                     variant="compact"

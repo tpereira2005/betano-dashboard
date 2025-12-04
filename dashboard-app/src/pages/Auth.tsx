@@ -1,39 +1,137 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
-import { motion } from 'framer-motion';
-import { Loader2, Mail, Lock, ArrowRight, Shield } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, Mail, Lock, ArrowRight, Shield, Eye, EyeOff, CheckCircle2, XCircle, KeyRound } from 'lucide-react';
+
+type AuthMode = 'login' | 'register' | 'forgot-password';
+
+// Helper function to translate Supabase errors to Portuguese
+function translateAuthError(error: string): string {
+    const errorMap: Record<string, string> = {
+        'Invalid login credentials': 'Email ou password incorretos',
+        'Email not confirmed': 'Email ainda não confirmado. Verifique a sua caixa de entrada.',
+        'User already registered': 'Este email já está registado',
+        'Password should be at least 6 characters': 'A password deve ter pelo menos 6 caracteres',
+        'Invalid email': 'Email inválido',
+        'Email rate limit exceeded': 'Demasiadas tentativas. Aguarde alguns minutos.',
+        'For security purposes, you can only request this after': 'Por segurança, aguarde antes de tentar novamente.',
+        'Unable to validate email address: invalid format': 'Formato de email inválido',
+        'Signup is disabled': 'O registo está temporariamente desativado',
+    };
+
+    // Check for partial matches
+    for (const [key, value] of Object.entries(errorMap)) {
+        if (error.toLowerCase().includes(key.toLowerCase())) {
+            return value;
+        }
+    }
+
+    return error;
+}
+
+// Password strength checker
+function getPasswordStrength(password: string): { score: number; label: string; color: string } {
+    let score = 0;
+
+    if (password.length >= 6) score++;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    if (score <= 2) return { score: 1, label: 'Fraca', color: 'var(--color-danger)' };
+    if (score <= 4) return { score: 2, label: 'Média', color: '#F59E0B' };
+    return { score: 3, label: 'Forte', color: 'var(--color-success)' };
+}
 
 export default function Auth() {
     const [isLoading, setIsLoading] = useState(false);
-    const [isLogin, setIsLogin] = useState(true);
+    const [mode, setMode] = useState<AuthMode>('login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const passwordStrength = useMemo(() => getPasswordStrength(password), [password]);
+    const passwordsMatch = password === confirmPassword;
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
-            if (isLogin) {
+            if (mode === 'login') {
                 const { error } = await supabase.auth.signInWithPassword({
                     email,
                     password,
                 });
                 if (error) throw error;
                 toast.success('Bem-vindo de volta!');
-            } else {
+            } else if (mode === 'register') {
+                if (!passwordsMatch) {
+                    toast.error('As passwords não coincidem');
+                    setIsLoading(false);
+                    return;
+                }
+                if (passwordStrength.score < 2) {
+                    toast.error('Por favor, escolha uma password mais forte');
+                    setIsLoading(false);
+                    return;
+                }
                 const { error } = await supabase.auth.signUp({
                     email,
                     password,
                 });
                 if (error) throw error;
                 toast.success('Conta criada! Verifique o seu email.');
+            } else if (mode === 'forgot-password') {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/auth`,
+                });
+                if (error) throw error;
+                toast.success('Email de recuperação enviado! Verifique a sua caixa de entrada.');
+                setMode('login');
             }
         } catch (error: any) {
-            toast.error(error.message || 'Ocorreu um erro.');
+            const message = translateAuthError(error.message || 'Ocorreu um erro.');
+            toast.error(message);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const switchMode = (newMode: AuthMode) => {
+        setMode(newMode);
+        setPassword('');
+        setConfirmPassword('');
+        setShowPassword(false);
+        setShowConfirmPassword(false);
+    };
+
+    const getTitle = () => {
+        switch (mode) {
+            case 'login': return 'Bem-vindo';
+            case 'register': return 'Criar Conta';
+            case 'forgot-password': return 'Recuperar Password';
+        }
+    };
+
+    const getSubtitle = () => {
+        switch (mode) {
+            case 'login': return 'Entre para aceder aos seus dados';
+            case 'register': return 'Comece a analisar as suas apostas hoje';
+            case 'forgot-password': return 'Insira o seu email para recuperar a password';
+        }
+    };
+
+    const getButtonText = () => {
+        switch (mode) {
+            case 'login': return 'Entrar';
+            case 'register': return 'Começar Agora';
+            case 'forgot-password': return 'Enviar Email';
         }
     };
 
@@ -43,7 +141,7 @@ export default function Auth() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="card upload-card"
+                className="card upload-card auth-card"
                 style={{ maxWidth: '500px' }}
             >
                 <div className="upload-header">
@@ -54,162 +152,228 @@ export default function Auth() {
                     />
                 </div>
 
-                <motion.h1
-                    key={isLogin ? 'login-title' : 'register-title'}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="upload-title"
-                >
-                    {isLogin ? 'Bem-vindo' : 'Criar Conta'}
-                </motion.h1>
-                <p className="upload-subtitle">
-                    {isLogin
-                        ? 'Entre para aceder aos seus dados'
-                        : 'Comece a analisar as suas apostas hoje'}
-                </p>
-
-                <form onSubmit={handleAuth} style={{ marginBottom: '32px' }}>
-                    <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                        <label
-                            htmlFor="email"
-                            style={{
-                                display: 'block',
-
-                                fontWeight: 600,
-                                color: 'var(--color-text-secondary)',
-                                marginBottom: '8px',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                                fontSize: '0.75rem'
-                            }}
-                        >
-                            Email
-                        </label>
-                        <div style={{ position: 'relative' }}>
-                            <div style={{
-                                position: 'absolute',
-                                left: '14px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                pointerEvents: 'none',
-                                display: 'flex',
-                                alignItems: 'center'
-                            }}>
-                                <Mail size={18} color="var(--color-text-secondary)" />
-                            </div>
-                            <input
-                                id="email"
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="input"
-                                placeholder="exemplo@email.com"
-                                style={{
-                                    width: '100%',
-                                    paddingLeft: '44px',
-                                    fontSize: '0.95rem'
-                                }}
-                            />
-                        </div>
-                    </div>
-
-                    <div style={{ marginBottom: '24px', textAlign: 'left' }}>
-                        <label
-                            htmlFor="password"
-                            style={{
-                                display: 'block',
-
-                                fontWeight: 600,
-                                color: 'var(--color-text-secondary)',
-                                marginBottom: '8px',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                                fontSize: '0.75rem'
-                            }}
-                        >
-                            Password
-                        </label>
-                        <div style={{ position: 'relative' }}>
-                            <div style={{
-                                position: 'absolute',
-                                left: '14px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                pointerEvents: 'none',
-                                display: 'flex',
-                                alignItems: 'center'
-                            }}>
-                                <Lock size={18} color="var(--color-text-secondary)" />
-                            </div>
-                            <input
-                                id="password"
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="input"
-                                placeholder="••••••••"
-                                minLength={6}
-                                style={{
-                                    width: '100%',
-                                    paddingLeft: '44px',
-                                    fontSize: '0.95rem'
-                                }}
-                            />
-                        </div>
-                    </div>
-
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        type="submit"
-                        disabled={isLoading}
-                        className="btn btn-primary"
-                        style={{ width: '100%', padding: '14px' }}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={mode}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
                     >
-                        {isLoading ? (
-                            <Loader2 className="animate-spin" size={20} />
-                        ) : (
-                            <>
-                                {isLogin ? 'Entrar' : 'Começar Agora'}
-                                <ArrowRight size={18} />
-                            </>
-                        )}
-                    </motion.button>
-                </form>
+                        <h1 className="upload-title">{getTitle()}</h1>
+                        <p className="upload-subtitle">{getSubtitle()}</p>
 
-                <div style={{
-                    paddingTop: '24px',
-                    borderTop: '2px solid var(--color-border)',
-                    textAlign: 'center'
-                }}>
-                    <p style={{
-                        fontSize: '0.875rem',
-                        color: 'var(--color-text-secondary)',
-                        marginBottom: '12px'
-                    }}>
-                        {isLogin ? 'Ainda não tem conta?' : 'Já tem uma conta?'}
-                    </p>
-                    <button
-                        type="button"
-                        onClick={() => setIsLogin(!isLogin)}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--color-betano-orange)',
-                            fontSize: '0.875rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            textDecoration: 'underline',
-                            textUnderlineOffset: '4px',
-                            transition: 'var(--transition-smooth)'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-betano-orange-hover)'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-betano-orange)'}
-                    >
-                        {isLogin ? 'Criar conta gratuitamente' : 'Fazer login'}
-                    </button>
+                        <form onSubmit={handleAuth} style={{ marginBottom: '32px' }}>
+                            {/* Email Field */}
+                            <div className="auth-field">
+                                <label htmlFor="email" className="auth-label">
+                                    Email
+                                </label>
+                                <div className="auth-input-wrapper">
+                                    <div className="auth-input-icon">
+                                        <Mail size={18} color="var(--color-text-secondary)" />
+                                    </div>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="input auth-input"
+                                        placeholder="exemplo@email.com"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Password Field (not shown for forgot-password) */}
+                            {mode !== 'forgot-password' && (
+                                <div className="auth-field">
+                                    <label htmlFor="password" className="auth-label">
+                                        Password
+                                    </label>
+                                    <div className="auth-input-wrapper">
+                                        <div className="auth-input-icon">
+                                            <Lock size={18} color="var(--color-text-secondary)" />
+                                        </div>
+                                        <input
+                                            id="password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            required
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="input auth-input"
+                                            placeholder="••••••••"
+                                            minLength={6}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="auth-toggle-password"
+                                            aria-label={showPassword ? 'Esconder password' : 'Mostrar password'}
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff size={18} color="var(--color-text-secondary)" />
+                                            ) : (
+                                                <Eye size={18} color="var(--color-text-secondary)" />
+                                            )}
+                                        </button>
+                                    </div>
+
+                                    {/* Password Strength Indicator (only on register) */}
+                                    {mode === 'register' && password.length > 0 && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="password-strength"
+                                        >
+                                            <div className="password-strength-bar">
+                                                <div
+                                                    className="password-strength-fill"
+                                                    style={{
+                                                        width: `${(passwordStrength.score / 3) * 100}%`,
+                                                        backgroundColor: passwordStrength.color,
+                                                    }}
+                                                />
+                                            </div>
+                                            <span
+                                                className="password-strength-label"
+                                                style={{ color: passwordStrength.color }}
+                                            >
+                                                {passwordStrength.label}
+                                            </span>
+                                        </motion.div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Confirm Password Field (only on register) */}
+                            {mode === 'register' && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="auth-field"
+                                >
+                                    <label htmlFor="confirmPassword" className="auth-label">
+                                        Confirmar Password
+                                    </label>
+                                    <div className="auth-input-wrapper">
+                                        <div className="auth-input-icon">
+                                            <KeyRound size={18} color="var(--color-text-secondary)" />
+                                        </div>
+                                        <input
+                                            id="confirmPassword"
+                                            type={showConfirmPassword ? 'text' : 'password'}
+                                            required
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="input auth-input"
+                                            placeholder="••••••••"
+                                            minLength={6}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="auth-toggle-password"
+                                            aria-label={showConfirmPassword ? 'Esconder password' : 'Mostrar password'}
+                                        >
+                                            {showConfirmPassword ? (
+                                                <EyeOff size={18} color="var(--color-text-secondary)" />
+                                            ) : (
+                                                <Eye size={18} color="var(--color-text-secondary)" />
+                                            )}
+                                        </button>
+                                    </div>
+
+                                    {/* Password Match Indicator */}
+                                    {confirmPassword.length > 0 && (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="password-match"
+                                        >
+                                            {passwordsMatch ? (
+                                                <>
+                                                    <CheckCircle2 size={14} color="var(--color-success)" />
+                                                    <span style={{ color: 'var(--color-success)' }}>
+                                                        As passwords coincidem
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <XCircle size={14} color="var(--color-danger)" />
+                                                    <span style={{ color: 'var(--color-danger)' }}>
+                                                        As passwords não coincidem
+                                                    </span>
+                                                </>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </motion.div>
+                            )}
+
+                            {/* Forgot Password Link (only on login) */}
+                            {mode === 'login' && (
+                                <div className="auth-forgot-password">
+                                    <button
+                                        type="button"
+                                        onClick={() => switchMode('forgot-password')}
+                                        className="auth-link"
+                                    >
+                                        Esqueceu a password?
+                                    </button>
+                                </div>
+                            )}
+
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                type="submit"
+                                disabled={isLoading || (mode === 'register' && (!passwordsMatch || passwordStrength.score < 2))}
+                                className="btn btn-primary auth-submit"
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="animate-spin" size={20} />
+                                ) : (
+                                    <>
+                                        {getButtonText()}
+                                        <ArrowRight size={18} />
+                                    </>
+                                )}
+                            </motion.button>
+                        </form>
+                    </motion.div>
+                </AnimatePresence>
+
+                <div className="auth-switch">
+                    {mode === 'forgot-password' ? (
+                        <>
+                            <p className="auth-switch-text">
+                                Lembrou-se da password?
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => switchMode('login')}
+                                className="auth-switch-btn"
+                            >
+                                Voltar ao login
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <p className="auth-switch-text">
+                                {mode === 'login' ? 'Ainda não tem conta?' : 'Já tem uma conta?'}
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
+                                className="auth-switch-btn"
+                            >
+                                {mode === 'login' ? 'Criar conta gratuitamente' : 'Fazer login'}
+                            </button>
+                        </>
+                    )}
                 </div>
 
                 <div className="privacy-notice" style={{ marginTop: '28px' }}>

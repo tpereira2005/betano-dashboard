@@ -9,51 +9,50 @@ export const StatCard: React.FC<StatCardProps> = ({
     type = 'neutral',
     variant = 'default'
 }) => {
-    const typeColors = {
-        success: 'text-success',
-        danger: 'text-danger',
-        neutral: 'text-neutral',
-        primary: 'text-primary'
+    const getTypeClass = () => {
+        switch (type) {
+            case 'success': return 'success';
+            case 'danger': return 'danger';
+            case 'primary': return 'primary';
+            default: return '';
+        }
     };
 
-    const typeClasses = {
-        success: 'stat-card-success',
-        danger: 'stat-card-danger',
-        primary: 'stat-card-primary',
-        neutral: ''
-    };
+    const typeClass = getTypeClass();
 
+    // Compact variant uses different layout
     if (variant === 'compact') {
         return (
-            <div className={`card compact ${typeClasses[type]}`}>
+            <div className="card compact">
                 <div className="compact-content">
                     {Icon && (
-                        <div className={`compact-icon-box ${type}`}>
+                        <div className={`compact-icon-box ${typeClass}`}>
                             <Icon size={18} />
                         </div>
                     )}
                     <div className="compact-info">
-                        <div className="compact-title">{title}</div>
-                        <div className={`compact-value ${typeColors[type] || ''}`}>
-                            {value}
-                        </div>
-                        {subValue && <div className="compact-subtext">{subValue}</div>}
+                        <span className="compact-title">{title}</span>
+                        <span className="compact-value">{value}</span>
+                        {subValue && <span className="compact-subtext">{subValue}</span>}
                     </div>
                 </div>
             </div>
         );
     }
 
+    // Default variant (hero cards)
     return (
-        <div className={`card ${typeClasses[type]}`}>
-            <div className="stat-label">
-                {Icon && <Icon size={16} />}
-                {title}
+        <div className={`card stat-card-${typeClass || 'neutral'}`}>
+            <div className="stat-header">
+                {Icon && (
+                    <div className={`stat-icon ${typeClass}`}>
+                        <Icon size={24} />
+                    </div>
+                )}
+                <span className="stat-title">{title}</span>
             </div>
-            <div className={`stat-value ${typeColors[type] || ''}`}>
-                {value}
-            </div>
-            {subValue && <div className="stat-subtext">{subValue}</div>}
+            <div className={`stat-value text-${typeClass || 'neutral'}`}>{value}</div>
+            {subValue && <div className="stat-subvalue">{subValue}</div>}
         </div>
     );
 };

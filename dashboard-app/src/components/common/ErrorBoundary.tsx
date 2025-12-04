@@ -32,26 +32,16 @@ export class ErrorBoundary extends Component<Props, State> {
         if (this.state.hasError) {
             return (
                 <div className="container h-screen flex-center">
-                    <div className="card" style={{ maxWidth: '600px', textAlign: 'center' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚠️</div>
-                        <h1 style={{ marginBottom: '16px', color: 'var(--color-danger)' }}>
+                    <div className="card error-card">
+                        <div className="error-emoji">⚠️</div>
+                        <h1 className="error-title">
                             Algo correu mal
                         </h1>
-                        <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px' }}>
+                        <p className="error-description">
                             Ocorreu um erro inesperado. Por favor, tente recarregar a aplicação.
                         </p>
                         {this.state.error && (
-                            <div
-                                style={{
-                                    background: '#FEF2F2',
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    marginBottom: '24px',
-                                    textAlign: 'left',
-                                    fontSize: '0.875rem',
-                                    fontFamily: 'monospace'
-                                }}
-                            >
+                            <div className="error-details">
                                 <strong>Erro:</strong> {this.state.error.message}
                             </div>
                         )}

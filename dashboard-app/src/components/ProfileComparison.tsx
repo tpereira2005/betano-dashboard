@@ -1,15 +1,75 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Users } from 'lucide-react';
+import { X, TrendingUp, Trophy, Target, Wallet, PiggyBank, Calendar, ArrowRightLeft, Users } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { getProfiles, Profile } from '@/services/profileService';
 import { fetchTransactions } from '@/services/transactionService';
 import { processTransactions, calculateStatistics } from '@/utils/calculations';
 import { formatCurrency } from '@/utils/formatters';
-import { RawTransaction } from '@/types';
+import { RawTransaction, Statistics } from '@/types';
 
 interface ProfileComparisonProps {
     isOpen: boolean;
     onClose: () => void;
 }
+
+const COLORS = {
+    profileA: '#FF3D00',  // Betano orange
+    profileB: '#3B82F6',  // Blue
+    positive: '#10B981',
+    negative: '#EF4444'
+};
+
+interface ComparisonCardProps {
+    label: string;
+    icon: React.ReactNode;
+    valueA: string;
+    valueB: string;
+    rawA: number;
+    rawB: number;
+    isPercentage?: boolean;
+    invertColors?: boolean;
+}
+
+const ComparisonCard: React.FC<ComparisonCardProps> = ({
+    label, icon, valueA, valueB, rawA, rawB, isPercentage, invertColors
+}) => {
+    const winner = rawA > rawB ? 'A' : rawB > rawA ? 'B' : 'tie';
+    const diff = Math.abs(rawA - rawB);
+    const percentDiff = rawB !== 0 ? ((rawA - rawB) / Math.abs(rawB)) * 100 : 0;
+
+    // For deposits, lower is better
+    const actualWinner = invertColors ? (winner === 'A' ? 'B' : winner === 'B' ? 'A' : 'tie') : winner;
+
+    return (
+        <div className="comparison-card">
+            <div className="comparison-card-header">
+                <span className="comparison-card-icon">{icon}</span>
+                <span className="comparison-card-label">{label}</span>
+            </div>
+            <div className="comparison-card-values">
+                <div className={`comparison-value ${actualWinner === 'A' ? 'winner' : ''}`}>
+                    <span className="profile-indicator" style={{ background: COLORS.profileA }}></span>
+                    <span className="value">{valueA}</span>
+                    {actualWinner === 'A' && <Trophy size={14} className="trophy" />}
+                </div>
+                <div className="comparison-vs">VS</div>
+                <div className={`comparison-value ${actualWinner === 'B' ? 'winner' : ''}`}>
+                    <span className="profile-indicator" style={{ background: COLORS.profileB }}></span>
+                    <span className="value">{valueB}</span>
+                    {actualWinner === 'B' && <Trophy size={14} className="trophy" />}
+                </div>
+            </div>
+            {winner !== 'tie' && (
+                <div className="comparison-diff">
+                    {isPercentage
+                        ? `${diff.toFixed(1)} pp de diferença`
+                        : `${formatCurrency(diff)} (${percentDiff > 0 ? '+' : ''}${percentDiff.toFixed(1)}%)`
+                    }
+                </div>
+            )}
+        </div>
+    );
+};
 
 export const ProfileComparison: React.FC<ProfileComparisonProps> = ({ isOpen, onClose }) => {
     const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -54,39 +114,66 @@ export const ProfileComparison: React.FC<ProfileComparisonProps> = ({ isOpen, on
         }
     }, [profileB]);
 
-    const statsA = useMemo(() => {
+    const statsA = useMemo((): Statistics | null => {
         if (dataA.length === 0) return null;
         return calculateStatistics(processTransactions(dataA));
     }, [dataA]);
 
-    const statsB = useMemo(() => {
+    const statsB = useMemo((): Statistics | null => {
         if (dataB.length === 0) return null;
         return calculateStatistics(processTransactions(dataB));
     }, [dataB]);
 
+    const chartData = useMemo(() => {
+        if (!statsA || !statsB) return [];
+        return [
+            { name: 'Depósitos', A: statsA.totalDeposited, B: statsB.totalDeposited },
+            { name: 'Levantamentos', A: statsA.totalWithdrawn, B: statsB.totalWithdrawn },
+            { name: 'Resultado', A: Math.max(0, statsA.netResult), B: Math.max(0, statsB.netResult) },
+        ];
+    }, [statsA, statsB]);
+
+    const monthlyComparison = useMemo(() => {
+        if (!statsA || !statsB) return [];
+        const monthsA = new Set(statsA.monthlyData.map(m => m.month));
+        const monthsB = new Set(statsB.monthlyData.map(m => m.month));
+        const allMonths = [...new Set([...monthsA, ...monthsB])].sort();
+
+        return allMonths.slice(-6).map(month => {
+            const dataA = statsA.monthlyData.find(m => m.month === month);
+            const dataB = statsB.monthlyData.find(m => m.month === month);
+            return {
+                month: month.substring(2), // YY-MM format
+                A: dataA?.net || 0,
+                B: dataB?.net || 0
+            };
+        });
+    }, [statsA, statsB]);
+
     if (!isOpen) return null;
-
-    const handleOverlayClick = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
-
-    const getDifference = (a: number, b: number) => {
-        const diff = a - b;
-        const percentage = b !== 0 ? ((diff / Math.abs(b)) * 100) : 0;
-        return { absolute: diff, percentage };
-    };
 
     const profileAName = profiles.find(p => p.id === profileA)?.name || 'Perfil A';
     const profileBName = profiles.find(p => p.id === profileB)?.name || 'Perfil B';
 
+    const getWinner = () => {
+        if (!statsA || !statsB) return null;
+        const scoreA = (statsA.netResult > statsB.netResult ? 1 : 0) +
+            (statsA.roi > statsB.roi ? 1 : 0) +
+            (statsA.winRate > statsB.winRate ? 1 : 0);
+        const scoreB = 3 - scoreA;
+        if (scoreA > scoreB) return { name: profileAName, color: COLORS.profileA };
+        if (scoreB > scoreA) return { name: profileBName, color: COLORS.profileB };
+        return null;
+    };
+
+    const winner = statsA && statsB ? getWinner() : null;
+
     return (
-        <div className="modal-overlay" onClick={handleOverlayClick} style={{ zIndex: 1001 }}>
-            <div className="modal-content" style={{ maxWidth: '900px', width: '95%' }}>
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()} style={{ zIndex: 1001 }}>
+            <div className="modal-content comparison-modal">
                 <div className="modal-header">
                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <Users size={24} />
+                        <ArrowRightLeft size={24} />
                         Comparação de Perfis
                     </h3>
                     <button className="modal-close" onClick={onClose} aria-label="Fechar">
@@ -96,16 +183,13 @@ export const ProfileComparison: React.FC<ProfileComparisonProps> = ({ isOpen, on
 
                 <div className="modal-body">
                     {/* Profile Selectors */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-                        <div>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '8px', color: 'var(--color-text-secondary)' }}>
-                                Perfil A
-                            </label>
+                    <div className="comparison-selectors">
+                        <div className="profile-select-wrapper">
+                            <div className="profile-color-bar" style={{ background: COLORS.profileA }}></div>
                             <select
-                                className="input"
+                                className="input profile-select"
                                 value={profileA}
                                 onChange={(e) => setProfileA(e.target.value)}
-                                style={{ width: '100%' }}
                             >
                                 {profiles.map(p => (
                                     <option key={p.id} value={p.id} disabled={p.id === profileB}>
@@ -114,15 +198,13 @@ export const ProfileComparison: React.FC<ProfileComparisonProps> = ({ isOpen, on
                                 ))}
                             </select>
                         </div>
-                        <div>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '8px', color: 'var(--color-text-secondary)' }}>
-                                Perfil B
-                            </label>
+                        <div className="comparison-vs-badge">VS</div>
+                        <div className="profile-select-wrapper">
+                            <div className="profile-color-bar" style={{ background: COLORS.profileB }}></div>
                             <select
-                                className="input"
+                                className="input profile-select"
                                 value={profileB}
                                 onChange={(e) => setProfileB(e.target.value)}
-                                style={{ width: '100%' }}
                             >
                                 {profiles.map(p => (
                                     <option key={p.id} value={p.id} disabled={p.id === profileA}>
@@ -134,112 +216,142 @@ export const ProfileComparison: React.FC<ProfileComparisonProps> = ({ isOpen, on
                     </div>
 
                     {loading && (
-                        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-secondary)' }}>
+                        <div className="comparison-loading">
+                            <div className="spinner"></div>
                             A carregar dados...
                         </div>
                     )}
 
                     {!loading && statsA && statsB && (
                         <>
-                            {/* Comparison Table */}
-                            <div style={{ overflowX: 'auto', marginBottom: '24px' }}>
-                                <table style={{ width: '100%', fontSize: '0.875rem' }}>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ textAlign: 'left', padding: '12px', background: 'var(--color-bg)', color: 'var(--color-text)' }}>Métrica</th>
-                                            <th style={{ padding: '12px', background: 'var(--color-bg)', color: 'var(--color-text)' }}>{profileAName}</th>
-                                            <th style={{ padding: '12px', background: 'var(--color-bg)', color: 'var(--color-text)' }}>{profileBName}</th>
-                                            <th style={{ padding: '12px', background: 'var(--color-bg)', color: 'var(--color-text)' }}>Diferença</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style={{ padding: '12px', fontWeight: 600 }}>Resultado Líquido</td>
-                                            <td style={{ padding: '12px', textAlign: 'center', color: statsA.netResult >= 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 700 }}>
-                                                {formatCurrency(statsA.netResult)}
-                                            </td>
-                                            <td style={{ padding: '12px', textAlign: 'center', color: statsB.netResult >= 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 700 }}>
-                                                {formatCurrency(statsB.netResult)}
-                                            </td>
-                                            <td style={{ padding: '12px', textAlign: 'center', fontSize: '0.813rem' }}>
-                                                {formatCurrency(getDifference(statsA.netResult, statsB.netResult).absolute)}
-                                                <br />
-                                                <span style={{ color: 'var(--color-text-secondary)' }}>
-                                                    ({getDifference(statsA.netResult, statsB.netResult).percentage.toFixed(1)}%)
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr style={{ background: '#F9FAFB' }}>
-                                            <td style={{ padding: '12px', fontWeight: 600 }}>Total Depositado</td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>{formatCurrency(statsA.totalDeposited)}</td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>{formatCurrency(statsB.totalDeposited)}</td>
-                                            <td style={{ padding: '12px', textAlign: 'center', fontSize: '0.813rem' }}>
-                                                {formatCurrency(getDifference(statsA.totalDeposited, statsB.totalDeposited).absolute)}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{ padding: '12px', fontWeight: 600 }}>Total Levantado</td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>{formatCurrency(statsA.totalWithdrawn)}</td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>{formatCurrency(statsB.totalWithdrawn)}</td>
-                                            <td style={{ padding: '12px', textAlign: 'center', fontSize: '0.813rem' }}>
-                                                {formatCurrency(getDifference(statsA.totalWithdrawn, statsB.totalWithdrawn).absolute)}
-                                            </td>
-                                        </tr>
-                                        <tr style={{ background: '#F9FAFB' }}>
-                                            <td style={{ padding: '12px', fontWeight: 600 }}>ROI</td>
-                                            <td style={{ padding: '12px', textAlign: 'center', color: statsA.roi >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
-                                                {statsA.roi.toFixed(1)}%
-                                            </td>
-                                            <td style={{ padding: '12px', textAlign: 'center', color: statsB.roi >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
-                                                {statsB.roi.toFixed(1)}%
-                                            </td>
-                                            <td style={{ padding: '12px', textAlign: 'center', fontSize: '0.813rem' }}>
-                                                {(statsA.roi - statsB.roi).toFixed(1)} pp
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{ padding: '12px', fontWeight: 600 }}>Win Rate</td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>{statsA.winRate.toFixed(0)}%</td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>{statsB.winRate.toFixed(0)}%</td>
-                                            <td style={{ padding: '12px', textAlign: 'center', fontSize: '0.813rem' }}>
-                                                {(statsA.winRate - statsB.winRate).toFixed(0)} pp
-                                            </td>
-                                        </tr>
-                                        <tr style={{ background: '#F9FAFB' }}>
-                                            <td style={{ padding: '12px', fontWeight: 600 }}>Melhor Mês</td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>
-                                                {statsA.bestMonth ? formatCurrency(statsA.bestMonth.net) : 'N/A'}
-                                            </td>
-                                            <td style={{ padding: '12px', textAlign: 'center' }}>
-                                                {statsB.bestMonth ? formatCurrency(statsB.bestMonth.net) : 'N/A'}
-                                            </td>
-                                            <td style={{ padding: '12px', textAlign: 'center', fontSize: '0.813rem' }}>
-                                                {statsA.bestMonth && statsB.bestMonth
-                                                    ? formatCurrency(statsA.bestMonth.net - statsB.bestMonth.net)
-                                                    : '-'}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            {/* Winner Banner */}
+                            {winner && (
+                                <div className="winner-banner" style={{ borderColor: winner.color }}>
+                                    <Trophy size={20} style={{ color: winner.color }} />
+                                    <span><strong>{winner.name}</strong> tem o melhor desempenho geral!</span>
+                                </div>
+                            )}
+
+                            {/* Key Metrics Comparison */}
+                            <div className="comparison-grid">
+                                <ComparisonCard
+                                    label="Resultado Líquido"
+                                    icon={<Wallet size={18} />}
+                                    valueA={formatCurrency(statsA.netResult)}
+                                    valueB={formatCurrency(statsB.netResult)}
+                                    rawA={statsA.netResult}
+                                    rawB={statsB.netResult}
+                                />
+                                <ComparisonCard
+                                    label="ROI"
+                                    icon={<TrendingUp size={18} />}
+                                    valueA={`${statsA.roi.toFixed(1)}%`}
+                                    valueB={`${statsB.roi.toFixed(1)}%`}
+                                    rawA={statsA.roi}
+                                    rawB={statsB.roi}
+                                    isPercentage
+                                />
+                                <ComparisonCard
+                                    label="Win Rate"
+                                    icon={<Target size={18} />}
+                                    valueA={`${statsA.winRate.toFixed(0)}%`}
+                                    valueB={`${statsB.winRate.toFixed(0)}%`}
+                                    rawA={statsA.winRate}
+                                    rawB={statsB.winRate}
+                                    isPercentage
+                                />
+                                <ComparisonCard
+                                    label="Total Depositado"
+                                    icon={<PiggyBank size={18} />}
+                                    valueA={formatCurrency(statsA.totalDeposited)}
+                                    valueB={formatCurrency(statsB.totalDeposited)}
+                                    rawA={statsA.totalDeposited}
+                                    rawB={statsB.totalDeposited}
+                                    invertColors
+                                />
                             </div>
 
-                            {/* Summary */}
-                            <div style={{
-                                padding: '16px',
-                                background: 'linear-gradient(135deg, rgba(255, 61, 0, 0.05) 0%, rgba(255, 61, 0, 0.02) 100%)',
-                                borderRadius: 'var(--radius-md)',
-                                border: '1px solid rgba(255, 61, 0, 0.1)'
-                            }}>
-                                <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--color-text)' }}>
-                                    <strong>Resumo:</strong> {' '}
-                                    {statsA.netResult > statsB.netResult
-                                        ? `${profileAName} tem melhor resultado com ${formatCurrency(statsA.netResult - statsB.netResult)} de vantagem.`
-                                        : statsB.netResult > statsA.netResult
-                                            ? `${profileBName} tem melhor resultado com ${formatCurrency(statsB.netResult - statsA.netResult)} de vantagem.`
-                                            : 'Ambos os perfis têm resultados semelhantes.'}
-                                </p>
+                            {/* Charts Section */}
+                            <div className="comparison-charts">
+                                {/* Monthly Comparison */}
+                                <div className="comparison-chart-card">
+                                    <h4><Calendar size={16} /> Evolução Mensal (últimos 6 meses)</h4>
+                                    <ResponsiveContainer width="100%" height={200}>
+                                        <BarChart data={monthlyComparison} barGap={2}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                                            <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                                            <YAxis tick={{ fontSize: 11 }} />
+                                            <Tooltip
+                                                formatter={(value: number) => formatCurrency(value)}
+                                                labelFormatter={(label) => `Mês: 20${label}`}
+                                            />
+                                            <Legend />
+                                            <Bar dataKey="A" name={profileAName} fill={COLORS.profileA} radius={[4, 4, 0, 0]} />
+                                            <Bar dataKey="B" name={profileBName} fill={COLORS.profileB} radius={[4, 4, 0, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+
+                                {/* Totals Comparison */}
+                                <div className="comparison-chart-card">
+                                    <h4><Users size={16} /> Comparação de Volumes</h4>
+                                    <ResponsiveContainer width="100%" height={200}>
+                                        <BarChart data={chartData} layout="vertical" barGap={2}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                                            <XAxis type="number" tick={{ fontSize: 11 }} />
+                                            <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} width={80} />
+                                            <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                                            <Legend />
+                                            <Bar dataKey="A" name={profileAName} fill={COLORS.profileA} radius={[0, 4, 4, 0]} />
+                                            <Bar dataKey="B" name={profileBName} fill={COLORS.profileB} radius={[0, 4, 4, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            {/* Quick Stats */}
+                            <div className="comparison-quick-stats">
+                                <div className="quick-stat">
+                                    <span className="quick-stat-label">Meses Ativos</span>
+                                    <div className="quick-stat-values">
+                                        <span style={{ color: COLORS.profileA }}>{statsA.monthlyData.length}</span>
+                                        <span className="separator">|</span>
+                                        <span style={{ color: COLORS.profileB }}>{statsB.monthlyData.length}</span>
+                                    </div>
+                                </div>
+                                <div className="quick-stat">
+                                    <span className="quick-stat-label">Meses Lucrativos</span>
+                                    <div className="quick-stat-values">
+                                        <span style={{ color: COLORS.profileA }}>{statsA.profitableMonths}</span>
+                                        <span className="separator">|</span>
+                                        <span style={{ color: COLORS.profileB }}>{statsB.profitableMonths}</span>
+                                    </div>
+                                </div>
+                                <div className="quick-stat">
+                                    <span className="quick-stat-label">Transações</span>
+                                    <div className="quick-stat-values">
+                                        <span style={{ color: COLORS.profileA }}>{statsA.depositCount + statsA.withdrawalCount}</span>
+                                        <span className="separator">|</span>
+                                        <span style={{ color: COLORS.profileB }}>{statsB.depositCount + statsB.withdrawalCount}</span>
+                                    </div>
+                                </div>
+                                <div className="quick-stat">
+                                    <span className="quick-stat-label">Melhor Mês</span>
+                                    <div className="quick-stat-values">
+                                        <span style={{ color: COLORS.profileA }}>{statsA.bestMonth ? formatCurrency(statsA.bestMonth.net) : '-'}</span>
+                                        <span className="separator">|</span>
+                                        <span style={{ color: COLORS.profileB }}>{statsB.bestMonth ? formatCurrency(statsB.bestMonth.net) : '-'}</span>
+                                    </div>
+                                </div>
                             </div>
                         </>
+                    )}
+
+                    {profiles.length < 2 && !loading && (
+                        <div className="comparison-empty">
+                            <Users size={48} />
+                            <p>Precisas de pelo menos 2 perfis para comparar.</p>
+                        </div>
                     )}
                 </div>
 

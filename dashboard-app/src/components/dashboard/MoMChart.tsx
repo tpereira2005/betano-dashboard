@@ -1,13 +1,36 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { Activity } from 'lucide-react';
+import { Activity, Camera } from 'lucide-react';
 import { MoMChange } from '@/types';
+import html2canvas from 'html2canvas';
+import toast from 'react-hot-toast';
 
 interface MoMChartProps {
     data: MoMChange[];
 }
 
 export const MoMChart: React.FC<MoMChartProps> = React.memo(({ data }) => {
+    const chartRef = useRef<HTMLDivElement>(null);
+
+    const handleDownload = async () => {
+        if (!chartRef.current) return;
+        try {
+            toast.loading('A exportar...', { id: 'chart-export' });
+            const canvas = await html2canvas(chartRef.current, {
+                backgroundColor: '#FFFFFF',
+                scale: 2,
+                logging: false
+            });
+            const link = document.createElement('a');
+            link.download = `chart-mom-${new Date().toISOString().split('T')[0]}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            toast.success('Gráfico exportado!', { id: 'chart-export' });
+        } catch {
+            toast.error('Erro ao exportar', { id: 'chart-export' });
+        }
+    };
+
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
@@ -53,10 +76,19 @@ export const MoMChart: React.FC<MoMChartProps> = React.memo(({ data }) => {
     };
 
     return (
-        <div className="card" aria-label="Gráfico de variação percentual mês a mês">
-            <div className="section-title">
-                <Activity size={20} />
-                Variação Mês a Mês
+        <div ref={chartRef} id="chart-mom" className="card" aria-label="Gráfico de variação percentual mês a mês">
+            <div className="chart-header">
+                <div className="section-title" style={{ marginBottom: 0 }}>
+                    <Activity size={20} />
+                    Variação Mês a Mês
+                </div>
+                <button
+                    onClick={handleDownload}
+                    className="btn btn-outline btn-icon chart-download-btn"
+                    title="Baixar este gráfico"
+                >
+                    <Camera size={16} />
+                </button>
             </div>
 
             <ResponsiveContainer width="100%" height={300}>

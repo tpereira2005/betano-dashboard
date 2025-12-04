@@ -19,24 +19,28 @@ function Home() {
     const [transactions, setTransactions] = useState<RawTransaction[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [activeProfileId, setActiveProfileId] = useState<string | null>(null);
+    const [isProfileLoaded, setIsProfileLoaded] = useState(false);
     const [showProfileManager, setShowProfileManager] = useState(false);
     const [showProfileComparison, setShowProfileComparison] = useState(false);
     const { signOut, user } = useAuth();
 
-    // Load saved profile selection on mount
+    // Load saved profile selection on mount - MUST complete before loading transactions
     useEffect(() => {
         if (user?.id) {
             const savedProfileId = localStorage.getItem(`activeProfileId_${user.id}`);
             if (savedProfileId) {
                 setActiveProfileId(savedProfileId === 'null' ? null : savedProfileId);
             }
+            setIsProfileLoaded(true);
         }
     }, [user?.id]);
 
-    // Load transactions from Supabase based on active profile
+    // Load transactions from Supabase based on active profile - ONLY after profile is loaded
     useEffect(() => {
-        loadTransactions();
-    }, [activeProfileId]);
+        if (isProfileLoaded) {
+            loadTransactions();
+        }
+    }, [activeProfileId, isProfileLoaded]);
 
     const loadTransactions = async () => {
         setIsLoading(true);

@@ -1,18 +1,41 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Camera } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatters';
+import html2canvas from 'html2canvas';
+import toast from 'react-hot-toast';
 
 interface DistributionChartProps {
     data: Array<{ name: string; value: number; count: number }>;
 }
 
 const COLORS = {
-    'Depósitos': '#EF4444', // Red for deposits (money going out)
-    'Levantamentos': '#10B981' // Green for withdrawals (money coming in)
+    'Depósitos': '#EF4444',
+    'Levantamentos': '#10B981'
 };
 
 export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({ data }) => {
+    const chartRef = useRef<HTMLDivElement>(null);
+
+    const handleDownload = async () => {
+        if (!chartRef.current) return;
+        try {
+            toast.loading('A exportar...', { id: 'chart-export' });
+            const canvas = await html2canvas(chartRef.current, {
+                backgroundColor: '#FFFFFF',
+                scale: 2,
+                logging: false
+            });
+            const link = document.createElement('a');
+            link.download = `chart-distribution-${new Date().toISOString().split('T')[0]}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            toast.success('Gráfico exportado!', { id: 'chart-export' });
+        } catch {
+            toast.error('Erro ao exportar', { id: 'chart-export' });
+        }
+    };
+
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
@@ -42,11 +65,20 @@ export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({
     };
 
     return (
-        <div className="card" aria-label="Gráfico circular mostrando a distribuição entre depósitos e levantamentos">
-            <div className="section-title">
-                {data[0]?.name === 'Depósitos' && <TrendingDown size={20} />}
-                {data[1]?.name === 'Levantamentos' && <TrendingUp size={20} />}
-                Distribuição de Transações
+        <div ref={chartRef} id="chart-distribution" className="card" aria-label="Gráfico circular mostrando a distribuição entre depósitos e levantamentos">
+            <div className="chart-header">
+                <div className="section-title" style={{ marginBottom: 0 }}>
+                    {data[0]?.name === 'Depósitos' && <TrendingDown size={20} />}
+                    {data[1]?.name === 'Levantamentos' && <TrendingUp size={20} />}
+                    Distribuição de Transações
+                </div>
+                <button
+                    onClick={handleDownload}
+                    className="btn btn-outline btn-icon chart-download-btn"
+                    title="Baixar este gráfico"
+                >
+                    <Camera size={16} />
+                </button>
             </div>
 
             <ResponsiveContainer width="100%" height={300}>

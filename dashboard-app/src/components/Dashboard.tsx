@@ -12,7 +12,6 @@ import { HistogramChart } from './dashboard/HistogramChart';
 import { MoMChart } from './dashboard/MoMChart';
 import { InsightsCard } from './dashboard/InsightsCard';
 import { TransactionTable } from './dashboard/TransactionTable';
-import { ProfileSelector } from './ProfileSelector';
 import { ReloadModal } from './ReloadModal';
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -69,33 +68,6 @@ const Dashboard: React.FC<DashboardProps> = ({
         return filterTransactions(processedData, filterType, startDate, endDate);
     }, [processedData, filterType, startDate, endDate]);
 
-    // Keyboard shortcuts
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // Ctrl/Cmd + E for Export CSV
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'e') {
-                e.preventDefault();
-                handleExportCSV();
-            }
-
-            // Ctrl/Cmd + K for Compare Profiles
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault();
-                if (onCompareProfiles) {
-                    onCompareProfiles();
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [filteredTransactions, onCompareProfiles]); // Re-bind when data changes for export
-
-    // Calculate statistics
-    const stats = useMemo(() => {
-        return calculateStatistics(filteredTransactions);
-    }, [filteredTransactions]);
-
     // Handlers
     const handleStartDateChange = (date: string) => {
         const clamped = clampDate(date, datasetStart, endDate || datasetEnd);
@@ -148,7 +120,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     };
 
 
-    const handleExportPDF = async () => {
+    const handleExportPDF = React.useCallback(async () => {
         try {
             toast.loading('A exportar PDF...', { id: 'export-pdf' });
             await exportDashboardAsPDF('dashboard-container', 'betano-dashboard');
@@ -157,9 +129,9 @@ const Dashboard: React.FC<DashboardProps> = ({
             toast.error('Erro ao exportar PDF', { id: 'export-pdf' });
             console.error('Export PDF error:', error);
         }
-    };
+    }, []);
 
-    const handleExportPNG = async () => {
+    const handleExportPNG = React.useCallback(async () => {
         try {
             toast.loading('A exportar PNG...', { id: 'export-png' });
             await exportAsPNG('dashboard-container', 'betano-dashboard');
@@ -168,9 +140,9 @@ const Dashboard: React.FC<DashboardProps> = ({
             toast.error('Erro ao exportar PNG', { id: 'export-png' });
             console.error('Export PNG error:', error);
         }
-    };
+    }, []);
 
-    const handleExportCSV = () => {
+    const handleExportCSV = React.useCallback(() => {
         try {
             const csvData = filteredTransactions.map(t => ({
                 date: t.date,
@@ -184,7 +156,34 @@ const Dashboard: React.FC<DashboardProps> = ({
             toast.error('Erro ao exportar CSV');
             console.error('Export CSV error:', error);
         }
-    };
+    }, [filteredTransactions]);
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Ctrl/Cmd + E for Export CSV
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'e') {
+                e.preventDefault();
+                handleExportCSV();
+            }
+
+            // Ctrl/Cmd + K for Compare Profiles
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                if (onCompareProfiles) {
+                    onCompareProfiles();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleExportCSV, onCompareProfiles]);
+
+    // Calculate statistics
+    const stats = useMemo(() => {
+        return calculateStatistics(filteredTransactions);
+    }, [filteredTransactions]);
 
     const handleResetFilters = () => {
         setFilterType('All');
@@ -251,6 +250,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                         </button>
                     </div>
                 )}
+
+                <footer className="footer">
+                    <p>© {new Date().getFullYear()} Dashboard Financeiro. Desenvolvido por <strong>Tomás Pereira</strong>.</p>
+                </footer>
             </div>
 
             {/* Reload Modal */}

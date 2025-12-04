@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Users, PieChart, User, ArrowLeftRight } from 'lucide-react';
+import { ChevronDown, PieChart, User, ArrowLeftRight } from 'lucide-react';
 import { Profile, getProfiles } from '@/services/profileService';
 
 interface ProfileSelectorProps {
@@ -38,180 +38,97 @@ export const ProfileSelector: React.FC<ProfileSelectorProps> = ({
     const activeProfile = profiles.find(p => p.id === activeProfileId);
     const displayName = activeProfileId === null ? 'Combinado' : (activeProfile?.name || 'Carregando...');
 
-    if (loading) return null;
+    // Show skeleton while loading
+    if (loading) {
+        return (
+            <div className="profile-selector-skeleton">
+                <div className="skeleton skeleton-icon" />
+                <div className="skeleton skeleton-text" />
+            </div>
+        );
+    }
 
-    // Get button position for dropdown placement
     const buttonRect = buttonRef.current?.getBoundingClientRect();
 
     return (
-        <div style={{ position: 'relative' }}>
+        <div className="dropdown-wrapper">
             <button
                 ref={buttonRef}
                 onClick={() => setIsOpen(!isOpen)}
-                className="btn btn-outline"
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    minWidth: '180px',
-                    justifyContent: 'space-between'
-                }}
+                className="btn btn-glass profile-selector-btn"
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="btn-content">
                     {activeProfileId === null ? <PieChart size={16} /> : <User size={16} />}
                     <span>{displayName}</span>
                 </div>
-                <ChevronDown size={16} style={{
-                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s'
-                }} />
+                <ChevronDown size={16} className={`chevron ${isOpen ? 'open' : ''}`} />
             </button>
 
             {isOpen && (
                 <>
+                    <div className="dropdown-backdrop" onClick={() => setIsOpen(false)} />
                     <div
+                        className="dropdown-menu"
                         style={{
-                            position: 'fixed',
-                            inset: 0,
-                            zIndex: 999
-                        }}
-                        onClick={() => setIsOpen(false)}
-                    />
-                    <div
-                        style={{
-                            position: 'fixed',
-                            top: buttonRect ? `${buttonRect.bottom + 8}px` : '100%',
-                            left: buttonRect ? `${buttonRect.left}px` : '0',
-                            minWidth: '220px',
-                            background: 'white',
-                            border: '2px solid var(--color-border)',
-                            borderRadius: 'var(--radius-lg)',
-                            boxShadow: 'var(--shadow-xl)',
-                            overflow: 'hidden',
-                            zIndex: 1000
+                            top: buttonRect ? `${buttonRect.bottom + 8}px` : undefined,
+                            left: buttonRect ? `${buttonRect.left}px` : undefined
                         }}
                     >
-                        <div style={{ padding: '8px 0' }}>
-                            {/* Combined view */}
+                        {/* Combined view */}
+                        <button
+                            onClick={() => {
+                                onProfileChange(null);
+                                setIsOpen(false);
+                            }}
+                            className={`dropdown-item ${activeProfileId === null ? 'active' : ''}`}
+                        >
+                            <PieChart size={16} />
+                            Combinado
+                        </button>
+
+                        <div className="dropdown-divider" />
+
+                        {/* Individual profiles */}
+                        {profiles.map(profile => (
                             <button
+                                key={profile.id}
                                 onClick={() => {
-                                    onProfileChange(null);
+                                    onProfileChange(profile.id);
                                     setIsOpen(false);
                                 }}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px 16px',
-                                    textAlign: 'left',
-                                    background: activeProfileId === null ? 'var(--color-bg)' : 'transparent',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontWeight: activeProfileId === null ? 600 : 400,
-                                    color: 'var(--color-text)',
-                                    transition: 'background 0.2s'
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
-                                onMouseLeave={(e) => e.currentTarget.style.background = activeProfileId === null ? 'var(--color-bg)' : 'transparent'}
+                                className={`dropdown-item ${activeProfileId === profile.id ? 'active' : ''}`}
                             >
-                                <PieChart size={16} />
-                                Combinado
+                                <User size={16} />
+                                {profile.name}
                             </button>
+                        ))}
 
-                            <div style={{
-                                height: '1px',
-                                background: 'var(--color-border)',
-                                margin: '8px 0'
-                            }} />
+                        <div className="dropdown-divider" />
 
-                            {/* Individual profiles */}
-                            {profiles.map(profile => (
-                                <button
-                                    key={profile.id}
-                                    onClick={() => {
-                                        onProfileChange(profile.id);
-                                        setIsOpen(false);
-                                    }}
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px 16px',
-                                        textAlign: 'left',
-                                        background: activeProfileId === profile.id ? 'var(--color-bg)' : 'transparent',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        fontWeight: activeProfileId === profile.id ? 600 : 400,
-                                        color: 'var(--color-text)',
-                                        transition: 'background 0.2s'
-                                    }}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.background = activeProfileId === profile.id ? 'var(--color-bg)' : 'transparent'}
-                                >
-                                    <User size={16} />
-                                    {profile.name}
-                                </button>
-                            ))}
-
-                            <div style={{
-                                height: '1px',
-                                background: 'var(--color-border)',
-                                margin: '8px 0'
-                            }} />
-
-                            {/* Manage profiles */}
-                            {onCompareProfiles && (
-                                <button
-                                    onClick={() => {
-                                        setIsOpen(false);
-                                        onCompareProfiles();
-                                    }}
-                                    style={{
-                                        width: '100%',
-                                        padding: '10px 16px',
-                                        textAlign: 'left',
-                                        background: 'transparent',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        color: 'var(--color-text)',
-                                        fontWeight: 400,
-                                        transition: 'background 0.2s',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px'
-                                    }}
-                                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                                >
-                                    <ArrowLeftRight size={14} />
-                                    Comparar Perfis
-                                </button>
-                            )}
-
+                        {/* Compare profiles */}
+                        {onCompareProfiles && (
                             <button
                                 onClick={() => {
                                     setIsOpen(false);
-                                    onManageProfiles();
+                                    onCompareProfiles();
                                 }}
-                                style={{
-                                    width: '100%',
-                                    padding: '10px 16px',
-                                    textAlign: 'left',
-                                    background: 'transparent',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    color: 'var(--color-betano-orange)',
-                                    fontWeight: 600,
-                                    transition: 'background 0.2s'
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-bg)'}
-                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                className="dropdown-item"
                             >
-                                + Gerir Perfis
+                                <ArrowLeftRight size={14} />
+                                Comparar Perfis
                             </button>
-                        </div>
+                        )}
+
+                        {/* Manage profiles */}
+                        <button
+                            onClick={() => {
+                                setIsOpen(false);
+                                onManageProfiles();
+                            }}
+                            className="dropdown-item accent"
+                        >
+                            + Gerir Perfis
+                        </button>
                     </div>
                 </>
             )}
