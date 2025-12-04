@@ -35,11 +35,11 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
         const percentage = `${sign}${stats.trendValue.toFixed(1)}%`;
 
         if (stats.trend === 'improving') {
-            return `${arrow} ${percentage} vs período anterior`;
+            return `${arrow} ${percentage} vs anterior`;
         } else if (stats.trend === 'declining') {
-            return `${arrow} ${percentage} vs período anterior`;
+            return `${arrow} ${percentage} vs anterior`;
         }
-        return `${arrow} Estável vs período anterior`;
+        return `${arrow} Estável vs anterior`;
     };
 
     return (
