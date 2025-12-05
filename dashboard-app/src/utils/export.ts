@@ -22,18 +22,25 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
+        // Add exporting class to hide certain elements via CSS
+        element.classList.add('exporting');
+
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
+        await new Promise(resolve => setTimeout(resolve, 300)); // Wait for CSS to apply
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
-            scale: 1.5, // Good quality without being too slow
+            scale: 1.5,
             logging: false,
             useCORS: true,
             allowTaint: true,
             imageTimeout: 5000,
             removeContainer: true
         });
+
+        // Remove exporting class
+        element.classList.remove('exporting');
 
         // Yield again before creating blob
         await yieldToMain();
@@ -43,6 +50,9 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         link.href = canvas.toDataURL('image/png', 0.9);
         link.click();
     } catch (error) {
+        // Cleanup on error
+        const element = document.getElementById(elementId);
+        if (element) element.classList.remove('exporting');
         console.error('Failed to export as PNG:', error);
         throw error;
     }
@@ -58,8 +68,12 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
+        // Add exporting class to hide certain elements via CSS
+        element.classList.add('exporting');
+
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
+        await new Promise(resolve => setTimeout(resolve, 300)); // Wait for CSS to apply
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
@@ -71,10 +85,13 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             removeContainer: true
         });
 
+        // Remove exporting class
+        element.classList.remove('exporting');
+
         // Yield before PDF generation
         await yieldToMain();
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.85); // JPEG is faster than PNG
+        const imgData = canvas.toDataURL('image/jpeg', 0.85);
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
@@ -105,6 +122,9 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
 
         pdf.save(`${filename}.pdf`);
     } catch (error) {
+        // Cleanup on error
+        const element = document.getElementById(elementId);
+        if (element) element.classList.remove('exporting');
         console.error('Failed to export as PDF:', error);
         throw error;
     }
