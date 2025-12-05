@@ -30,6 +30,16 @@ const getInsightType = (insight: string): InsightType => {
     return 'info';
 };
 
+// Get icon color based on insight type
+const getIconColor = (type: InsightType): string => {
+    switch (type) {
+        case 'success': return '#00D67D'; // Green
+        case 'danger': return '#FF4757';  // Red
+        case 'warning': return '#FFC800'; // Yellow
+        default: return '#FF3D00';        // Orange for info/neutral
+    }
+};
+
 export const InsightsCard: React.FC<InsightsCardProps> = ({ insights }) => {
     return (
         <div className="card" style={{ marginBottom: '32px', marginTop: '32px' }}>
@@ -42,11 +52,12 @@ export const InsightsCard: React.FC<InsightsCardProps> = ({ insights }) => {
                 {insights.map((insight, index) => {
                     const Icon = getIcon(insight);
                     const type = getInsightType(insight);
+                    const iconColor = getIconColor(type);
 
                     return (
                         <div key={index} className={`insight-item type-${type}`}>
                             <div className={`insight-icon type-${type}`}>
-                                <Icon size={20} color="#FF3D00" />
+                                <Icon size={20} color={iconColor} />
                             </div>
                             <p className="insight-text">{insight}</p>
                         </div>
