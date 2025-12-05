@@ -105,19 +105,14 @@ const fixChartsForExport = (container: HTMLElement): (() => void) => {
 const addPageBreakPadding = (container: HTMLElement): (() => void) => {
     const modifiedElements: { el: HTMLElement; originalStyles: { marginTop: string; paddingTop: string } }[] = [];
 
-    // Selectors for major sections that shouldn't be split
-    const sectionSelectors = [
-        '.insights-section',
-        '.insights-card',
-        '[class*="insights"]',
-        '.card',
-        '.chart-card'
-    ];
+    // Find the insights section specifically and add large margin to push to next page
+    const insightsSections = container.querySelectorAll('.insights-section, [class*="insights-"]');
 
-    sectionSelectors.forEach(selector => {
-        const elements = container.querySelectorAll(selector);
-        elements.forEach(el => {
-            const htmlEl = el as HTMLElement;
+    insightsSections.forEach(el => {
+        const htmlEl = el as HTMLElement;
+        // Only apply to the main insights container, not individual cards
+        if (htmlEl.classList.contains('insights-section') ||
+            (htmlEl.className.includes('insights') && !htmlEl.classList.contains('insight-card'))) {
             modifiedElements.push({
                 el: htmlEl,
                 originalStyles: {
@@ -125,13 +120,10 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
                     paddingTop: htmlEl.style.paddingTop
                 }
             });
-            // Add a bit of padding to help sections start at better positions
-            if (htmlEl.classList.contains('insights-section') ||
-                htmlEl.className.includes('insights')) {
-                htmlEl.style.marginTop = '20px';
-                htmlEl.style.paddingTop = '10px';
-            }
-        });
+            // Add large margin to push entire section to next page
+            htmlEl.style.marginTop = '150px';
+            htmlEl.style.paddingTop = '20px';
+        }
     });
 
     // Return restore function
