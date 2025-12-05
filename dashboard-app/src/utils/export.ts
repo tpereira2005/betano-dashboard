@@ -13,20 +13,6 @@ const yieldToMain = (): Promise<void> => {
 };
 
 /**
- * Prepare element for export by adding export class
- */
-const prepareForExport = (): void => {
-    document.body.classList.add('exporting');
-};
-
-/**
- * Cleanup after export by removing export class
- */
-const cleanupAfterExport = (): void => {
-    document.body.classList.remove('exporting');
-};
-
-/**
  * Export an element as PNG
  */
 export const exportAsPNG = async (elementId: string, filename: string): Promise<void> => {
@@ -36,41 +22,27 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Add exporting class to hide problematic elements
-        prepareForExport();
-
-        // Yield to let UI update (show loading indicator and apply export styles)
+        // Yield to let UI update (show loading indicator)
         await yieldToMain();
-        await new Promise(resolve => setTimeout(resolve, 100)); // Extra wait for CSS to apply
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
-            scale: 2,
+            scale: 1.5, // Good quality without being too slow
             logging: false,
             useCORS: true,
             allowTaint: true,
-            imageTimeout: 10000,
-            removeContainer: true,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
-            onclone: (clonedDoc) => {
-                // Ensure the cloned document also has the exporting class
-                clonedDoc.body.classList.add('exporting');
-            }
+            imageTimeout: 5000,
+            removeContainer: true
         });
-
-        // Cleanup
-        cleanupAfterExport();
 
         // Yield again before creating blob
         await yieldToMain();
 
         const link = document.createElement('a');
         link.download = `${filename}.png`;
-        link.href = canvas.toDataURL('image/png', 0.95);
+        link.href = canvas.toDataURL('image/png', 0.9);
         link.click();
     } catch (error) {
-        cleanupAfterExport();
         console.error('Failed to export as PNG:', error);
         throw error;
     }
@@ -86,36 +58,23 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Add exporting class to hide problematic elements
-        prepareForExport();
-
-        // Yield to let UI update (show loading indicator and apply export styles)
+        // Yield to let UI update (show loading indicator)
         await yieldToMain();
-        await new Promise(resolve => setTimeout(resolve, 100)); // Extra wait for CSS to apply
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
-            scale: 2,
+            scale: 1.5,
             logging: false,
             useCORS: true,
             allowTaint: true,
-            imageTimeout: 10000,
-            removeContainer: true,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
-            onclone: (clonedDoc) => {
-                // Ensure the cloned document also has the exporting class
-                clonedDoc.body.classList.add('exporting');
-            }
+            imageTimeout: 5000,
+            removeContainer: true
         });
-
-        // Cleanup
-        cleanupAfterExport();
 
         // Yield before PDF generation
         await yieldToMain();
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.92);
+        const imgData = canvas.toDataURL('image/jpeg', 0.85); // JPEG is faster than PNG
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
@@ -146,7 +105,6 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
 
         pdf.save(`${filename}.pdf`);
     } catch (error) {
-        cleanupAfterExport();
         console.error('Failed to export as PDF:', error);
         throw error;
     }
