@@ -1615,11 +1615,11 @@ table {
 }
 
 th {
-  background: linear-gradient(135deg, var(--color-betano-blue) 0%, var(--color-betano-blue-light) 100%);
+  background: linear-gradient(135deg, rgba(255, 61, 0, 0.2) 0%, rgba(255, 61, 0, 0.1) 100%);
   padding: 14px 18px;
   text-align: left;
   font-weight: 700;
-  color: white;
+  color: var(--color-text);
   border-bottom: 2px solid var(--color-betano-orange);
   text-transform: uppercase;
   font-size: 0.75rem;
