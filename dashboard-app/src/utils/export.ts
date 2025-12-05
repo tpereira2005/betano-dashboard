@@ -150,9 +150,15 @@ const fixHeaderForExport = (container: HTMLElement): (() => void) => {
     // Also add margin-left auto to header-center to push it flush right
     if (headerCenter) {
         const originalMarginLeft = headerCenter.style.marginLeft;
+        const originalMarginRight = headerCenter.style.marginRight;
+        const originalPaddingRight = headerCenter.style.paddingRight;
         headerCenter.style.marginLeft = 'auto';
+        headerCenter.style.marginRight = '0';
+        headerCenter.style.paddingRight = '0';
         restoreActions.push(() => {
             headerCenter.style.marginLeft = originalMarginLeft;
+            headerCenter.style.marginRight = originalMarginRight;
+            headerCenter.style.paddingRight = originalPaddingRight;
         });
     }
 
