@@ -938,8 +938,8 @@ body,
 }
 
 [data-theme="dark"] .insight-icon.type-info {
-  background: rgba(100, 180, 255, 0.2);
-  color: #64B4FF !important;
+  background: rgba(243, 244, 246, 0.1);
+  color: #FF3D00 !important;
 }
 
 [data-theme="dark"] .insight-tip {
@@ -4290,4 +4290,3 @@ tbody tr:hover {
 .no-transition * {
   transition: none !important;
 }
-
