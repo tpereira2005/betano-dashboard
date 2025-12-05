@@ -568,6 +568,7 @@ body,
 /* Profile Comparison modal */
 [data-theme="dark"] .comparison-modal {
   background: rgba(28, 30, 46, 0.98) !important;
+  box-shadow: none !important;
 }
 
 /* Remove any shadows/filters from comparison modal elements */
@@ -576,12 +577,14 @@ body,
 [data-theme="dark"] .comparison-modal h4,
 [data-theme="dark"] .comparison-modal p,
 [data-theme="dark"] .comparison-modal span,
-[data-theme="dark"] .comparison-modal svg {
+[data-theme="dark"] .comparison-modal svg,
+[data-theme="dark"] .comparison-modal div {
   text-shadow: none !important;
   filter: none !important;
   -webkit-filter: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-selectors {
@@ -593,6 +596,7 @@ body,
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
   color: #FFFFFF !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-selectors select option {
@@ -601,70 +605,110 @@ body,
 }
 
 [data-theme="dark"] .profile-select-wrapper {
-  background: rgba(28, 30, 46, 0.95) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .profile-color-bar {
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-vs-badge {
   background: transparent !important;
   color: #FFFFFF !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-card {
-  background: rgba(28, 30, 46, 0.95) !important;
+  background: rgba(28, 30, 46, 0.8) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .comparison-card:hover {
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 [data-theme="dark"] .comparison-card-label,
 [data-theme="dark"] .comparison-card-header,
 [data-theme="dark"] .comparison-card-icon {
   color: #FFFFFF !important;
+  text-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-value {
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-value.winner {
   background: rgba(16, 185, 129, 0.15) !important;
-  border-color: rgba(16, 185, 129, 0.3) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-value .value {
   color: #FFFFFF !important;
+  text-shadow: none !important;
+}
+
+[data-theme="dark"] .comparison-value .profile-indicator {
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .comparison-value .trophy {
+  filter: none !important;
 }
 
 [data-theme="dark"] .comparison-vs {
   color: #9CA3AF !important;
+  text-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-diff {
   color: #B0B8C4 !important;
+  text-shadow: none !important;
 }
 
 [data-theme="dark"] .winner-banner {
   background: rgba(28, 30, 46, 0.95) !important;
   color: #FFFFFF !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .winner-banner strong {
   color: inherit !important;
+  text-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-chart-card {
-  background: rgba(28, 30, 46, 0.95) !important;
+  background: rgba(28, 30, 46, 0.8) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-chart-card h4 {
   color: #FFFFFF !important;
+  text-shadow: none !important;
 }
 
 [data-theme="dark"] .comparison-quick-stats {
   background: transparent !important;
 }
 
+[data-theme="dark"] .quick-stat {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 [data-theme="dark"] .quick-stat-label {
   color: #9CA3AF !important;
+  text-shadow: none !important;
+}
+
+[data-theme="dark"] .quick-stat-values span {
+  text-shadow: none !important;
 }
 
 [data-theme="dark"] .quick-stat-values .separator {
