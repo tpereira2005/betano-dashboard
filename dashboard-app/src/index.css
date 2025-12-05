@@ -1286,11 +1286,15 @@ button {
 .card.stat-card-primary {
   background: rgba(255, 255, 255, 0.98);
   border: 1px solid rgba(229, 231, 235, 0.8);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease;
 }
 
 .card.stat-card-success:hover,
 .card.stat-card-danger:hover,
 .card.stat-card-primary:hover {
+  transform: translateY(-4px);
   box-shadow: 0 12px 28px rgba(255, 61, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: rgba(255, 61, 0, 0.2);
 }
