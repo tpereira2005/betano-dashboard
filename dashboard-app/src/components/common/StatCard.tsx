@@ -46,7 +46,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             <div className="stat-header">
                 {Icon && (
                     <div className={`stat-icon ${typeClass}`}>
-                        <Icon size={24} />
+                        <Icon size={24} style={{ color: '#FF3D00' }} />
                     </div>
                 )}
                 <span className="stat-title">{title}</span>
