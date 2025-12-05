@@ -2,7 +2,7 @@ import React from 'react';
 import {
     ArrowUpCircle,
     ArrowDownCircle,
-    Euro,
+    Wallet,
     Activity,
     TrendingDown,
     TrendingUp,
@@ -54,7 +54,7 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
                     title="Resultado Líquido"
                     value={formatCurrency(stats.netResult)}
                     subValue={stats.netResult >= 0 ? "Lucro Global" : "Prejuízo Global"}
-                    icon={Euro}
+                    icon={Wallet}
                     type={stats.netResult >= 0 ? 'success' : 'danger'}
                 />
                 <StatCard
