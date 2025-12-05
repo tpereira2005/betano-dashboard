@@ -1864,6 +1864,19 @@ tbody tr:hover {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   font-weight: 500;
+  color: var(--color-text);
+}
+
+/* Select specific styling */
+select.input {
+  cursor: pointer;
+  color: var(--color-text);
+  background-color: #FFFFFF;
+}
+
+select.input option {
+  color: var(--color-text);
+  background-color: #FFFFFF;
 }
 
 .input:focus {
