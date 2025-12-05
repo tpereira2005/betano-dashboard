@@ -99,6 +99,51 @@ const fixChartsForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
+ * Add padding to sections to help avoid page breaks cutting them
+ * This adds a page-break-inside: avoid style to major sections
+ */
+const addPageBreakPadding = (container: HTMLElement): (() => void) => {
+    const modifiedElements: { el: HTMLElement; originalStyles: { marginTop: string; paddingTop: string } }[] = [];
+
+    // Selectors for major sections that shouldn't be split
+    const sectionSelectors = [
+        '.insights-section',
+        '.insights-card',
+        '[class*="insights"]',
+        '.card',
+        '.chart-card'
+    ];
+
+    sectionSelectors.forEach(selector => {
+        const elements = container.querySelectorAll(selector);
+        elements.forEach(el => {
+            const htmlEl = el as HTMLElement;
+            modifiedElements.push({
+                el: htmlEl,
+                originalStyles: {
+                    marginTop: htmlEl.style.marginTop,
+                    paddingTop: htmlEl.style.paddingTop
+                }
+            });
+            // Add a bit of padding to help sections start at better positions
+            if (htmlEl.classList.contains('insights-section') ||
+                htmlEl.className.includes('insights')) {
+                htmlEl.style.marginTop = '20px';
+                htmlEl.style.paddingTop = '10px';
+            }
+        });
+    });
+
+    // Return restore function
+    return () => {
+        modifiedElements.forEach(({ el, originalStyles }) => {
+            el.style.marginTop = originalStyles.marginTop;
+            el.style.paddingTop = originalStyles.paddingTop;
+        });
+    };
+};
+
+/**
  * Export an element as PNG
  */
 export const exportAsPNG = async (elementId: string, filename: string): Promise<void> => {
@@ -156,6 +201,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
 export const exportDashboardAsPDF = async (elementId: string, filename: string): Promise<void> => {
     let restoreElements: (() => void) | null = null;
     let restoreCharts: (() => void) | null = null;
+    let restorePageBreak: (() => void) | null = null;
 
     try {
         const element = document.getElementById(elementId);
@@ -163,9 +209,10 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements and fix charts before export
+        // Hide elements, fix charts, and add page break padding before export
         restoreElements = hideElementsForExport(element);
         restoreCharts = fixChartsForExport(element);
+        restorePageBreak = addPageBreakPadding(element);
 
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
@@ -180,11 +227,13 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             removeContainer: true
         });
 
-        // Restore elements and charts
+        // Restore elements, charts, and page breaks
         restoreElements();
         restoreCharts();
+        restorePageBreak();
         restoreElements = null;
         restoreCharts = null;
+        restorePageBreak = null;
 
         // Yield before PDF generation
         await yieldToMain();
@@ -223,6 +272,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         // Restore elements on error
         if (restoreElements) restoreElements();
         if (restoreCharts) restoreCharts();
+        if (restorePageBreak) restorePageBreak();
         console.error('Failed to export as PDF:', error);
         throw error;
     }
