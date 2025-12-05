@@ -13,9 +13,9 @@
   --color-text: #1A1C35;
   --color-text-secondary: #6B7280;
   --color-success: #10B981;
-  --color-success-light: #34D399;
+  --color-success-light: #10B981;
   --color-danger: #EF4444;
-  --color-danger-light: #F87171;
+  --color-danger-light: #EF4444;
   --color-border: #E5E7EB;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -240,11 +240,11 @@ body,
 }
 
 [data-theme="dark"] .stat-value.text-success {
-  color: #34D399 !important;
+  color: #10B981 !important;
 }
 
 [data-theme="dark"] .stat-value.text-danger {
-  color: #F87171 !important;
+  color: #EF4444 !important;
 }
 
 [data-theme="dark"] .stat-value.text-primary {
@@ -334,13 +334,13 @@ body,
 [data-theme="dark"] .badge-deposit {
   background: rgba(16, 185, 129, 0.2) !important;
   border-color: rgba(16, 185, 129, 0.4) !important;
-  color: #34D399 !important;
+  color: #10B981 !important;
 }
 
 [data-theme="dark"] .badge-withdrawal {
   background: rgba(239, 68, 68, 0.2) !important;
   border-color: rgba(239, 68, 68, 0.4) !important;
-  color: #F87171 !important;
+  color: #EF4444 !important;
 }
 
 /* ===========================================
@@ -1004,11 +1004,11 @@ body,
 }
 
 [data-theme="dark"] .transaction-value span[style*="color: var(--color-success)"] {
-  color: #34D399 !important;
+  color: #10B981 !important;
 }
 
 [data-theme="dark"] .transaction-value span[style*="color: #DC2626"] {
-  color: #F87171 !important;
+  color: #EF4444 !important;
 }
 
 [data-theme="dark"] .empty-state {
