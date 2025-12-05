@@ -100,7 +100,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     </div>
                     <span className="date-separator">→</span>
                     <div className="date-input-group">
-                        <Calendar size={16} className="date-icon" />
                         <span className="date-label">Até</span>
                         <input
                             type="date"
