@@ -97,7 +97,37 @@ body.exporting .version-badge {
 
 /* Keep only logo, profile name, and dates visible in header */
 body.exporting .header-right {
-  gap: 0 !important;
+  display: none !important;
+}
+
+/* Reorganize header for export - center content */
+body.exporting .header-redesigned {
+  justify-content: space-between !important;
+  padding: 16px 24px !important;
+}
+
+body.exporting .header-left {
+  flex: 0 0 auto !important;
+}
+
+body.exporting .header-center {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* Ensure gray background fills the page */
+body.exporting {
+  background-color: #F0F2F5 !important;
+  min-height: 100vh !important;
+}
+
+body.exporting .container,
+body.exporting .app-container,
+body.exporting .dashboard-content,
+body.exporting #dashboard-content {
+  background-color: #F0F2F5 !important;
+  padding-bottom: 100px !important;
 }
 
 /* Fix footer during export */
