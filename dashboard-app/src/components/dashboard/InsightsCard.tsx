@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, TrendingUp, Calendar, DollarSign, Target, Activity, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
+import { Lightbulb, Calendar, DollarSign, Target, Activity, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
 
 interface InsightsCardProps {
     insights: string[];
