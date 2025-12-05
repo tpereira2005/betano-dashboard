@@ -168,7 +168,7 @@ export const MoMChart: React.FC<MoMChartProps> = React.memo(({ data }) => {
         <div ref={chartRef} id="chart-mom" className="card" aria-label="Gráfico de variação percentual mês a mês">
             <div className="chart-header">
                 <div className="section-title" style={{ marginBottom: 0 }}>
-                    <Activity size={20} style={{ color: '#FF3D00' }} />
+                    <Activity size={20} color="#FF3D00" />
                     Variação Mês a Mês
                 </div>
                 <div className="chart-header-buttons">

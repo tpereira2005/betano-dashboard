@@ -68,7 +68,7 @@ export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({
         <div ref={chartRef} id="chart-distribution" className="card" aria-label="Gráfico circular mostrando a distribuição entre depósitos e levantamentos">
             <div className="chart-header">
                 <div className="section-title" style={{ marginBottom: 0 }}>
-                    <PieChartIcon size={20} style={{ color: '#FF3D00' }} />
+                    <PieChartIcon size={20} color="#FF3D00" />
                     Distribuição de Transações
                 </div>
                 <button

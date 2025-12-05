@@ -34,7 +34,7 @@ export const InsightsCard: React.FC<InsightsCardProps> = ({ insights }) => {
     return (
         <div className="card" style={{ marginBottom: '32px', marginTop: '32px' }}>
             <div className="section-title" style={{ marginBottom: '24px' }}>
-                <Lightbulb size={24} style={{ color: 'var(--color-betano-orange)' }} />
+                <Lightbulb size={24} color="#FF3D00" />
                 <span style={{ fontSize: '1.25rem', fontWeight: 700 }}>Insights Automáticos</span>
             </div>
 
@@ -46,7 +46,7 @@ export const InsightsCard: React.FC<InsightsCardProps> = ({ insights }) => {
                     return (
                         <div key={index} className={`insight-item type-${type}`}>
                             <div className={`insight-icon type-${type}`}>
-                                <Icon size={20} />
+                                <Icon size={20} color="#FF3D00" />
                             </div>
                             <p className="insight-text">{insight}</p>
                         </div>
