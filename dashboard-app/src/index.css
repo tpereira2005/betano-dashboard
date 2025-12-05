@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   --color-betano-orange: #FF3D00;
@@ -804,12 +804,12 @@ body,
 /* Colored stat values - VIVID NEON COLORS */
 [data-theme="dark"] .stat-value.text-success,
 [data-theme="dark"] .text-success {
-  color: #00D67D !important;
+  color: #10B981 !important;
 }
 
 [data-theme="dark"] .stat-value.text-danger,
 [data-theme="dark"] .text-danger {
-  color: #FF4757 !important;
+  color: #EF4444 !important;
 }
 
 [data-theme="dark"] .stat-value.text-primary,
@@ -851,11 +851,11 @@ body,
 
 /* Keep success/danger colors for other cards */
 .compact-icon-box.success {
-  color: #00D67D !important;
+  color: #10B981 !important;
 }
 
 .compact-icon-box.danger {
-  color: #FF4757 !important;
+  color: #EF4444 !important;
 }
 
 .compact-icon-box.primary {
@@ -886,12 +886,12 @@ body,
 
 [data-theme="dark"] .compact-icon-box.success {
   background: rgba(16, 185, 129, 0.1);
-  color: #00D67D;
+  color: #10B981;
 }
 
 [data-theme="dark"] .compact-icon-box.danger {
   background: rgba(239, 68, 68, 0.1);
-  color: #FF4757;
+  color: #EF4444;
 }
 
 [data-theme="dark"] .compact-icon-box.primary {
@@ -924,12 +924,12 @@ body,
 
 [data-theme="dark"] .insight-icon.type-success {
   background: rgba(0, 255, 136, 0.2);
-  color: #00D67D !important;
+  color: #10B981 !important;
 }
 
 [data-theme="dark"] .insight-icon.type-danger {
   background: rgba(255, 85, 85, 0.2);
-  color: #FF4757 !important;
+  color: #EF4444 !important;
 }
 
 [data-theme="dark"] .insight-icon.type-warning {
@@ -1007,7 +1007,7 @@ body,
   color: #10B981 !important;
 }
 
-[data-theme="dark"] .transaction-value span[style*="color: #DC2626"] {
+[data-theme="dark"] .transaction-value span[style*="color: #EF4444"] {
   color: #EF4444 !important;
 }
 
@@ -2729,7 +2729,7 @@ tbody tr:hover {
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: #DC2626;
+  background-color: #EF4444;
   transform: translateY(-1px);
 }
 
@@ -3077,12 +3077,12 @@ tbody tr:hover {
 
 .compact-icon-box.success {
   background: rgba(16, 185, 129, 0.1);
-  color: #00D67D;
+  color: #10B981;
 }
 
 .compact-icon-box.danger {
   background: rgba(239, 68, 68, 0.1);
-  color: #FF4757;
+  color: #EF4444;
 }
 
 .compact-icon-box.primary {
@@ -3591,12 +3591,12 @@ tbody tr:hover {
 
 .insight-item.type-success {
   border: 1px solid rgba(16, 185, 129, 0.2);
-  border-left: 4px solid #00D67D;
+  border-left: 4px solid #10B981;
 }
 
 .insight-item.type-danger {
   border: 1px solid rgba(239, 68, 68, 0.2);
-  border-left: 4px solid #FF4757;
+  border-left: 4px solid #EF4444;
 }
 
 .insight-item.type-warning {
@@ -3620,12 +3620,12 @@ tbody tr:hover {
 }
 
 .insight-icon.type-success {
-  color: #00D67D;
+  color: #10B981;
   background: rgba(16, 185, 129, 0.1);
 }
 
 .insight-icon.type-danger {
-  color: #FF4757;
+  color: #EF4444;
   background: rgba(239, 68, 68, 0.1);
 }
 
@@ -4305,12 +4305,12 @@ tbody tr:hover {
 /* Override for Dark Mode Insight Borders - Restore semantic colors */
 [data-theme='dark'] .insight-item.type-success {
   border-color: rgba(16, 185, 129, 0.2) !important;
-  border-left-color: #00D67D !important;
+  border-left-color: #10B981 !important;
 }
 
 [data-theme='dark'] .insight-item.type-danger {
   border-color: rgba(239, 68, 68, 0.2) !important;
-  border-left-color: #FF4757 !important;
+  border-left-color: #EF4444 !important;
 }
 
 [data-theme='dark'] .insight-item.type-warning {
