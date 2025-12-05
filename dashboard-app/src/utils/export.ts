@@ -20,6 +20,7 @@ const HIDE_DURING_EXPORT = [
     '.btn-signout',
     '.export-dropdown',
     '.header-separator',
+    '.header-right',  // Hide entire right section (Export, New File, Theme, Signout buttons)
     '.social-links',
     '.footer-social',
     '.version-badge',
