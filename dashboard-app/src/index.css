@@ -119,10 +119,26 @@ body.exporting .footer-content {
   background: transparent !important;
 }
 
-/* Ensure charts render fully */
-body.exporting .recharts-wrapper,
+/* Ensure charts render fully - CRITICAL for export */
+body.exporting .recharts-wrapper {
+  overflow: visible !important;
+  min-height: 300px !important;
+}
+
 body.exporting .recharts-surface {
   overflow: visible !important;
+}
+
+body.exporting .recharts-wrapper svg {
+  overflow: visible !important;
+}
+
+/* Force chart containers to have proper dimensions */
+body.exporting .chart-container,
+body.exporting .chart-wrapper,
+body.exporting [class*="chart"] {
+  overflow: visible !important;
+  min-height: 280px;
 }
 
 body.exporting .card {

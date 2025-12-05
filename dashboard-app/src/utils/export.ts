@@ -17,6 +17,8 @@ const yieldToMain = (): Promise<void> => {
  */
 const prepareForExport = (): void => {
     document.body.classList.add('exporting');
+    // Scroll to top
+    window.scrollTo(0, 0);
 };
 
 /**
@@ -24,6 +26,15 @@ const prepareForExport = (): void => {
  */
 const cleanupAfterExport = (): void => {
     document.body.classList.remove('exporting');
+};
+
+/**
+ * Wait for charts to fully render
+ */
+const waitForChartsToRender = async (): Promise<void> => {
+    await yieldToMain();
+    // Give Recharts time to render all SVG elements
+    await new Promise(resolve => setTimeout(resolve, 800));
 };
 
 /**
@@ -36,12 +47,11 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Add exporting class to hide problematic elements
+        // Prepare for export
         prepareForExport();
 
-        // Yield to let UI update (show loading indicator and apply export styles)
-        await yieldToMain();
-        await new Promise(resolve => setTimeout(resolve, 100)); // Extra wait for CSS to apply
+        // Wait for charts to render
+        await waitForChartsToRender();
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
@@ -49,20 +59,28 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             logging: false,
             useCORS: true,
             allowTaint: true,
-            imageTimeout: 10000,
+            imageTimeout: 15000,
             removeContainer: true,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
-            onclone: (clonedDoc) => {
-                // Ensure the cloned document also has the exporting class
+            width: element.scrollWidth,
+            height: element.scrollHeight,
+            scrollX: 0,
+            scrollY: -window.scrollY,
+            x: 0,
+            y: 0,
+            onclone: (clonedDoc, clonedElement) => {
                 clonedDoc.body.classList.add('exporting');
+                // Force charts to be fully visible
+                const charts = clonedElement.querySelectorAll('.recharts-wrapper, .recharts-surface');
+                charts.forEach(chart => {
+                    const el = chart as HTMLElement;
+                    el.style.overflow = 'visible';
+                });
             }
         });
 
         // Cleanup
         cleanupAfterExport();
 
-        // Yield again before creating blob
         await yieldToMain();
 
         const link = document.createElement('a');
@@ -86,12 +104,11 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Add exporting class to hide problematic elements
+        // Prepare for export
         prepareForExport();
 
-        // Yield to let UI update (show loading indicator and apply export styles)
-        await yieldToMain();
-        await new Promise(resolve => setTimeout(resolve, 100)); // Extra wait for CSS to apply
+        // Wait for charts to render
+        await waitForChartsToRender();
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
@@ -99,20 +116,28 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             logging: false,
             useCORS: true,
             allowTaint: true,
-            imageTimeout: 10000,
+            imageTimeout: 15000,
             removeContainer: true,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
-            onclone: (clonedDoc) => {
-                // Ensure the cloned document also has the exporting class
+            width: element.scrollWidth,
+            height: element.scrollHeight,
+            scrollX: 0,
+            scrollY: -window.scrollY,
+            x: 0,
+            y: 0,
+            onclone: (clonedDoc, clonedElement) => {
                 clonedDoc.body.classList.add('exporting');
+                // Force charts to be fully visible
+                const charts = clonedElement.querySelectorAll('.recharts-wrapper, .recharts-surface');
+                charts.forEach(chart => {
+                    const el = chart as HTMLElement;
+                    el.style.overflow = 'visible';
+                });
             }
         });
 
         // Cleanup
         cleanupAfterExport();
 
-        // Yield before PDF generation
         await yieldToMain();
 
         const imgData = canvas.toDataURL('image/jpeg', 0.92);
@@ -141,7 +166,6 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             heightLeft -= pageHeight;
         }
 
-        // Yield before save
         await yieldToMain();
 
         pdf.save(`${filename}.pdf`);
@@ -173,7 +197,7 @@ export const exportTransactionsAsCSV = (
         // Convert transactions to CSV rows
         const rows = transactions.map(t => [
             t.date,
-            t.type === 'Deposit' ? 'Deposit' : 'With drawal',
+            t.type === 'Deposit' ? 'Deposit' : 'Withdrawal',
             t.value.toFixed(2),
             t.cumulative.toFixed(2)
         ]);
@@ -203,4 +227,3 @@ export const exportTransactionsAsCSV = (
         throw error;
     }
 };
-
