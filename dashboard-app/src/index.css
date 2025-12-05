@@ -4382,18 +4382,7 @@ th {
   color: #B0B8C4 !important;
 }
 
-/* Profile Comparison - Right Color Bar */
-.profile-color-bar-right {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  border-radius: 0 4px 4px 0;
-  pointer-events: none;
-}
-
-/* Make left bar thicker too */
+/* Profile Comparison - Thicker Left Bar */
 .profile-color-bar {
-  width: 6px !important;
+  width: 8px !important; /* Even thicker for better visibility */
 }

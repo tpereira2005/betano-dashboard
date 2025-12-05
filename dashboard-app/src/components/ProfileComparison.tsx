@@ -197,7 +197,6 @@ export const ProfileComparison: React.FC<ProfileComparisonProps> = ({ isOpen, on
                                     </option>
                                 ))}
                             </select>
-                            <div className="profile-color-bar-right" style={{ background: COLORS.profileA }}></div>
                         </div>
                         <div className="comparison-vs-badge">VS</div>
                         <div className="profile-select-wrapper">
@@ -213,7 +212,6 @@ export const ProfileComparison: React.FC<ProfileComparisonProps> = ({ isOpen, on
                                     </option>
                                 ))}
                             </select>
-                            <div className="profile-color-bar-right" style={{ background: COLORS.profileB }}></div>
                         </div>
                     </div>
 
