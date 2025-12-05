@@ -126,24 +126,68 @@ const fixFooterForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
- * Fix header layout for export - move dates to the right
- * Simple version that only changes margin
+ * Fix header layout for export:
+ * 1. Replace date inputs with formatted text (html2canvas doesn't render native inputs well)
+ * 2. Move dates to the right side
  */
 const fixHeaderForExport = (container: HTMLElement): (() => void) => {
-    const headerCenter = container.querySelector('.header-center') as HTMLElement;
+    const restoreActions: (() => void)[] = [];
 
-    if (!headerCenter) {
-        return () => { }; // Return empty function if not found
+    // Find elements
+    const headerLeft = container.querySelector('.header-left') as HTMLElement;
+    const headerCenter = container.querySelector('.header-center') as HTMLElement;
+    const dateInputs = container.querySelectorAll('.date-input') as NodeListOf<HTMLInputElement>;
+
+    // Push header-left to grow and push center to the right
+    if (headerLeft) {
+        const originalFlexGrow = headerLeft.style.flexGrow;
+        headerLeft.style.flexGrow = '1';
+        restoreActions.push(() => {
+            headerLeft.style.flexGrow = originalFlexGrow;
+        });
     }
 
-    const originalMarginLeft = headerCenter.style.marginLeft;
+    // Replace each date input with a styled span showing the formatted date
+    dateInputs.forEach(input => {
+        const value = input.value; // format: yyyy-mm-dd
+        if (value) {
+            // Parse and format date as dd/mm/yyyy
+            const [year, month, day] = value.split('-');
+            const formattedDate = `${day}/${month}/${year}`;
 
-    // Move dates to the right
-    headerCenter.style.marginLeft = 'auto';
+            // Create span to replace input
+            const span = document.createElement('span');
+            span.textContent = formattedDate;
+            span.className = 'date-input-export';
+            span.style.cssText = `
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 8px;
+                padding: 8px 12px;
+                color: white;
+                font-size: 0.875rem;
+                font-weight: 500;
+                font-family: Inter, system-ui, -apple-system, sans-serif;
+                display: inline-block;
+                min-width: 90px;
+                text-align: center;
+            `;
+
+            // Hide input, insert span
+            const originalDisplay = input.style.display;
+            input.style.display = 'none';
+            input.parentNode?.insertBefore(span, input.nextSibling);
+
+            restoreActions.push(() => {
+                input.style.display = originalDisplay;
+                span.remove();
+            });
+        }
+    });
 
     // Return restore function
     return () => {
-        headerCenter.style.marginLeft = originalMarginLeft;
+        restoreActions.forEach(action => action());
     };
 };
 
