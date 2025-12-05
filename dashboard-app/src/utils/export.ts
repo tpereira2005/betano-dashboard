@@ -55,6 +55,47 @@ const hideElementsForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
+ * Fix footer styling for export - remove shadows and effects
+ */
+const fixFooterForExport = (container: HTMLElement): (() => void) => {
+    const modifiedElements: { el: HTMLElement; originalStyles: { background: string; boxShadow: string; textShadow: string } }[] = [];
+
+    // Find footer elements
+    const footerSelectors = ['.footer', '.footer-content', '.footer-text', '[class*="footer"]'];
+
+    footerSelectors.forEach(selector => {
+        const elements = container.querySelectorAll(selector);
+        elements.forEach(el => {
+            const htmlEl = el as HTMLElement;
+            modifiedElements.push({
+                el: htmlEl,
+                originalStyles: {
+                    background: htmlEl.style.background,
+                    boxShadow: htmlEl.style.boxShadow,
+                    textShadow: htmlEl.style.textShadow
+                }
+            });
+            // Remove all shadow effects
+            htmlEl.style.boxShadow = 'none';
+            htmlEl.style.textShadow = 'none';
+            // Set clean background
+            if (htmlEl.classList.contains('footer')) {
+                htmlEl.style.background = '#F0F2F5';
+            }
+        });
+    });
+
+    // Return restore function
+    return () => {
+        modifiedElements.forEach(({ el, originalStyles }) => {
+            el.style.background = originalStyles.background;
+            el.style.boxShadow = originalStyles.boxShadow;
+            el.style.textShadow = originalStyles.textShadow;
+        });
+    };
+};
+
+/**
  * Fix charts for export - ensure they are fully visible
  */
 const fixChartsForExport = (container: HTMLElement): (() => void) => {
@@ -132,6 +173,7 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
 export const exportAsPNG = async (elementId: string, filename: string): Promise<void> => {
     let restoreElements: (() => void) | null = null;
     let restoreCharts: (() => void) | null = null;
+    let restoreFooter: (() => void) | null = null;
 
     try {
         const element = document.getElementById(elementId);
@@ -139,9 +181,10 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements and fix charts before export
+        // Hide elements, fix charts and footer before export
         restoreElements = hideElementsForExport(element);
         restoreCharts = fixChartsForExport(element);
+        restoreFooter = fixFooterForExport(element);
 
         // Yield to let UI update
         await yieldToMain();
@@ -156,11 +199,13 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             removeContainer: true
         });
 
-        // Restore elements and charts
+        // Restore elements, charts and footer
         restoreElements();
         restoreCharts();
+        restoreFooter();
         restoreElements = null;
         restoreCharts = null;
+        restoreFooter = null;
 
         // Yield again before creating blob
         await yieldToMain();
@@ -173,6 +218,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         // Restore elements on error
         if (restoreElements) restoreElements();
         if (restoreCharts) restoreCharts();
+        if (restoreFooter) restoreFooter();
         console.error('Failed to export as PNG:', error);
         throw error;
     }
@@ -185,6 +231,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
     let restoreElements: (() => void) | null = null;
     let restoreCharts: (() => void) | null = null;
     let restorePageBreak: (() => void) | null = null;
+    let restoreFooter: (() => void) | null = null;
 
     try {
         const element = document.getElementById(elementId);
@@ -192,10 +239,11 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements, fix charts, and add page break padding before export
+        // Hide elements, fix charts, footer and add page break padding before export
         restoreElements = hideElementsForExport(element);
         restoreCharts = fixChartsForExport(element);
         restorePageBreak = addPageBreakPadding(element);
+        restoreFooter = fixFooterForExport(element);
 
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
@@ -210,13 +258,15 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             removeContainer: true
         });
 
-        // Restore elements, charts, and page breaks
+        // Restore elements, charts, page breaks and footer
         restoreElements();
         restoreCharts();
         restorePageBreak();
+        restoreFooter();
         restoreElements = null;
         restoreCharts = null;
         restorePageBreak = null;
+        restoreFooter = null;
 
         // Yield before PDF generation
         await yieldToMain();
@@ -256,6 +306,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         if (restoreElements) restoreElements();
         if (restoreCharts) restoreCharts();
         if (restorePageBreak) restorePageBreak();
+        if (restoreFooter) restoreFooter();
         console.error('Failed to export as PDF:', error);
         throw error;
     }
