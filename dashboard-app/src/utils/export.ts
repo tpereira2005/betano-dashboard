@@ -55,30 +55,54 @@ const hideElementsForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
- * Fix footer styling for export - remove shadows and effects
+ * Fix footer styling for export - remove shadows and gradient text effects
+ * html2canvas doesn't support -webkit-background-clip: text and -webkit-text-fill-color
  */
 const fixFooterForExport = (container: HTMLElement): (() => void) => {
-    const modifiedElements: { el: HTMLElement; originalStyles: { background: string; boxShadow: string; textShadow: string } }[] = [];
+    const modifiedElements: { el: HTMLElement; originalStyles: Record<string, string> }[] = [];
 
-    // Find footer elements
-    const footerSelectors = ['.footer', '.footer-content', '.footer-text', '[class*="footer"]'];
+    // Find footer and its text elements
+    const footerSelectors = ['.footer', '.footer-content', '.footer-text', '.footer-author'];
 
     footerSelectors.forEach(selector => {
         const elements = container.querySelectorAll(selector);
         elements.forEach(el => {
             const htmlEl = el as HTMLElement;
+            const computed = window.getComputedStyle(htmlEl);
+
             modifiedElements.push({
                 el: htmlEl,
                 originalStyles: {
                     background: htmlEl.style.background,
+                    backgroundClip: htmlEl.style.backgroundClip,
+                    webkitBackgroundClip: (htmlEl.style as CSSStyleDeclaration & { webkitBackgroundClip: string }).webkitBackgroundClip || '',
+                    webkitTextFillColor: (htmlEl.style as CSSStyleDeclaration & { webkitTextFillColor: string }).webkitTextFillColor || '',
+                    color: htmlEl.style.color,
                     boxShadow: htmlEl.style.boxShadow,
                     textShadow: htmlEl.style.textShadow
                 }
             });
-            // Remove all shadow effects
+
+            // Remove shadow effects
             htmlEl.style.boxShadow = 'none';
             htmlEl.style.textShadow = 'none';
-            // Set clean background
+
+            // Fix gradient text - set solid colors instead
+            if (htmlEl.classList.contains('footer-text')) {
+                htmlEl.style.background = 'none';
+                (htmlEl.style as CSSStyleDeclaration & { webkitBackgroundClip: string }).webkitBackgroundClip = 'unset';
+                (htmlEl.style as CSSStyleDeclaration & { webkitTextFillColor: string }).webkitTextFillColor = '#374151';
+                htmlEl.style.color = '#374151';
+            }
+
+            if (htmlEl.classList.contains('footer-author')) {
+                htmlEl.style.background = 'none';
+                (htmlEl.style as CSSStyleDeclaration & { webkitBackgroundClip: string }).webkitBackgroundClip = 'unset';
+                (htmlEl.style as CSSStyleDeclaration & { webkitTextFillColor: string }).webkitTextFillColor = '#FF3D00';
+                htmlEl.style.color = '#FF3D00';
+            }
+
+            // Clean footer background
             if (htmlEl.classList.contains('footer')) {
                 htmlEl.style.background = '#F0F2F5';
             }
@@ -89,6 +113,10 @@ const fixFooterForExport = (container: HTMLElement): (() => void) => {
     return () => {
         modifiedElements.forEach(({ el, originalStyles }) => {
             el.style.background = originalStyles.background;
+            el.style.backgroundClip = originalStyles.backgroundClip;
+            (el.style as CSSStyleDeclaration & { webkitBackgroundClip: string }).webkitBackgroundClip = originalStyles.webkitBackgroundClip;
+            (el.style as CSSStyleDeclaration & { webkitTextFillColor: string }).webkitTextFillColor = originalStyles.webkitTextFillColor;
+            el.style.color = originalStyles.color;
             el.style.boxShadow = originalStyles.boxShadow;
             el.style.textShadow = originalStyles.textShadow;
         });
