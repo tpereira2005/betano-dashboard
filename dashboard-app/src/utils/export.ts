@@ -2,6 +2,17 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 /**
+ * Utility to yield to the main thread, allowing UI updates
+ */
+const yieldToMain = (): Promise<void> => {
+    return new Promise(resolve => {
+        requestAnimationFrame(() => {
+            setTimeout(resolve, 0);
+        });
+    });
+};
+
+/**
  * Export an element as PNG
  */
 export const exportAsPNG = async (elementId: string, filename: string): Promise<void> => {
@@ -11,15 +22,25 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
+        // Yield to let UI update (show loading indicator)
+        await yieldToMain();
+
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
-            scale: 2, // Higher quality
-            logging: false
+            scale: 1.5, // Good quality without being too slow
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
+            imageTimeout: 5000,
+            removeContainer: true
         });
+
+        // Yield again before creating blob
+        await yieldToMain();
 
         const link = document.createElement('a');
         link.download = `${filename}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.href = canvas.toDataURL('image/png', 0.9);
         link.click();
     } catch (error) {
         console.error('Failed to export as PNG:', error);
@@ -37,17 +58,28 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
+        // Yield to let UI update (show loading indicator)
+        await yieldToMain();
+
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
-            scale: 2,
-            logging: false
+            scale: 1.5,
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
+            imageTimeout: 5000,
+            removeContainer: true
         });
 
-        const imgData = canvas.toDataURL('image/png');
+        // Yield before PDF generation
+        await yieldToMain();
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.85); // JPEG is faster than PNG
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
-            format: 'a4'
+            format: 'a4',
+            compress: true
         });
 
         const imgWidth = 210; // A4 width in mm
@@ -57,16 +89,19 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         let position = 0;
 
         // Add first page
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
         // Add additional pages if content is longer
         while (heightLeft > 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
         }
+
+        // Yield before save
+        await yieldToMain();
 
         pdf.save(`${filename}.pdf`);
     } catch (error) {
