@@ -79,9 +79,25 @@ body.exporting .export-dropdown,
 body.exporting .chart-actions,
 body.exporting .btn-icon-only,
 body.exporting [class*="download"],
-body.exporting [class*="expand"] {
+body.exporting [class*="expand"],
+/* Header buttons to hide */
+body.exporting .btn-signout,
+body.exporting .header-right .btn-glass,
+body.exporting .header-separator,
+/* Table filter to hide */
+body.exporting .filter-controls,
+body.exporting .table-header .input-group,
+/* Footer version to hide */
+body.exporting .footer-version,
+body.exporting .version-badge {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Keep only logo, profile name, and dates visible in header */
+body.exporting .header-right {
+  gap: 0 !important;
 }
 
 /* Fix footer during export */
