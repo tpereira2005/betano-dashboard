@@ -12,9 +12,9 @@
   --color-bg-gradient: linear-gradient(135deg, #F5F7FA 0%, #E8EDF5 100%);
   --color-text: #1A1C35;
   --color-text-secondary: #6B7280;
-  --color-success: #10B981;
+  --color-success: #00D67D;
   --color-success-light: #34D399;
-  --color-danger: #EF4444;
+  --color-danger: #FF4757;
   --color-danger-light: #F87171;
   --color-border: #E5E7EB;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -804,12 +804,12 @@ body,
 /* Colored stat values - VIVID NEON COLORS */
 [data-theme="dark"] .stat-value.text-success,
 [data-theme="dark"] .text-success {
-  color: #00FF88 !important;
+  color: #00D67D !important;
 }
 
 [data-theme="dark"] .stat-value.text-danger,
 [data-theme="dark"] .text-danger {
-  color: #FF5555 !important;
+  color: #FF4757 !important;
 }
 
 [data-theme="dark"] .stat-value.text-primary,
@@ -870,11 +870,11 @@ body,
 
 /* Keep success/danger colors for other cards */
 .compact-icon-box.success {
-  color: #10B981 !important;
+  color: #00D67D !important;
 }
 
 .compact-icon-box.danger {
-  color: #EF4444 !important;
+  color: #FF4757 !important;
 }
 
 .compact-icon-box.primary {
@@ -905,12 +905,12 @@ body,
 
 [data-theme="dark"] .compact-icon-box.success {
   background: rgba(0, 255, 136, 0.15);
-  color: #00FF88 !important;
+  color: #00D67D !important;
 }
 
 [data-theme="dark"] .compact-icon-box.danger {
   background: rgba(255, 85, 85, 0.15);
-  color: #FF5555 !important;
+  color: #FF4757 !important;
 }
 
 [data-theme="dark"] .compact-icon-box.primary {
@@ -943,12 +943,12 @@ body,
 
 [data-theme="dark"] .insight-icon.type-success {
   background: rgba(0, 255, 136, 0.2);
-  color: #00FF88 !important;
+  color: #00D67D !important;
 }
 
 [data-theme="dark"] .insight-icon.type-danger {
   background: rgba(255, 85, 85, 0.2);
-  color: #FF5555 !important;
+  color: #FF4757 !important;
 }
 
 [data-theme="dark"] .insight-icon.type-warning {
@@ -2437,8 +2437,8 @@ html {
   --color-bg: #F0F2F5;
   --color-text: #1A1C35;
   --color-text-secondary: #6B7280;
-  --color-success: #10B981;
-  --color-danger: #EF4444;
+  --color-success: #00D67D;
+  --color-danger: #FF4757;
   --color-border: #E5E7EB;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -3101,12 +3101,12 @@ tbody tr:hover {
 
 .compact-icon-box.success {
   background: rgba(16, 185, 129, 0.1);
-  color: #10B981;
+  color: #00D67D;
 }
 
 .compact-icon-box.danger {
   background: rgba(239, 68, 68, 0.1);
-  color: #EF4444;
+  color: #FF4757;
 }
 
 .compact-icon-box.primary {
@@ -3613,12 +3613,12 @@ tbody tr:hover {
 
 .insight-item.type-success {
   border: 1px solid rgba(16, 185, 129, 0.2);
-  border-left: 4px solid #10B981;
+  border-left: 4px solid #00D67D;
 }
 
 .insight-item.type-danger {
   border: 1px solid rgba(239, 68, 68, 0.2);
-  border-left: 4px solid #EF4444;
+  border-left: 4px solid #FF4757;
 }
 
 .insight-item.type-warning {
@@ -3642,12 +3642,12 @@ tbody tr:hover {
 }
 
 .insight-icon.type-success {
-  color: #10B981;
+  color: #00D67D;
   background: rgba(16, 185, 129, 0.1);
 }
 
 .insight-icon.type-danger {
-  color: #EF4444;
+  color: #FF4757;
   background: rgba(239, 68, 68, 0.1);
 }
 

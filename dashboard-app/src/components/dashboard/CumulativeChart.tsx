@@ -68,12 +68,12 @@ export const CumulativeChart: React.FC<CumulativeChartProps> = React.memo(({ dat
                 <>
                     <defs>
                         <linearGradient id="splitColorGreen" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#10B981" stopOpacity={1} />
-                            <stop offset="100%" stopColor="#10B981" stopOpacity={1} />
+                            <stop offset="0%" stopColor="#00D67D" stopOpacity={1} />
+                            <stop offset="100%" stopColor="#00D67D" stopOpacity={1} />
                         </linearGradient>
                         <linearGradient id="splitFillGreen" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#10B981" stopOpacity={0.2} />
-                            <stop offset="100%" stopColor="#10B981" stopOpacity={0.2} />
+                            <stop offset="0%" stopColor="#00D67D" stopOpacity={0.2} />
+                            <stop offset="100%" stopColor="#00D67D" stopOpacity={0.2} />
                         </linearGradient>
                     </defs>
                     <Area
@@ -94,12 +94,12 @@ export const CumulativeChart: React.FC<CumulativeChartProps> = React.memo(({ dat
             <>
                 <defs>
                     <linearGradient id="splitColorDynamic" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset={off} stopColor="#10B981" stopOpacity={1} />
-                        <stop offset={off} stopColor="#DC2626" stopOpacity={1} />
+                        <stop offset={off} stopColor="#00D67D" stopOpacity={1} />
+                        <stop offset={off} stopColor="#FF4757" stopOpacity={1} />
                     </linearGradient>
                     <linearGradient id="splitFillDynamic" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset={off} stopColor="#10B981" stopOpacity={0.2} />
-                        <stop offset={off} stopColor="#DC2626" stopOpacity={0.2} />
+                        <stop offset={off} stopColor="#00D67D" stopOpacity={0.2} />
+                        <stop offset={off} stopColor="#FF4757" stopOpacity={0.2} />
                     </linearGradient>
                 </defs>
                 <Area

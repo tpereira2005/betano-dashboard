@@ -38,7 +38,7 @@ export const MonthlyChart: React.FC<MonthlyChartProps> = React.memo(({ data }) =
                         {data.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={entry.net >= 0 ? '#10B981' : '#DC2626'}
+                                fill={entry.net >= 0 ? '#00D67D' : '#FF4757'}
                             />
                         ))}
                     </Bar>
