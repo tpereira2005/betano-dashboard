@@ -134,9 +134,19 @@ const fixHeaderForExport = (container: HTMLElement): (() => void) => {
     const restoreActions: (() => void)[] = [];
 
     // Find elements
+    const header = container.querySelector('.header-redesigned') as HTMLElement;
     const headerLeft = container.querySelector('.header-left') as HTMLElement;
     const headerCenter = container.querySelector('.header-center') as HTMLElement;
     const dateInputs = container.querySelectorAll('.date-input') as NodeListOf<HTMLInputElement>;
+
+    // Set min-height on header to maintain height when we use absolute positioning
+    if (header) {
+        const originalMinHeight = header.style.minHeight;
+        header.style.minHeight = '68px'; // Approximately 16px padding * 2 + content height
+        restoreActions.push(() => {
+            header.style.minHeight = originalMinHeight;
+        });
+    }
 
     // Push header-left to grow and push center to the right
     if (headerLeft) {
