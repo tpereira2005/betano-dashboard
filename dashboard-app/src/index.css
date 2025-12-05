@@ -4290,3 +4290,13 @@ tbody tr:hover {
 .no-transition * {
   transition: none !important;
 }
+/* Override for Light Mode Insight Icons - Gray background for orange icons */
+.insight-item.type-info {
+  border: 1px solid rgba(255, 61, 0, 0.2);
+  border-left: 4px solid #FF3D00;
+}
+
+.insight-icon.type-info {
+  color: #FF3D00;
+  background: rgba(243, 244, 246, 1);
+}
