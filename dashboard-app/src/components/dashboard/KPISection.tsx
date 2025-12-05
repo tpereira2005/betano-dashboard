@@ -8,9 +8,10 @@ import {
     TrendingUp,
     Calendar,
     Percent,
-    Target,
     ArrowDownToLine,
-    ArrowUpFromLine
+    ArrowUpFromLine,
+    Trophy,
+    Anchor
 } from 'lucide-react';
 import { KPISectionProps } from '@/types';
 import { StatCard } from '@/components/common/StatCard';
@@ -147,7 +148,7 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
                     title="Melhor Momento"
                     value={stats.peakMoment ? formatCurrency(stats.peakMoment.balance) : 'N/A'}
                     subValue={stats.peakMoment ? stats.peakMoment.date : '-'}
-                    icon={TrendingUp}
+                    icon={Trophy}
                     type="success"
                     variant="compact"
                 />
@@ -155,7 +156,7 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
                     title="Pior Momento"
                     value={stats.valleyMoment ? formatCurrency(stats.valleyMoment.balance) : 'N/A'}
                     subValue={stats.valleyMoment ? stats.valleyMoment.date : '-'}
-                    icon={TrendingDown}
+                    icon={Anchor}
                     type="danger"
                     variant="compact"
                 />
