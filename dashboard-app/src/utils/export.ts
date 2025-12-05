@@ -434,7 +434,24 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         let heightLeft = imgHeight;
         let position = 0;
 
-        // Add first page
+        // Get background color for filling pages
+        const bgColor = getExportBackgroundColor();
+        // Convert hex to RGB for jsPDF
+        const hexToRgb = (hex: string) => {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 240, g: 242, b: 245 };
+        };
+        const rgb = hexToRgb(bgColor);
+
+        // Fill first page with background color
+        pdf.setFillColor(rgb.r, rgb.g, rgb.b);
+        pdf.rect(0, 0, imgWidth, pageHeight, 'F');
+
+        // Add first page image
         pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
@@ -442,6 +459,9 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         while (heightLeft > 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
+            // Fill each new page with background color
+            pdf.setFillColor(rgb.r, rgb.g, rgb.b);
+            pdf.rect(0, 0, imgWidth, pageHeight, 'F');
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
         }
