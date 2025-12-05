@@ -10,8 +10,8 @@ interface DistributionChartProps {
 }
 
 const COLORS = {
-    'Depósitos': '#FF4757',
-    'Levantamentos': '#00D67D'
+    'Depósitos': '#EF4444',
+    'Levantamentos': '#10B981'
 };
 
 export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({ data }) => {

@@ -10,8 +10,8 @@ interface HistogramChartProps {
 }
 
 const COLORS = {
-    deposits: '#FF4757',
-    withdrawals: '#00D67D'
+    deposits: '#EF4444',
+    withdrawals: '#10B981'
 };
 
 export const HistogramChart: React.FC<HistogramChartProps> = React.memo(({ data }) => {
