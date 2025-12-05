@@ -121,7 +121,7 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
                 }
             });
             // Add large margin to push entire section to next page
-            htmlEl.style.marginTop = '150px';
+            htmlEl.style.marginTop = '300px';
             htmlEl.style.paddingTop = '20px';
         }
     });
