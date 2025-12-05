@@ -8,7 +8,9 @@ import {
     TrendingUp,
     Calendar,
     Percent,
-    Target
+    Target,
+    ArrowDownToLine,
+    ArrowUpFromLine
 } from 'lucide-react';
 import { KPISectionProps } from '@/types';
 import { StatCard } from '@/components/common/StatCard';
@@ -85,14 +87,14 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
                     title="Média Depósito"
                     value={formatCurrency(stats.avgDeposit)}
                     subValue={`Máx: ${formatCurrency(stats.maxDeposit)}`}
-                    icon={TrendingDown}
+                    icon={ArrowDownToLine}
                     variant="compact"
                 />
                 <StatCard
                     title="Média Levantamento"
                     value={formatCurrency(stats.avgWithdrawal)}
                     subValue={`Máx: ${formatCurrency(stats.maxWithdrawal)}`}
-                    icon={TrendingUp}
+                    icon={ArrowUpFromLine}
                     variant="compact"
                 />
 
