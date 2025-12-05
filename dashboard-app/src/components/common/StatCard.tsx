@@ -23,8 +23,8 @@ export const StatCard: React.FC<StatCardProps> = ({
     // Get icon color based on type
     const getIconColor = () => {
         switch (type) {
-            case 'success': return '#00D67D';
-            case 'danger': return '#FF4757';
+            case 'success': return '#10B981';
+            case 'danger': return '#EF4444';
             default: return '#FF3D00'; // Orange for neutral and primary
         }
     };

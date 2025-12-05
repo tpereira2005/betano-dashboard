@@ -1,4 +1,4 @@
-ï»¿import {
+import {
     Transaction,
     RawTransaction,
     Statistics,
@@ -13,7 +13,7 @@ const sanitizeValue = (rawValue: string): number | null => {
     if (!rawValue) return null;
 
     const normalized = rawValue
-        .replace(/â‚¬/g, '')
+        .replace(/€/g, '')
         .replace(/\s/g, '')
         .replace(',', '.')
         .replace(/[^0-9.-]/g, '');
@@ -80,11 +80,11 @@ export const processTransactions = (rawData: RawTransaction[]): Transaction[] =>
  */
 const calculateHistogram = (transactions: Transaction[]): HistogramBucket[] => {
     const buckets: HistogramBucket[] = [
-        { range: '<â‚¬10', minValue: 0, maxValue: 10, count: 0, deposits: 0, withdrawals: 0 },
-        { range: 'â‚¬10-â‚¬50', minValue: 10, maxValue: 50, count: 0, deposits: 0, withdrawals: 0 },
-        { range: 'â‚¬50-â‚¬100', minValue: 50, maxValue: 100, count: 0, deposits: 0, withdrawals: 0 },
-        { range: 'â‚¬100-â‚¬200', minValue: 100, maxValue: 200, count: 0, deposits: 0, withdrawals: 0 },
-        { range: 'â‚¬200+', minValue: 200, maxValue: Infinity, count: 0, deposits: 0, withdrawals: 0 }
+        { range: '<€10', minValue: 0, maxValue: 10, count: 0, deposits: 0, withdrawals: 0 },
+        { range: '€10-€50', minValue: 10, maxValue: 50, count: 0, deposits: 0, withdrawals: 0 },
+        { range: '€50-€100', minValue: 50, maxValue: 100, count: 0, deposits: 0, withdrawals: 0 },
+        { range: '€100-€200', minValue: 100, maxValue: 200, count: 0, deposits: 0, withdrawals: 0 },
+        { range: '€200+', minValue: 200, maxValue: Infinity, count: 0, deposits: 0, withdrawals: 0 }
     ];
 
     transactions.forEach(t => {
@@ -144,13 +144,13 @@ const generateInsights = (
         const lastDate = transactions[transactions.length - 1].rawDate.getTime();
         const daysDiff = (lastDate - firstDate) / (1000 * 60 * 60 * 24);
         const avgDays = Math.round(daysDiff / transactions.length);
-        insights.push(`Em mÃ©dia, fazes uma transaÃ§Ã£o a cada ${avgDays} dias`);
+        insights.push(`Em média, fazes uma transação a cada ${avgDays} dias`);
     }
 
     // 2. Largest transaction
     if (largestTransaction) {
-        const typeText = largestTransaction.type === 'Deposit' ? 'depÃ³sito' : 'levantamento';
-        insights.push(`A tua maior transaÃ§Ã£o foi um ${typeText} de ${formatCurrency(largestTransaction.value)}`);
+        const typeText = largestTransaction.type === 'Deposit' ? 'depósito' : 'levantamento';
+        insights.push(`A tua maior transação foi um ${typeText} de ${formatCurrency(largestTransaction.value)}`);
     }
 
     // 3. Most active period
@@ -163,23 +163,23 @@ const generateInsights = (
         .reduce((max, [month, count]) => count > max.count ? { month, count } : max, { month: '', count: 0 });
     if (mostActive.month) {
         const monthName = new Date(mostActive.month + '-01').toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
-        insights.push(`O teu perÃ­odo mais ativo foi ${monthName} com ${mostActive.count} transaÃ§Ãµes`);
+        insights.push(`O teu período mais ativo foi ${monthName} com ${mostActive.count} transações`);
     }
 
     // 4. ROI with context
     if (roi > 0) {
-        insights.push(`Tens um ROI positivo de ${roi.toFixed(1)}% - continua assim! ðŸ“ˆ`);
+        insights.push(`Tens um ROI positivo de ${roi.toFixed(1)}% - continua assim! ??`);
     } else if (roi < 0) {
-        insights.push(`ROI negativo de ${Math.abs(roi).toFixed(1)}% - considera rever a tua estratÃ©gia`);
+        insights.push(`ROI negativo de ${Math.abs(roi).toFixed(1)}% - considera rever a tua estratégia`);
     } else {
-        insights.push(`EstÃ¡s no break-even (ROI 0%) - nem ganhas nem perdes`);
+        insights.push(`Estás no break-even (ROI 0%) - nem ganhas nem perdes`);
     }
 
     // 5. Win rate
     if (winRate >= 50) {
         insights.push(`Excelente! ${winRate.toFixed(0)}% dos teus meses foram lucrativos`);
     } else if (winRate > 0) {
-        insights.push(`Apenas ${winRate.toFixed(0)}% dos meses foram lucrativos - hÃ¡ margem para melhorar`);
+        insights.push(`Apenas ${winRate.toFixed(0)}% dos meses foram lucrativos - há margem para melhorar`);
     }
 
     // 6. Activity pattern
@@ -187,9 +187,9 @@ const generateInsights = (
     const withdrawals = transactions.filter(t => t.type === 'Withdrawal');
     const ratio = deposits.length > 0 ? withdrawals.length / deposits.length : 0;
     if (ratio > 1.5) {
-        insights.push(`Fazes ${ratio.toFixed(1)}Ã— mais levantamentos que depÃ³sitos - boa gestÃ£o! ðŸ’°`);
+        insights.push(`Fazes ${ratio.toFixed(1)}× mais levantamentos que depósitos - boa gestão! ??`);
     } else if (ratio < 0.5) {
-        insights.push(`Fazes mais depÃ³sitos que levantamentos - atenÃ§Ã£o Ã  gestÃ£o de bankroll`);
+        insights.push(`Fazes mais depósitos que levantamentos - atenção à gestão de bankroll`);
     }
 
     // 7. Consistency
@@ -201,7 +201,7 @@ const generateInsights = (
         const volatility = Math.abs(avg) > 0 ? (stdDev / Math.abs(avg)) * 100 : 0;
 
         if (volatility < 50) {
-            insights.push(`Os teus resultados mensais sÃ£o bastante consistentes (volatilidade baixa)`);
+            insights.push(`Os teus resultados mensais são bastante consistentes (volatilidade baixa)`);
         } else if (volatility > 150) {
             insights.push(`Alta volatilidade nos resultados - os teus meses variam muito`);
         }
@@ -211,7 +211,7 @@ const generateInsights = (
     if (transactions.length > 0) {
         const totalValue = transactions.reduce((sum, t) => sum + t.value, 0);
         const avgValue = totalValue / transactions.length;
-        insights.push(`O valor mÃ©dio das tuas transaÃ§Ãµes Ã© de ${formatCurrency(avgValue)}`);
+        insights.push(`O valor médio das tuas transações é de ${formatCurrency(avgValue)}`);
     }
 
     return insights;
@@ -301,7 +301,7 @@ export const calculateStatistics = (transactions: Transaction[]): Statistics => 
 
     // 6. Distribution Data
     const distributionData = [
-        { name: 'DepÃ³sitos', value: totalDeposited, count: deposits.length },
+        { name: 'Depósitos', value: totalDeposited, count: deposits.length },
         { name: 'Levantamentos', value: totalWithdrawn, count: withdrawals.length }
     ];
 
