@@ -3,11 +3,12 @@ import jsPDF from 'jspdf';
 
 /**
  * Utility to yield to the main thread, allowing UI updates
+ * Uses longer delay to give browser time to process events
  */
-const yieldToMain = (): Promise<void> => {
+const yieldToMain = (delay: number = 50): Promise<void> => {
     return new Promise(resolve => {
         requestAnimationFrame(() => {
-            setTimeout(resolve, 0);
+            setTimeout(resolve, delay);
         });
     });
 };
@@ -333,7 +334,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
 
         const canvas = await html2canvas(element, {
             backgroundColor: getExportBackgroundColor(),
-            scale: 1.5,
+            scale: 1.2, // Reduced for better performance
             logging: false,
             useCORS: true,
             allowTaint: true,
@@ -397,7 +398,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
 
         const canvas = await html2canvas(element, {
             backgroundColor: getExportBackgroundColor(),
-            scale: 1.5,
+            scale: 1.2, // Reduced for better performance
             logging: false,
             useCORS: true,
             allowTaint: true,
