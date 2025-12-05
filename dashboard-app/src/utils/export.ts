@@ -147,18 +147,23 @@ const fixHeaderForExport = (container: HTMLElement): (() => void) => {
         });
     }
 
-    // Also add margin-left auto to header-center to push it flush right
+    // Position header-center absolute right to flush it to the edge
     if (headerCenter) {
-        const originalMarginLeft = headerCenter.style.marginLeft;
-        const originalMarginRight = headerCenter.style.marginRight;
-        const originalPaddingRight = headerCenter.style.paddingRight;
-        headerCenter.style.marginLeft = 'auto';
-        headerCenter.style.marginRight = '0';
-        headerCenter.style.paddingRight = '0';
+        const originalPosition = headerCenter.style.position;
+        const originalRight = headerCenter.style.right;
+        const originalTop = headerCenter.style.top;
+        const originalTransform = headerCenter.style.transform;
+
+        headerCenter.style.position = 'absolute';
+        headerCenter.style.right = '24px'; // Match header's right padding
+        headerCenter.style.top = '50%';
+        headerCenter.style.transform = 'translateY(-50%)';
+
         restoreActions.push(() => {
-            headerCenter.style.marginLeft = originalMarginLeft;
-            headerCenter.style.marginRight = originalMarginRight;
-            headerCenter.style.paddingRight = originalPaddingRight;
+            headerCenter.style.position = originalPosition;
+            headerCenter.style.right = originalRight;
+            headerCenter.style.top = originalTop;
+            headerCenter.style.transform = originalTransform;
         });
     }
 
