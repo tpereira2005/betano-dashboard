@@ -817,51 +817,6 @@ body,
   color: #FF6E40 !important;
 }
 
-[data-theme="dark"] .stat-value.text-neutral,
-[data-theme="dark"] .text-neutral {
-  color: #FFFFFF !important;
-}
-
-/* Stat labels and subtexts */
-[data-theme="dark"] .stat-title,
-[data-theme="dark"] .stat-label {
-  color: #B0B8C4 !important;
-}
-
-[data-theme="dark"] .stat-subvalue,
-[data-theme="dark"] .stat-subtext {
-  color: #9CA3AF !important;
-}
-
-/* Stat icon containers - COMPLETELY TRANSPARENT, NO BAR */
-[data-theme="dark"] .stat-icon {
-  background: transparent !important;
-  color: #FF6E40 !important;
-}
-
-[data-theme="dark"] .stat-icon.success,
-[data-theme="dark"] .stat-icon.danger,
-[data-theme="dark"] .stat-icon.primary,
-[data-theme="dark"] .stat-icon.neutral {
-  background: transparent !important;
-  color: #FF6E40 !important;
-}
-
-/* Light mode stat icons - all Betano orange */
-.stat-icon {
-  color: #FF3D00 !important;
-}
-
-.stat-icon.success,
-.stat-icon.danger,
-.stat-icon.primary,
-.stat-icon.neutral {
-  color: #FF3D00 !important;
-}
-
-/* ===========================================
-   COMPACT STAT CARDS
-   =========================================== */
 
 /* Light mode compact icons - only neutral ones use Betano orange */
 .compact-icon-box {
