@@ -1581,11 +1581,11 @@ button {
   color: var(--color-betano-orange) !important;
 }
 
-[data-theme=" dark\] .section-title svg {
- color: var(--color-betano-orange) !important;
+[data-theme="dark"] .section-title svg {
+  color: var(--color-betano-orange) !important;
 }
 
- with Modern Styling */
+/* Tables with Modern Styling */
 .table-header {
   display: flex;
   justify-content: space-between;
