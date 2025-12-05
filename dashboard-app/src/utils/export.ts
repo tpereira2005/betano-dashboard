@@ -55,10 +55,55 @@ const hideElementsForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
+ * Fix charts for export - ensure they are fully visible
+ */
+const fixChartsForExport = (container: HTMLElement): (() => void) => {
+    const fixedElements: { el: HTMLElement; originalOverflow: string }[] = [];
+
+    // Fix all Recharts wrapper elements
+    const chartSelectors = [
+        '.recharts-wrapper',
+        '.recharts-surface',
+        '.recharts-layer',
+        '[class*="chart"]'
+    ];
+
+    chartSelectors.forEach(selector => {
+        const elements = container.querySelectorAll(selector);
+        elements.forEach(el => {
+            const htmlEl = el as HTMLElement;
+            fixedElements.push({
+                el: htmlEl,
+                originalOverflow: htmlEl.style.overflow
+            });
+            htmlEl.style.overflow = 'visible';
+        });
+    });
+
+    // Also fix SVG elements
+    const svgs = container.querySelectorAll('svg');
+    svgs.forEach(svg => {
+        fixedElements.push({
+            el: svg as unknown as HTMLElement,
+            originalOverflow: svg.style.overflow
+        });
+        svg.style.overflow = 'visible';
+    });
+
+    // Return restore function
+    return () => {
+        fixedElements.forEach(({ el, originalOverflow }) => {
+            el.style.overflow = originalOverflow;
+        });
+    };
+};
+
+/**
  * Export an element as PNG
  */
 export const exportAsPNG = async (elementId: string, filename: string): Promise<void> => {
     let restoreElements: (() => void) | null = null;
+    let restoreCharts: (() => void) | null = null;
 
     try {
         const element = document.getElementById(elementId);
@@ -66,8 +111,9 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements before export
+        // Hide elements and fix charts before export
         restoreElements = hideElementsForExport(element);
+        restoreCharts = fixChartsForExport(element);
 
         // Yield to let UI update
         await yieldToMain();
@@ -82,9 +128,11 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             removeContainer: true
         });
 
-        // Restore elements
+        // Restore elements and charts
         restoreElements();
+        restoreCharts();
         restoreElements = null;
+        restoreCharts = null;
 
         // Yield again before creating blob
         await yieldToMain();
@@ -96,6 +144,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
     } catch (error) {
         // Restore elements on error
         if (restoreElements) restoreElements();
+        if (restoreCharts) restoreCharts();
         console.error('Failed to export as PNG:', error);
         throw error;
     }
@@ -106,6 +155,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
  */
 export const exportDashboardAsPDF = async (elementId: string, filename: string): Promise<void> => {
     let restoreElements: (() => void) | null = null;
+    let restoreCharts: (() => void) | null = null;
 
     try {
         const element = document.getElementById(elementId);
@@ -113,8 +163,9 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements before export
+        // Hide elements and fix charts before export
         restoreElements = hideElementsForExport(element);
+        restoreCharts = fixChartsForExport(element);
 
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
@@ -129,9 +180,11 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             removeContainer: true
         });
 
-        // Restore elements
+        // Restore elements and charts
         restoreElements();
+        restoreCharts();
         restoreElements = null;
+        restoreCharts = null;
 
         // Yield before PDF generation
         await yieldToMain();
@@ -169,6 +222,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
     } catch (error) {
         // Restore elements on error
         if (restoreElements) restoreElements();
+        if (restoreCharts) restoreCharts();
         console.error('Failed to export as PDF:', error);
         throw error;
     }
