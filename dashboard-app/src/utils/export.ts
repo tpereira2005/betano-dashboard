@@ -103,34 +103,34 @@ const fixChartsForExport = (container: HTMLElement): (() => void) => {
  * This adds a page-break-inside: avoid style to major sections
  */
 const addPageBreakPadding = (container: HTMLElement): (() => void) => {
-    const modifiedElements: { el: HTMLElement; originalStyles: { marginTop: string; paddingTop: string } }[] = [];
+    const modifiedElements: { el: HTMLElement; originalStyles: { paddingBottom: string; marginBottom: string } }[] = [];
 
-    // Find the insights section specifically and add large margin to push to next page
-    const insightsSections = container.querySelectorAll('.insights-section, [class*="insights-"]');
+    // Find the insights section
+    const insightsSection = container.querySelector('.insights-section, [class*="insights-"]');
 
-    insightsSections.forEach(el => {
-        const htmlEl = el as HTMLElement;
-        // Only apply to the main insights container, not individual cards
-        if (htmlEl.classList.contains('insights-section') ||
-            (htmlEl.className.includes('insights') && !htmlEl.classList.contains('insight-card'))) {
+    if (insightsSection) {
+        // Get the previous sibling element and add padding to it
+        const previousElement = insightsSection.previousElementSibling as HTMLElement;
+        if (previousElement) {
             modifiedElements.push({
-                el: htmlEl,
+                el: previousElement,
                 originalStyles: {
-                    marginTop: htmlEl.style.marginTop,
-                    paddingTop: htmlEl.style.paddingTop
+                    paddingBottom: previousElement.style.paddingBottom,
+                    marginBottom: previousElement.style.marginBottom
                 }
             });
-            // Add large margin to push entire section to next page
-            htmlEl.style.marginTop = '300px';
-            htmlEl.style.paddingTop = '20px';
+            // Add large padding/margin to the element BEFORE insights
+            // This creates gray background space, not white space in the card
+            previousElement.style.paddingBottom = '300px';
+            previousElement.style.marginBottom = '0px';
         }
-    });
+    }
 
     // Return restore function
     return () => {
         modifiedElements.forEach(({ el, originalStyles }) => {
-            el.style.marginTop = originalStyles.marginTop;
-            el.style.paddingTop = originalStyles.paddingTop;
+            el.style.paddingBottom = originalStyles.paddingBottom;
+            el.style.marginBottom = originalStyles.marginBottom;
         });
     };
 };
