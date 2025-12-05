@@ -126,6 +126,66 @@ const fixFooterForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
+ * Fix header layout for export - move dates to the right
+ */
+const fixHeaderForExport = (container: HTMLElement): (() => void) => {
+    const modifiedElements: { el: HTMLElement; originalStyles: Record<string, string> }[] = [];
+
+    // Find the header center section (dates) and move it to the right
+    const headerCenter = container.querySelector('.header-center') as HTMLElement;
+    const header = container.querySelector('.header-redesigned') as HTMLElement;
+
+    if (headerCenter) {
+        modifiedElements.push({
+            el: headerCenter,
+            originalStyles: {
+                marginLeft: headerCenter.style.marginLeft,
+                position: headerCenter.style.position,
+                right: headerCenter.style.right
+            }
+        });
+        // Move dates to the right
+        headerCenter.style.marginLeft = 'auto';
+    }
+
+    // Make header use space-between to push dates right
+    if (header) {
+        modifiedElements.push({
+            el: header,
+            originalStyles: {
+                justifyContent: header.style.justifyContent
+            }
+        });
+        header.style.justifyContent = 'space-between';
+    }
+
+    // Fix date input font to ensure consistent rendering
+    const dateInputs = container.querySelectorAll('.date-input');
+    dateInputs.forEach(input => {
+        const htmlEl = input as HTMLElement;
+        modifiedElements.push({
+            el: htmlEl,
+            originalStyles: {
+                fontFamily: htmlEl.style.fontFamily,
+                fontVariantNumeric: htmlEl.style.fontVariantNumeric
+            }
+        });
+        // Use tabular nums for consistent date formatting
+        htmlEl.style.fontFamily = 'Inter, system-ui, -apple-system, sans-serif';
+        htmlEl.style.fontVariantNumeric = 'tabular-nums';
+    });
+
+    // Return restore function
+    return () => {
+        modifiedElements.forEach(({ el, originalStyles }) => {
+            Object.keys(originalStyles).forEach(key => {
+                (el.style as unknown as Record<string, string>)[key] = originalStyles[key];
+            });
+        });
+    };
+};
+
+/**
  * Fix charts for export - ensure they are fully visible
  */
 const fixChartsForExport = (container: HTMLElement): (() => void) => {
@@ -204,6 +264,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
     let restoreElements: (() => void) | null = null;
     let restoreCharts: (() => void) | null = null;
     let restoreFooter: (() => void) | null = null;
+    let restoreHeader: (() => void) | null = null;
 
     try {
         const element = document.getElementById(elementId);
@@ -211,10 +272,11 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements, fix charts and footer before export
+        // Hide elements, fix charts, footer and header before export
         restoreElements = hideElementsForExport(element);
         restoreCharts = fixChartsForExport(element);
         restoreFooter = fixFooterForExport(element);
+        restoreHeader = fixHeaderForExport(element);
 
         // Yield to let UI update
         await yieldToMain();
@@ -229,13 +291,15 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             removeContainer: true
         });
 
-        // Restore elements, charts and footer
+        // Restore elements, charts, footer and header
         restoreElements();
         restoreCharts();
         restoreFooter();
+        restoreHeader();
         restoreElements = null;
         restoreCharts = null;
         restoreFooter = null;
+        restoreHeader = null;
 
         // Yield again before creating blob
         await yieldToMain();
@@ -249,6 +313,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         if (restoreElements) restoreElements();
         if (restoreCharts) restoreCharts();
         if (restoreFooter) restoreFooter();
+        if (restoreHeader) restoreHeader();
         console.error('Failed to export as PNG:', error);
         throw error;
     }
@@ -262,6 +327,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
     let restoreCharts: (() => void) | null = null;
     let restorePageBreak: (() => void) | null = null;
     let restoreFooter: (() => void) | null = null;
+    let restoreHeader: (() => void) | null = null;
 
     try {
         const element = document.getElementById(elementId);
@@ -269,11 +335,12 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements, fix charts, footer and add page break padding before export
+        // Hide elements, fix charts, footer, header and add page break padding before export
         restoreElements = hideElementsForExport(element);
         restoreCharts = fixChartsForExport(element);
         restorePageBreak = addPageBreakPadding(element);
         restoreFooter = fixFooterForExport(element);
+        restoreHeader = fixHeaderForExport(element);
 
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
@@ -288,15 +355,17 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             removeContainer: true
         });
 
-        // Restore elements, charts, page breaks and footer
+        // Restore elements, charts, page breaks, footer and header
         restoreElements();
         restoreCharts();
         restorePageBreak();
         restoreFooter();
+        restoreHeader();
         restoreElements = null;
         restoreCharts = null;
         restorePageBreak = null;
         restoreFooter = null;
+        restoreHeader = null;
 
         // Yield before PDF generation
         await yieldToMain();
@@ -337,6 +406,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         if (restoreCharts) restoreCharts();
         if (restorePageBreak) restorePageBreak();
         if (restoreFooter) restoreFooter();
+        if (restoreHeader) restoreHeader();
         console.error('Failed to export as PDF:', error);
         throw error;
     }
