@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lightbulb, TrendingUp, Calendar, DollarSign, Target, Activity, AlertCircle, CheckCircle } from 'lucide-react';
+import { Lightbulb, TrendingUp, Calendar, DollarSign, Target, Activity, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
 
 interface InsightsCardProps {
     insights: string[];
@@ -14,7 +14,7 @@ const getIcon = (insight: string) => {
     if (insight.includes('ROI positivo')) return CheckCircle;
     if (insight.includes('ROI negativo')) return AlertCircle;
     if (insight.includes('lucrativos')) return Target;
-    return TrendingUp;
+    return Sparkles;
 };
 
 const getInsightType = (insight: string): InsightType => {
