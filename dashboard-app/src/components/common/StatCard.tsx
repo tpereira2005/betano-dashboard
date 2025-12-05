@@ -20,6 +20,15 @@ export const StatCard: React.FC<StatCardProps> = ({
 
     const typeClass = getTypeClass();
 
+    // Get icon color based on type
+    const getIconColor = () => {
+        switch (type) {
+            case 'success': return '#00D67D';
+            case 'danger': return '#FF4757';
+            default: return '#FF3D00'; // Orange for neutral and primary
+        }
+    };
+
     // Compact variant uses different layout
     if (variant === 'compact') {
         return (
@@ -27,7 +36,7 @@ export const StatCard: React.FC<StatCardProps> = ({
                 <div className="compact-content">
                     {Icon && (
                         <div className={`compact-icon-box ${typeClass}`}>
-                            <Icon size={18} />
+                            <Icon size={18} color={getIconColor()} />
                         </div>
                     )}
                     <div className="compact-info">
