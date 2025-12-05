@@ -13,6 +13,14 @@ const yieldToMain = (): Promise<void> => {
 };
 
 /**
+ * Get the correct background color based on current theme
+ */
+const getExportBackgroundColor = (): string => {
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    return isDarkMode ? '#0D0E1A' : '#F0F2F5';
+};
+
+/**
  * Selectors for elements to hide during export
  */
 const HIDE_DURING_EXPORT = [
@@ -320,7 +328,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         await yieldToMain();
 
         const canvas = await html2canvas(element, {
-            backgroundColor: '#F0F2F5',
+            backgroundColor: getExportBackgroundColor(),
             scale: 1.5,
             logging: false,
             useCORS: true,
@@ -384,7 +392,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         await yieldToMain();
 
         const canvas = await html2canvas(element, {
-            backgroundColor: '#F0F2F5',
+            backgroundColor: getExportBackgroundColor(),
             scale: 1.5,
             logging: false,
             useCORS: true,
