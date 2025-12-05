@@ -21,6 +21,7 @@ const HIDE_DURING_EXPORT = [
     '.export-dropdown',
     '.header-separator',
     '.header-right',  // Hide entire right section (Export, New File, Theme, Signout buttons)
+    '.chevron',       // Hide dropdown arrow from profile selector
     '.social-links',
     '.footer-social',
     '.version-badge',
