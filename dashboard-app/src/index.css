@@ -863,15 +863,21 @@ body,
    COMPACT STAT CARDS
    =========================================== */
 
-/* Light mode compact icons - all Betano orange */
+/* Light mode compact icons - only neutral ones use Betano orange */
 .compact-icon-box {
   color: #FF3D00 !important;
 }
 
-.compact-icon-box.success,
-.compact-icon-box.danger,
-.compact-icon-box.primary,
-.compact-icon-box.neutral {
+/* Keep success/danger colors for other cards */
+.compact-icon-box.success {
+  color: #10B981 !important;
+}
+
+.compact-icon-box.danger {
+  color: #EF4444 !important;
+}
+
+.compact-icon-box.primary {
   color: #FF3D00 !important;
 }
 
@@ -891,16 +897,23 @@ body,
   color: #9CA3AF !important;
 }
 
-/* Compact card icons - Betano orange */
+/* Dark mode compact card icons - only neutral uses orange */
 [data-theme="dark"] .compact-icon-box {
   background: rgba(255, 110, 64, 0.15);
   color: #FF6E40 !important;
 }
 
-[data-theme="dark"] .compact-icon-box.success,
-[data-theme="dark"] .compact-icon-box.danger,
-[data-theme="dark"] .compact-icon-box.primary,
-[data-theme="dark"] .compact-icon-box.neutral {
+[data-theme="dark"] .compact-icon-box.success {
+  background: rgba(0, 255, 136, 0.15);
+  color: #00FF88 !important;
+}
+
+[data-theme="dark"] .compact-icon-box.danger {
+  background: rgba(255, 85, 85, 0.15);
+  color: #FF5555 !important;
+}
+
+[data-theme="dark"] .compact-icon-box.primary {
   background: rgba(255, 110, 64, 0.15);
   color: #FF6E40 !important;
 }
