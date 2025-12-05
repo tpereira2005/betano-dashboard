@@ -97,12 +97,16 @@ const fixFooterForExport = (container: HTMLElement): (() => void) => {
             htmlEl.style.boxShadow = 'none';
             htmlEl.style.textShadow = 'none';
 
-            // Fix gradient text - set solid colors instead
+            // Detect dark mode
+            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+
+            // Fix gradient text - set solid colors based on theme
             if (htmlEl.classList.contains('footer-text')) {
                 htmlEl.style.background = 'none';
                 (htmlEl.style as CSSStyleDeclaration & { webkitBackgroundClip: string }).webkitBackgroundClip = 'unset';
-                (htmlEl.style as CSSStyleDeclaration & { webkitTextFillColor: string }).webkitTextFillColor = '#374151';
-                htmlEl.style.color = '#374151';
+                const textColor = isDarkMode ? '#B0B8C4' : '#374151';
+                (htmlEl.style as CSSStyleDeclaration & { webkitTextFillColor: string }).webkitTextFillColor = textColor;
+                htmlEl.style.color = textColor;
             }
 
             if (htmlEl.classList.contains('footer-author')) {
@@ -112,9 +116,9 @@ const fixFooterForExport = (container: HTMLElement): (() => void) => {
                 htmlEl.style.color = '#FF3D00';
             }
 
-            // Clean footer background
+            // Clean footer background - use correct theme color
             if (htmlEl.classList.contains('footer')) {
-                htmlEl.style.background = '#F0F2F5';
+                htmlEl.style.background = getExportBackgroundColor();
             }
         });
     });
