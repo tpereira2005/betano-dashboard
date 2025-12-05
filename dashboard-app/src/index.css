@@ -817,6 +817,32 @@ body,
   color: #FF6E40 !important;
 }
 
+/* ===========================================
+   STAT ICONS - ALL ORANGE BETANO
+   =========================================== */
+
+/* Light mode stat icons - Betano orange */
+.stat-icon,
+.stat-icon.success,
+.stat-icon.danger,
+.stat-icon.primary,
+.stat-icon.neutral {
+  color: #FF3D00 !important;
+}
+
+/* Dark mode stat icons - Betano orange */
+[data-theme="dark"] .stat-icon,
+[data-theme="dark"] .stat-icon.success,
+[data-theme="dark"] .stat-icon.danger,
+[data-theme="dark"] .stat-icon.primary,
+[data-theme="dark"] .stat-icon.neutral {
+  background: transparent !important;
+  color: #FF6E40 !important;
+}
+
+/* ===========================================
+   COMPACT STAT CARDS
+   =========================================== */
 
 /* Light mode compact icons - only neutral ones use Betano orange */
 .compact-icon-box {
@@ -1501,7 +1527,12 @@ button {
 }
 
 .stat-title {
-  font-size: 0.95rem;  font-weight: 600;  color: var(--color-text-secondary);  text-transform: uppercase;  letter-spacing: 0.03em;  line-height: 1.2;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
 }
 
 .stat-value {
@@ -1543,17 +1574,18 @@ button {
   font-weight: 700;
 }
 
-.section-title::before {
-  content: '';
-  display: block;
-  width: 4px;
-  height: 28px;
-  background: linear-gradient(180deg, var(--color-betano-orange) 0%, var(--color-betano-orange-light) 100%);
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(255, 61, 0, 0.3);
+
+
+/* Section title icons - Betano orange in both modes */
+.section-title svg {
+  color: var(--color-betano-orange) !important;
 }
 
-/* Tables with Modern Styling */
+[data-theme=" dark\] .section-title svg {
+ color: var(--color-betano-orange) !important;
+}
+
+ with Modern Styling */
 .table-header {
   display: flex;
   justify-content: space-between;
@@ -3065,7 +3097,12 @@ tbody tr:hover {
 }
 
 .compact-title {
-  font-size: 0.95rem;  font-weight: 600;  color: var(--color-text-secondary);  text-transform: uppercase;  letter-spacing: 0.03em;  line-height: 1.2;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
 }
 
 .compact-value {
