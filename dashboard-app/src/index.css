@@ -1153,7 +1153,7 @@ body {
   top: -100px;
   left: 0;
   background: var(--color-betano-orange);
-  color: white;
+  color: var(--color-text);
   padding: 8px;
   z-index: 9999;
   transition: top 0.3s;
@@ -1240,12 +1240,12 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 20px 28px;
-  background: linear-gradient(135deg, var(--color-betano-blue) 0%, var(--color-betano-blue-light) 100%);
+  background: linear-gradient(135deg, rgba(255, 61, 0, 0.2) 0%, rgba(255, 61, 0, 0.1) 100%);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   margin-bottom: 32px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
+  color: var(--color-text);
   flex-wrap: wrap;
   gap: 16px;
   position: relative;
@@ -1296,7 +1296,7 @@ button {
 .app-title {
   font-size: 1.5rem;
   font-weight: 800;
-  color: white;
+  color: var(--color-text);
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   letter-spacing: -0.03em;
 }
@@ -1401,7 +1401,7 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 8px 12px;
-  color: white;
+  color: var(--color-text);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -1439,7 +1439,7 @@ button {
   gap: 8px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: white;
+  color: var(--color-text);
   padding: 10px 16px;
   border-radius: 10px;
   font-weight: 500;
@@ -1615,11 +1615,11 @@ table {
 }
 
 th {
-  background: linear-gradient(135deg, var(--color-betano-blue) 0%, var(--color-betano-blue-light) 100%);
+  background: linear-gradient(135deg, rgba(255, 61, 0, 0.2) 0%, rgba(255, 61, 0, 0.1) 100%);
   padding: 14px 18px;
   text-align: left;
   font-weight: 700;
-  color: white;
+  color: var(--color-text);
   border-bottom: 2px solid var(--color-betano-orange);
   text-transform: uppercase;
   font-size: 0.75rem;
@@ -1745,7 +1745,7 @@ tbody tr:hover {
 
 .btn-primary {
   background: linear-gradient(135deg, var(--color-betano-orange) 0%, var(--color-betano-orange-light) 100%);
-  color: white;
+  color: var(--color-text);
   border: none;
 }
 
@@ -1760,7 +1760,7 @@ tbody tr:hover {
 
 .btn-danger {
   background: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-light) 100%);
-  color: white;
+  color: var(--color-text);
   border: none;
 }
 
@@ -2486,7 +2486,7 @@ button {
   box-shadow: var(--shadow-sm);
   margin-bottom: 32px;
   border: 1px solid var(--color-betano-blue);
-  color: white;
+  color: var(--color-text);
   flex-wrap: wrap;
   gap: 16px;
 }
@@ -2504,7 +2504,7 @@ button {
 .app-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: white;
+  color: var(--color-text);
 }
 
 .header-controls {
@@ -2631,7 +2631,7 @@ th {
   padding: 12px 16px;
   text-align: left;
   font-weight: 600;
-  color: white;
+  color: var(--color-text);
   border-bottom: 1px solid var(--color-betano-blue-light);
 }
 
@@ -2715,7 +2715,7 @@ tbody tr:hover {
 
 .btn-primary {
   background-color: var(--color-betano-orange);
-  color: white;
+  color: var(--color-text);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -2725,7 +2725,7 @@ tbody tr:hover {
 
 .btn-danger {
   background-color: var(--color-danger);
-  color: white;
+  color: var(--color-text);
 }
 
 .btn-danger:hover:not(:disabled) {
@@ -3846,7 +3846,7 @@ tbody tr:hover {
   align-items: center;
   padding: 16px 20px;
   background: var(--color-betano-blue);
-  color: white;
+  color: var(--color-text);
   flex-shrink: 0;
 }
 
@@ -3854,13 +3854,13 @@ tbody tr:hover {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 700;
-  color: white;
+  color: var(--color-text);
 }
 
 .chart-fullscreen-close {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  color: var(--color-text);
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
@@ -4240,7 +4240,7 @@ tbody tr:hover {
 .social-link:hover {
   background: var(--color-betano-orange);
   border-color: var(--color-betano-orange);
-  color: white;
+  color: var(--color-text);
   transform: translateY(-3px) scale(1.1);
   box-shadow: 0 8px 20px rgba(255, 61, 0, 0.3);
 }
