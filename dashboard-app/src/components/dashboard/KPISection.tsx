@@ -8,6 +8,7 @@ import {
     TrendingUp,
     Calendar,
     Percent,
+    Target,
     ArrowDownToLine,
     ArrowUpFromLine,
     Trophy,
