@@ -4376,3 +4376,8 @@ th {
   color: #FFFFFF !important;
   border-bottom: none !important;
 }
+
+/* Override for Dark Mode Main Card Titles - Match secondary cards */
+[data-theme='dark'] .stat-title {
+  color: #B0B8C4 !important;
+}
