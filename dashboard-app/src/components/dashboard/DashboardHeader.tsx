@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { LogOut, Calendar, RefreshCw, Sun, Moon } from 'lucide-react';
 import { DashboardHeaderProps } from '@/types';
 import { ProfileSelector } from '../ProfileSelector';
@@ -23,6 +23,42 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     onManageProfiles
 }) => {
     const { theme, toggleTheme } = useTheme();
+
+    // Local state for immediate UI updates
+    const [localStartDate, setLocalStartDate] = useState(startDate);
+    const [localEndDate, setLocalEndDate] = useState(endDate);
+
+    // Sync with props
+    useEffect(() => { setLocalStartDate(startDate); }, [startDate]);
+    useEffect(() => { setLocalEndDate(endDate); }, [endDate]);
+
+    const startDateTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const endDateTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+    // Debounced handlers
+    const handleStartDateChange = useCallback((value: string) => {
+        setLocalStartDate(value);
+        clearTimeout(startDateTimer.current);
+        startDateTimer.current = setTimeout(() => {
+            onStartDateChange(value);
+        }, 300);
+    }, [onStartDateChange]);
+
+    const handleEndDateChange = useCallback((value: string) => {
+        setLocalEndDate(value);
+        clearTimeout(endDateTimer.current);
+        endDateTimer.current = setTimeout(() => {
+            onEndDateChange(value);
+        }, 300);
+    }, [onEndDateChange]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            clearTimeout(startDateTimer.current);
+            clearTimeout(endDateTimer.current);
+        };
+    }, []);
 
     return (
         <header className="header header-redesigned">
@@ -55,10 +91,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         <input
                             type="date"
                             className="date-input"
-                            value={startDate}
+                            value={localStartDate}
                             min={minDate}
                             max={maxDate}
-                            onChange={(e) => onStartDateChange(e.target.value)}
+                            onChange={(e) => handleStartDateChange(e.target.value)}
                             aria-label="Data inicial"
                         />
                     </div>
@@ -69,10 +105,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         <input
                             type="date"
                             className="date-input"
-                            value={endDate}
+                            value={localEndDate}
                             min={minDate}
                             max={maxDate}
-                            onChange={(e) => onEndDateChange(e.target.value)}
+                            onChange={(e) => handleEndDateChange(e.target.value)}
                             aria-label="Data final"
                         />
                     </div>
