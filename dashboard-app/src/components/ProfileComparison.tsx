@@ -15,8 +15,8 @@ interface ProfileComparisonProps {
 const COLORS = {
     profileA: '#FF3D00',  // Betano orange
     profileB: '#3B82F6',  // Blue
-    positive: '#10B981',
-    negative: '#EF4444'
+    positive: '#00D67D',
+    negative: '#FF4757'
 };
 
 interface ComparisonCardProps {

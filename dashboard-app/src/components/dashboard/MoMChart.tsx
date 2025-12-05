@@ -82,7 +82,7 @@ export const MoMChart: React.FC<MoMChartProps> = React.memo(({ data }) => {
                     <p style={{
                         fontSize: '1.2rem',
                         margin: '8px 0',
-                        color: isPositive ? '#10B981' : '#EF4444',
+                        color: isPositive ? '#00D67D' : '#FF4757',
                         fontWeight: 700
                     }}>
                         {isPositive ? '↗️' : '↘️'} {data.change.toFixed(1)}%
@@ -107,7 +107,7 @@ export const MoMChart: React.FC<MoMChartProps> = React.memo(({ data }) => {
                 cx={cx}
                 cy={cy}
                 r={4}
-                fill={isPositive ? '#10B981' : '#EF4444'}
+                fill={isPositive ? '#00D67D' : '#FF4757'}
                 stroke="#fff"
                 strokeWidth={2}
             />

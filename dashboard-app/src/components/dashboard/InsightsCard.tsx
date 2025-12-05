@@ -33,8 +33,8 @@ const getInsightType = (insight: string): InsightType => {
 // Get icon color based on insight type
 const getIconColor = (type: InsightType): string => {
     switch (type) {
-        case 'success': return '#10B981'; // Green
-        case 'danger': return '#EF4444';  // Red
+        case 'success': return '#00D67D'; // Green
+        case 'danger': return '#FF4757';  // Red
         case 'warning': return '#FFC800'; // Yellow
         default: return '#FF3D00';        // Orange for info/neutral
     }

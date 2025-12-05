@@ -131,7 +131,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
                                 <td className="transaction-value">
                                     <span style={{
                                         fontWeight: 600,
-                                        color: t.type === 'Withdrawal' ? 'var(--color-success)' : '#EF4444'
+                                        color: t.type === 'Withdrawal' ? 'var(--color-success)' : '#DC2626'
                                     }}>
                                         {t.type === 'Withdrawal' ? '+' : '-'}{formatCurrency(t.value)}
                                     </span>
