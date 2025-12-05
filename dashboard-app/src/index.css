@@ -66,32 +66,6 @@
 
 /* Theme transitions are defined in theme-transition.css */
 
-/* ===========================================
-   EXPORT MODE STYLES
-   Applied when .exporting class is on the dashboard container
-   =========================================== */
-
-/* Hide interactive elements during export */
-.exporting .btn-theme-toggle,
-.exporting .btn-signout,
-.exporting .export-dropdown,
-.exporting .header-separator,
-.exporting .header-right>.btn-glass,
-.exporting .social-links,
-.exporting .footer-social,
-.exporting .version-badge,
-.exporting .filter-controls,
-.exporting .table-filters,
-.exporting .chart-download-btn,
-.exporting [class*="download-btn"] {
-  display: none !important;
-}
-
-/* Clean footer during export */
-.exporting .footer {
-  box-shadow: none !important;
-}
-
 /* Scrollbar - Native style with custom colors */
 html,
 body,

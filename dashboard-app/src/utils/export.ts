@@ -13,21 +13,64 @@ const yieldToMain = (): Promise<void> => {
 };
 
 /**
+ * Selectors for elements to hide during export
+ */
+const HIDE_DURING_EXPORT = [
+    '.btn-theme-toggle',
+    '.btn-signout',
+    '.export-dropdown',
+    '.header-separator',
+    '.social-links',
+    '.footer-social',
+    '.version-badge',
+    '.filter-controls',
+    '.chart-download-btn',
+    '[class*="download-btn"]'
+];
+
+/**
+ * Hide elements before export and return restore function
+ */
+const hideElementsForExport = (container: HTMLElement): (() => void) => {
+    const hiddenElements: { el: HTMLElement; originalDisplay: string }[] = [];
+
+    HIDE_DURING_EXPORT.forEach(selector => {
+        const elements = container.querySelectorAll(selector);
+        elements.forEach(el => {
+            const htmlEl = el as HTMLElement;
+            hiddenElements.push({
+                el: htmlEl,
+                originalDisplay: htmlEl.style.display
+            });
+            htmlEl.style.display = 'none';
+        });
+    });
+
+    // Return restore function
+    return () => {
+        hiddenElements.forEach(({ el, originalDisplay }) => {
+            el.style.display = originalDisplay;
+        });
+    };
+};
+
+/**
  * Export an element as PNG
  */
 export const exportAsPNG = async (elementId: string, filename: string): Promise<void> => {
+    let restoreElements: (() => void) | null = null;
+
     try {
         const element = document.getElementById(elementId);
         if (!element) {
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Add exporting class to hide certain elements via CSS
-        element.classList.add('exporting');
+        // Hide elements before export
+        restoreElements = hideElementsForExport(element);
 
-        // Yield to let UI update (show loading indicator)
+        // Yield to let UI update
         await yieldToMain();
-        await new Promise(resolve => setTimeout(resolve, 300)); // Wait for CSS to apply
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
@@ -39,8 +82,9 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             removeContainer: true
         });
 
-        // Remove exporting class
-        element.classList.remove('exporting');
+        // Restore elements
+        restoreElements();
+        restoreElements = null;
 
         // Yield again before creating blob
         await yieldToMain();
@@ -50,9 +94,8 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         link.href = canvas.toDataURL('image/png', 0.9);
         link.click();
     } catch (error) {
-        // Cleanup on error
-        const element = document.getElementById(elementId);
-        if (element) element.classList.remove('exporting');
+        // Restore elements on error
+        if (restoreElements) restoreElements();
         console.error('Failed to export as PNG:', error);
         throw error;
     }
@@ -62,18 +105,19 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
  * Export dashboard as PDF
  */
 export const exportDashboardAsPDF = async (elementId: string, filename: string): Promise<void> => {
+    let restoreElements: (() => void) | null = null;
+
     try {
         const element = document.getElementById(elementId);
         if (!element) {
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Add exporting class to hide certain elements via CSS
-        element.classList.add('exporting');
+        // Hide elements before export
+        restoreElements = hideElementsForExport(element);
 
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
-        await new Promise(resolve => setTimeout(resolve, 300)); // Wait for CSS to apply
 
         const canvas = await html2canvas(element, {
             backgroundColor: '#F0F2F5',
@@ -85,8 +129,9 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             removeContainer: true
         });
 
-        // Remove exporting class
-        element.classList.remove('exporting');
+        // Restore elements
+        restoreElements();
+        restoreElements = null;
 
         // Yield before PDF generation
         await yieldToMain();
@@ -122,9 +167,8 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
 
         pdf.save(`${filename}.pdf`);
     } catch (error) {
-        // Cleanup on error
-        const element = document.getElementById(elementId);
-        if (element) element.classList.remove('exporting');
+        // Restore elements on error
+        if (restoreElements) restoreElements();
         console.error('Failed to export as PDF:', error);
         throw error;
     }
