@@ -64,6 +64,31 @@
   --shadow-glow-red: 0 0 30px rgba(239, 68, 68, 0.4);
 }
 
+/* ===========================================
+   THEME TRANSITION - Smooth mode switching
+   =========================================== */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease,
+              background 0.3s ease,
+              border-color 0.3s ease,
+              color 0.3s ease,
+              box-shadow 0.3s ease,
+              fill 0.3s ease,
+              stroke 0.3s ease;
+}
+
+/* Exclude elements that shouldn't animate (like inputs during typing) */
+input,
+textarea,
+select,
+button:active,
+.no-transition,
+.no-transition * {
+  transition: none !important;
+}
+
 /* Scrollbar - Native style with custom colors */
 html,
 body,
