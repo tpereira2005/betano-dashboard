@@ -878,25 +878,25 @@ body,
   color: #9CA3AF !important;
 }
 
-/* Dark mode compact card icons - only neutral uses orange */
+/* Dark mode compact card icons - same as light mode */
 [data-theme="dark"] .compact-icon-box {
-  background: rgba(255, 110, 64, 0.15);
-  color: #FF6E40 !important;
+  background: rgba(243, 244, 246, 0.1);
+  color: var(--color-text-secondary);
 }
 
 [data-theme="dark"] .compact-icon-box.success {
-  background: rgba(0, 255, 136, 0.15);
-  color: #00D67D !important;
+  background: rgba(16, 185, 129, 0.1);
+  color: #00D67D;
 }
 
 [data-theme="dark"] .compact-icon-box.danger {
-  background: rgba(255, 85, 85, 0.15);
-  color: #FF4757 !important;
+  background: rgba(239, 68, 68, 0.1);
+  color: #FF4757;
 }
 
 [data-theme="dark"] .compact-icon-box.primary {
-  background: rgba(255, 110, 64, 0.15);
-  color: #FF6E40 !important;
+  background: rgba(59, 130, 246, 0.1);
+  color: #3B82F6;
 }
 
 /* ===========================================
