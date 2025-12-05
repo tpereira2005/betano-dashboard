@@ -140,9 +140,11 @@ const fixHeaderForExport = (container: HTMLElement): (() => void) => {
     const dateInputs = container.querySelectorAll('.date-input') as NodeListOf<HTMLInputElement>;
 
     // Set min-height on header to maintain height when we use absolute positioning
+    // Capture actual height before any changes
     if (header) {
+        const actualHeight = header.offsetHeight;
         const originalMinHeight = header.style.minHeight;
-        header.style.minHeight = '68px'; // Approximately 16px padding * 2 + content height
+        header.style.minHeight = `${actualHeight}px`;
         restoreActions.push(() => {
             header.style.minHeight = originalMinHeight;
         });
