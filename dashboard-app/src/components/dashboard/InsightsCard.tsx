@@ -42,7 +42,7 @@ const getIconColor = (type: InsightType): string => {
 
 export const InsightsCard: React.FC<InsightsCardProps> = ({ insights }) => {
     return (
-        <div className="card" style={{ marginBottom: '32px', marginTop: '32px' }}>
+        <div className="card insights-card" style={{ marginBottom: '32px', marginTop: '32px' }}>
             <div className="section-title" style={{ marginBottom: '24px' }}>
                 <Lightbulb size={24} color="#FF3D00" />
                 <span style={{ fontSize: '1.25rem', fontWeight: 700 }}>Insights Automáticos</span>

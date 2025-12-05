@@ -103,34 +103,25 @@ const fixChartsForExport = (container: HTMLElement): (() => void) => {
  * This adds a page-break-inside: avoid style to major sections
  */
 const addPageBreakPadding = (container: HTMLElement): (() => void) => {
-    const modifiedElements: { el: HTMLElement; originalStyles: { paddingBottom: string; marginBottom: string } }[] = [];
+    const modifiedElements: { el: HTMLElement; originalMarginTop: string }[] = [];
 
-    // Find the insights section
-    const insightsSection = container.querySelector('.insights-section, [class*="insights-"]');
+    // Find the insights card using the specific class we added
+    const insightsCard = container.querySelector('.insights-card') as HTMLElement;
 
-    if (insightsSection) {
-        // Get the previous sibling element and add padding to it
-        const previousElement = insightsSection.previousElementSibling as HTMLElement;
-        if (previousElement) {
-            modifiedElements.push({
-                el: previousElement,
-                originalStyles: {
-                    paddingBottom: previousElement.style.paddingBottom,
-                    marginBottom: previousElement.style.marginBottom
-                }
-            });
-            // Add large padding/margin to the element BEFORE insights
-            // This creates gray background space, not white space in the card
-            previousElement.style.paddingBottom = '300px';
-            previousElement.style.marginBottom = '0px';
-        }
+    if (insightsCard) {
+        modifiedElements.push({
+            el: insightsCard,
+            originalMarginTop: insightsCard.style.marginTop
+        });
+        // Add large margin-top to push the entire card to the next page
+        // margin-top creates space BEFORE the card using the app's background color (gray)
+        insightsCard.style.marginTop = '400px';
     }
 
     // Return restore function
     return () => {
-        modifiedElements.forEach(({ el, originalStyles }) => {
-            el.style.paddingBottom = originalStyles.paddingBottom;
-            el.style.marginBottom = originalStyles.marginBottom;
+        modifiedElements.forEach(({ el, originalMarginTop }) => {
+            el.style.marginTop = originalMarginTop;
         });
     };
 };
