@@ -115,7 +115,7 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
         });
         // Add large margin-top to push the entire card to the next page
         // margin-top creates space BEFORE the card using the app's background color (gray)
-        insightsCard.style.marginTop = '400px';
+        insightsCard.style.marginTop = '180px';
     }
 
     // Return restore function
