@@ -1501,11 +1501,7 @@ button {
 }
 
 .stat-title {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 0.95rem;  font-weight: 600;  color: var(--color-text-secondary);  text-transform: uppercase;  letter-spacing: 0.03em;  line-height: 1.2;
 }
 
 .stat-value {
@@ -3069,11 +3065,7 @@ tbody tr:hover {
 }
 
 .compact-title {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 0.95rem;  font-weight: 600;  color: var(--color-text-secondary);  text-transform: uppercase;  letter-spacing: 0.03em;  line-height: 1.2;
 }
 
 .compact-value {
