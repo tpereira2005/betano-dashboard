@@ -4290,6 +4290,7 @@ tbody tr:hover {
 .no-transition * {
   transition: none !important;
 }
+
 /* Override for Light Mode Insight Icons - Gray background for orange icons */
 .insight-item.type-info {
   border: 1px solid rgba(255, 61, 0, 0.2);
@@ -4369,7 +4370,8 @@ th {
 
 /* Override for Light Mode Table Header - Dark Blue Style */
 thead {
-  background: #1C1E2E !important; /* Dark Blue */
+  background: #1C1E2E !important;
+  /* Dark Blue */
 }
 
 th {
@@ -4384,5 +4386,8 @@ th {
 
 /* Profile Comparison - Thicker Left Bar */
 .profile-color-bar {
-  width: 8px !important; /* Even thicker for better visibility */
+  width: 8px !important;
+  /* Even thicker for better visibility */
+  z-index: 10;
+  pointer-events: none;
 }
