@@ -12,9 +12,9 @@
   --color-bg-gradient: linear-gradient(135deg, #F5F7FA 0%, #E8EDF5 100%);
   --color-text: #1A1C35;
   --color-text-secondary: #6B7280;
-  --color-success: #00D67D;
+  --color-success: #10B981;
   --color-success-light: #34D399;
-  --color-danger: #FF4757;
+  --color-danger: #EF4444;
   --color-danger-light: #F87171;
   --color-border: #E5E7EB;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -2413,8 +2413,8 @@ html {
   --color-bg: #F0F2F5;
   --color-text: #1A1C35;
   --color-text-secondary: #6B7280;
-  --color-success: #00D67D;
-  --color-danger: #FF4757;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
   --color-border: #E5E7EB;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
