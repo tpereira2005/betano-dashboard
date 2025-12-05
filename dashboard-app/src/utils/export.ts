@@ -147,6 +147,15 @@ const fixHeaderForExport = (container: HTMLElement): (() => void) => {
         });
     }
 
+    // Also add margin-left auto to header-center to push it flush right
+    if (headerCenter) {
+        const originalMarginLeft = headerCenter.style.marginLeft;
+        headerCenter.style.marginLeft = 'auto';
+        restoreActions.push(() => {
+            headerCenter.style.marginLeft = originalMarginLeft;
+        });
+    }
+
     // Replace each date input with a styled span showing the formatted date
     dateInputs.forEach(input => {
         const value = input.value; // format: yyyy-mm-dd
