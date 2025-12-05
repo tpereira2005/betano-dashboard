@@ -4300,3 +4300,24 @@ tbody tr:hover {
   color: #FF3D00;
   background: rgba(243, 244, 246, 1);
 }
+
+/* Override for Dark Mode Insight Borders - Restore semantic colors */
+[data-theme='dark'] .insight-item.type-success {
+  border-color: rgba(16, 185, 129, 0.2) !important;
+  border-left-color: #00D67D !important;
+}
+
+[data-theme='dark'] .insight-item.type-danger {
+  border-color: rgba(239, 68, 68, 0.2) !important;
+  border-left-color: #FF4757 !important;
+}
+
+[data-theme='dark'] .insight-item.type-warning {
+  border-color: rgba(245, 158, 11, 0.2) !important;
+  border-left-color: #FFC800 !important;
+}
+
+[data-theme='dark'] .insight-item.type-info {
+  border-color: rgba(255, 61, 0, 0.2) !important;
+  border-left-color: #FF3D00 !important;
+}
