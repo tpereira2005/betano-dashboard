@@ -4321,3 +4321,17 @@ tbody tr:hover {
   border-color: rgba(255, 61, 0, 0.2) !important;
   border-left-color: #FF3D00 !important;
 }
+
+/* Override for Dark Mode Table Header - Remove gradient */
+[data-theme='dark'] thead {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme='dark'] th {
+  color: #B0B8C4 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
