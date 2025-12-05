@@ -4366,3 +4366,13 @@ th {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   background: transparent !important;
 }
+
+/* Override for Light Mode Table Header - Dark Blue Style */
+thead {
+  background: #1C1E2E !important; /* Dark Blue */
+}
+
+th {
+  color: #FFFFFF !important;
+  border-bottom: none !important;
+}
