@@ -1,0 +1,20 @@
+/* ===========================================
+   FORCE ORANGE ICONS IN DARK MODE (OVERRIDE)
+   This file must be imported LAST to override other styles
+   =========================================== */
+
+/* Hero card icons - force orange in dark mode */
+[data-theme="dark"] .stat-icon svg,
+[data-theme="dark"] .stat-header svg {
+    color: #FF6E40 !important;
+}
+
+/* Chart/section title icons - force orange in dark mode */
+[data-theme="dark"] .section-title svg {
+    color: #FF6E40 !important;
+}
+
+/* Insights icons - force all orange in dark mode */
+[data-theme="dark"] .insight-icon svg {
+    color: #FF6E40 !important;
+}
