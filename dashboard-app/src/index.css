@@ -3097,7 +3097,8 @@ tbody tr:hover {
 }
 
 .compact-title {
-  font-size: 0.95rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
   font-weight: 600;
   color: var(--color-text-secondary);
   text-transform: uppercase;
