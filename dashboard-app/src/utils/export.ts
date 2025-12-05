@@ -79,7 +79,6 @@ const fixFooterForExport = (container: HTMLElement): (() => void) => {
         const elements = container.querySelectorAll(selector);
         elements.forEach(el => {
             const htmlEl = el as HTMLElement;
-            const computed = window.getComputedStyle(htmlEl);
 
             modifiedElements.push({
                 el: htmlEl,
