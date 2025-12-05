@@ -1,6 +1,6 @@
 /* ===========================================
-   THEME TRANSITION - Smooth & Beautiful Mode Switching
-   Separate file for clean organization
+   THEME TRANSITION - Premium & Cinematic
+   Ultra-smooth with staggered animations
    =========================================== */
 
 /* Prevent flash of unstyled content */
@@ -8,66 +8,129 @@ html {
     color-scheme: light dark;
 }
 
-/* Main container and backgrounds - slowest transition for dramatic effect */
+/* CSS Custom Property for staggered timing */
+:root {
+    --theme-transition-duration: 0.6s;
+    --theme-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --theme-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===========================================
+   LAYER 1: Background (slowest, most dramatic)
+   =========================================== */
 html[data-theme],
-body,
+body {
+    transition:
+        background-color 0.8s var(--theme-easing),
+        background 0.8s var(--theme-easing);
+}
+
 .container,
 .app-container {
     transition:
-        background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-        background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color 0.7s var(--theme-easing) 0.05s,
+        background 0.7s var(--theme-easing) 0.05s;
 }
 
-/* Cards and major UI elements */
-.card,
+/* ===========================================
+   LAYER 2: Major UI Elements (staggered)
+   =========================================== */
 .header,
-.header-redesigned,
+.header-redesigned {
+    transition:
+        background-color 0.5s var(--theme-easing) 0.1s,
+        background 0.5s var(--theme-easing) 0.1s,
+        border-color 0.4s var(--theme-easing) 0.1s,
+        box-shadow 0.5s var(--theme-easing) 0.1s;
+}
+
+.card {
+    transition:
+        background-color 0.5s var(--theme-easing) 0.15s,
+        background 0.5s var(--theme-easing) 0.15s,
+        border-color 0.4s var(--theme-easing) 0.15s,
+        box-shadow 0.4s var(--theme-easing) 0.15s,
+        transform 0.3s var(--theme-easing);
+}
+
+/* Cards get a subtle pulse during transition */
+html[data-theme="dark"] .card,
+html[data-theme="light"] .card {
+    animation: cardPulse 0.6s var(--theme-easing);
+}
+
+@keyframes cardPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.005);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
 .footer,
 .modal-overlay,
 .modal-content,
 .table-container,
 .upload-card,
-.auth-card,
+.auth-card {
+    transition:
+        background-color 0.5s var(--theme-easing) 0.2s,
+        background 0.5s var(--theme-easing) 0.2s,
+        border-color 0.4s var(--theme-easing) 0.2s,
+        box-shadow 0.4s var(--theme-easing) 0.2s;
+}
+
 .insight-item,
 .comparison-card,
 .comparison-chart-card,
-.winner-banner,
+.winner-banner {
+    transition:
+        background-color 0.45s var(--theme-easing) 0.25s,
+        background 0.45s var(--theme-easing) 0.25s,
+        border-color 0.35s var(--theme-easing) 0.25s;
+}
+
+/* Stat cards with color-coded transitions */
 .stat-card-success,
 .stat-card-danger,
 .stat-card-primary,
 .stat-card-neutral {
     transition:
-        background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-        box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color 0.5s var(--theme-easing) 0.18s,
+        background 0.5s var(--theme-easing) 0.18s,
+        border-color 0.4s var(--theme-easing) 0.18s;
 }
 
-/* Buttons - slightly faster for responsiveness */
-.btn,
-.btn-glass,
-.btn-primary,
-.btn-outline {
-    transition:
-        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Text elements - quick color change */
+/* ===========================================
+   LAYER 3: Text Elements (quick, responsive)
+   =========================================== */
 h1,
 h2,
 h3,
 h4,
 h5,
-h6,
+h6 {
+    transition: color 0.4s var(--theme-easing) 0.1s;
+}
+
 p,
 span,
 label,
 strong,
-.stat-value,
+a {
+    transition: color 0.35s var(--theme-easing) 0.12s;
+}
+
+.stat-value {
+    transition: color 0.4s var(--theme-easing) 0.15s;
+}
+
 .stat-title,
 .stat-label,
 .section-title,
@@ -75,60 +138,156 @@ strong,
 .compact-title,
 .comparison-value .value,
 .insight-text {
-    transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 0.35s var(--theme-easing) 0.18s;
 }
 
-/* Table elements */
-thead,
-tbody,
-th,
-td,
-tr {
+/* ===========================================
+   LAYER 4: Table Elements
+   =========================================== */
+thead {
     transition:
-        background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color 0.45s var(--theme-easing) 0.2s,
+        background 0.45s var(--theme-easing) 0.2s;
 }
 
-/* SVG icons - smooth color transition */
+tbody {
+    transition: background-color 0.5s var(--theme-easing) 0.22s;
+}
+
+th,
+td {
+    transition:
+        background-color 0.4s var(--theme-easing) 0.24s,
+        border-color 0.35s var(--theme-easing) 0.24s,
+        color 0.35s var(--theme-easing) 0.2s;
+}
+
+tr {
+    transition: background-color 0.3s var(--theme-easing);
+}
+
+/* ===========================================
+   LAYER 5: Icons & SVGs
+   =========================================== */
 svg,
 .lucide {
     transition:
-        fill 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-        stroke 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        fill 0.4s var(--theme-easing) 0.1s,
+        stroke 0.4s var(--theme-easing) 0.1s,
+        color 0.4s var(--theme-easing) 0.1s,
+        transform 0.3s var(--theme-easing-bounce);
 }
 
-/* Form inputs - subtle transition */
+/* ===========================================
+   LAYER 6: Form Inputs
+   =========================================== */
 input,
 select,
 textarea,
 .input,
 .date-input {
     transition:
-        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color 0.35s var(--theme-easing) 0.15s,
+        border-color 0.35s var(--theme-easing) 0.15s,
+        color 0.3s var(--theme-easing) 0.15s;
 }
 
-/* Theme toggle button - special bouncy animation */
-.btn-theme-toggle {
+/* ===========================================
+   LAYER 7: Buttons
+   =========================================== */
+.btn,
+.btn-glass,
+.btn-primary,
+.btn-outline {
     transition:
-        transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
-        background-color 0.3s ease,
-        border-color 0.3s ease !important;
+        background-color 0.3s var(--theme-easing) 0.1s,
+        border-color 0.3s var(--theme-easing) 0.1s,
+        color 0.3s var(--theme-easing) 0.1s,
+        transform 0.2s var(--theme-easing-bounce),
+        box-shadow 0.3s var(--theme-easing);
+}
+
+/* ===========================================
+   THEME TOGGLE BUTTON - THE STAR ⭐
+   Premium animation with icon morph
+   =========================================== */
+.btn-theme-toggle {
+    position: relative;
+    overflow: hidden;
+    transition:
+        background-color 0.4s var(--theme-easing),
+        border-color 0.4s var(--theme-easing),
+        transform 0.5s var(--theme-easing-bounce),
+        box-shadow 0.4s var(--theme-easing) !important;
     will-change: transform;
 }
 
+/* Glow effect on hover */
 .btn-theme-toggle:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(255, 61, 0, 0.4);
 }
 
+/* Dramatic press animation */
 .btn-theme-toggle:active {
-    transform: scale(0.9) rotate(20deg);
+    transform: scale(0.85) rotate(180deg);
 }
 
-/* Chart components - NO transition to prevent jank */
+/* Icon inside the button - smooth rotation */
+.btn-theme-toggle svg {
+    transition:
+        transform 0.6s var(--theme-easing-bounce),
+        opacity 0.3s ease !important;
+}
+
+/* Icon spins on theme change */
+html[data-theme="dark"] .btn-theme-toggle svg,
+html[data-theme="light"] .btn-theme-toggle svg {
+    animation: iconSpin 0.6s var(--theme-easing-bounce);
+}
+
+@keyframes iconSpin {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: rotate(180deg) scale(0.8);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Ripple effect pseudo-element */
+.btn-theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 61, 0, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.btn-theme-toggle:active::after {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+}
+
+/* ===========================================
+   PERFORMANCE: Exclude heavy elements
+   =========================================== */
 .recharts-surface,
 .recharts-wrapper,
 .recharts-layer,
@@ -137,18 +296,28 @@ textarea,
 .recharts-area,
 .recharts-line,
 .recharts-bar,
-.recharts-pie {
+.recharts-pie,
+.recharts-tooltip-wrapper {
     transition: none !important;
 }
 
-/* Skeleton loaders - NO transition */
 .skeleton,
 .skeleton-card {
     transition: none !important;
 }
 
-/* Elements with explicit no-transition class */
 .no-theme-transition,
 .no-theme-transition * {
     transition: none !important;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
 }
