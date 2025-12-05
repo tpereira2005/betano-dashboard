@@ -1,0 +1,154 @@
+/* ===========================================
+   THEME TRANSITION - Smooth & Beautiful Mode Switching
+   Separate file for clean organization
+   =========================================== */
+
+/* Prevent flash of unstyled content */
+html {
+    color-scheme: light dark;
+}
+
+/* Main container and backgrounds - slowest transition for dramatic effect */
+html[data-theme],
+body,
+.container,
+.app-container {
+    transition:
+        background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cards and major UI elements */
+.card,
+.header,
+.header-redesigned,
+.footer,
+.modal-overlay,
+.modal-content,
+.table-container,
+.upload-card,
+.auth-card,
+.insight-item,
+.comparison-card,
+.comparison-chart-card,
+.winner-banner,
+.stat-card-success,
+.stat-card-danger,
+.stat-card-primary,
+.stat-card-neutral {
+    transition:
+        background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Buttons - slightly faster for responsiveness */
+.btn,
+.btn-glass,
+.btn-primary,
+.btn-outline {
+    transition:
+        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Text elements - quick color change */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+label,
+strong,
+.stat-value,
+.stat-title,
+.stat-label,
+.section-title,
+.compact-value,
+.compact-title,
+.comparison-value .value,
+.insight-text {
+    transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Table elements */
+thead,
+tbody,
+th,
+td,
+tr {
+    transition:
+        background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* SVG icons - smooth color transition */
+svg,
+.lucide {
+    transition:
+        fill 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        stroke 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Form inputs - subtle transition */
+input,
+select,
+textarea,
+.input,
+.date-input {
+    transition:
+        background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Theme toggle button - special bouncy animation */
+.btn-theme-toggle {
+    transition:
+        transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        background-color 0.3s ease,
+        border-color 0.3s ease !important;
+    will-change: transform;
+}
+
+.btn-theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+.btn-theme-toggle:active {
+    transform: scale(0.9) rotate(20deg);
+}
+
+/* Chart components - NO transition to prevent jank */
+.recharts-surface,
+.recharts-wrapper,
+.recharts-layer,
+.recharts-cartesian-grid,
+.recharts-cartesian-axis,
+.recharts-area,
+.recharts-line,
+.recharts-bar,
+.recharts-pie {
+    transition: none !important;
+}
+
+/* Skeleton loaders - NO transition */
+.skeleton,
+.skeleton-card {
+    transition: none !important;
+}
+
+/* Elements with explicit no-transition class */
+.no-theme-transition,
+.no-theme-transition * {
+    transition: none !important;
+}

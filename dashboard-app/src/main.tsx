@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext.tsx'
 import { ErrorProvider } from './context/ErrorContext.tsx'
 import App from './App.tsx'
 import './index.css'
+import './theme-transition.css'
 import './dark-mode-icons.css'
 
 createRoot(document.getElementById('root')!).render(
