@@ -74,7 +74,7 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
 
             // Create chart container with fixed height
             const chartContainer = document.createElement('div');
-            chartContainer.style.cssText = 'width: 100%; height: 350px;';
+            chartContainer.style.cssText = 'width: 100%; height: 400px; overflow: visible;';
             tempContainer.appendChild(chartContainer);
 
             // Clone the chart children with new dimensions
@@ -88,7 +88,7 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
             }
 
             // Wait for chart to fully render (Recharts needs time)
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
             // Capture the temporary container
             const canvas = await html2canvas(tempContainer, {
