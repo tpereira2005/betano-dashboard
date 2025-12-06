@@ -2,9 +2,10 @@
 
 Todas as alterações notáveis neste projeto serão documentadas neste ficheiro.
 
-## [2.2.4] - 2024-12-04
+## [2.2.4] - 2025-12-06
 
 ### Adicionado
+- 📋 Modal de histórico de versões clicável no footer
 - 🔲 Modo tela cheia para gráficos no mobile (botão aparece apenas em dispositivos móveis)
 - 📱 Layout mobile completamente redesenhado para o header
 - 🎨 Scrollbar personalizada com cores Betano (laranja no thumb)
@@ -16,12 +17,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste ficheiro
 
 ---
 
-## [2.2.3] - 2024-12-03
+## [2.2.3] - 2025-12-05
 
 ### Adicionado
-- 🌙 Dark mode completo com cores vibrantes (verde neon para ganhos, vermelho para perdas)
-- 🎛️ Toggle de tema no header com persistência em localStorage
-- ✨ Toasts estilizados para dark mode
+- 💡 Insights automáticos redesenhados com visual rico
+- 🎨 Novos ícones e cores por categoria de insight
+- ✨ Animações de entrada escalonadas nos insights
+- 🌈 Sombras coloridas no hover dos cards de insight
 
 ### Corrigido
 - 🖼️ Footer com background transparente em ambos os modos
@@ -29,7 +31,27 @@ Todas as alterações notáveis neste projeto serão documentadas neste ficheiro
 
 ---
 
-## [2.2.2] - 2024-12-02
+## [2.2.2] - 2025-12-05
+
+### Adicionado
+- 📊 Correção das datas no header durante exportação
+- 📈 Datas posicionadas à direita nos exports
+
+### Melhorado
+- 🎨 Cor de fundo correta em dark mode nas exportações
+- 📱 Responsividade do header nos exports
+
+---
+
+## [2.2.1] - 2025-12-04
+
+### Adicionado
+- 🎨 Títulos dos KPIs em cinza subtil no dark mode
+- ✨ Melhor hierarquia visual dos cards
+
+---
+
+## [2.2.0] - 2025-12-04
 
 ### Adicionado
 - 📊 Modal de Comparação de Perfis completamente redesenhado
@@ -43,73 +65,7 @@ Todas as alterações notáveis neste projeto serão documentadas neste ficheiro
 
 ---
 
-## [2.2.1] - 2024-12-01
-
-### Adicionado
-- 👤 Ícones diferenciados no seletor de perfis (User, PieChart, ArrowLeftRight)
-- 🔀 Lógica condicional para esconder opções "Combinado" e "Comparar" quando há apenas 1 perfil
-
-### Melhorado
-- 🎨 Botão "Exportar" redesenhado para estilo glass
-- ✨ Footer com gradiente e links para redes sociais (Instagram, X)
-- 👤 Animação hover no nome do autor
-
----
-
-## [2.2.0] - 2024-11-30
-
-### Adicionado
-- 👥 Sistema completo de gestão de múltiplos perfis
-- 📊 Vista combinada de todos os perfis
-- 🔄 Modal para carregar novo ficheiro CSV para perfil existente
-- 📝 Renomear e eliminar perfis
-
-### Melhorado
-- 💾 Sincronização automática com Supabase
-- 🚀 Performance com lazy loading de componentes
-
----
-
-## [2.1.2] - 2024-11-28
-
-### Adicionado
-- 💡 8 Insights automáticos baseados no histórico de transações
-- 📊 Análise de padrões (melhor/pior mês, streaks, volatilidade)
-- 🎯 Dicas personalizadas para gestão de banca
-
-### Corrigido
-- 📱 Layout dos insights em grid 2x4
-
----
-
-## [2.1.1] - 2024-11-26
-
-### Adicionado
-- ⌨️ Atalhos de teclado (Ctrl+E para CSV, Ctrl+K para comparar)
-- 📸 Exportação de gráficos individuais como PNG
-- 📄 Exportação completa do dashboard como PDF
-
-### Melhorado
-- 🎨 Botões com estilo glassmorphism no header
-
----
-
-## [2.1.0] - 2024-11-24
-
-### Adicionado
-- 📊 Gráfico de Histograma de distribuição de valores
-- 📈 Gráfico de evolução Mês-a-Mês
-- 🎯 Tooltips personalizados com formatação portuguesa
-
-### Melhorado
-- 📱 Gráficos responsivos com Recharts
-- 🎨 Paleta de cores consistente com branding Betano
-
----
-
-## [2.0.0] - 2024-11-20
-
-### 🎉 Major Release - Sistema de Autenticação
+## [2.1.0] - 2025-12-04
 
 ### Adicionado
 - 🔐 **Login e Registo com Supabase Auth**
@@ -127,20 +83,58 @@ Todas as alterações notáveis neste projeto serão documentadas neste ficheiro
 
 ---
 
-## [1.3.0] - 2024-11-15
+## [2.0.0] - 2025-12-03
+
+### 🎉 Major Release - Sistema de Perfis
 
 ### Adicionado
-- 📊 Tabela de transações com ordenação por coluna
-- 🔍 Filtro por tipo de transação (Depósito/Levantamento)
-- 📄 Paginação com 10 items por página
+- 👥 Sistema completo de gestão de múltiplos perfis
+- 📊 Vista combinada de todos os perfis
+- 🔄 Modal para carregar novo ficheiro CSV para perfil existente
+- 📝 Renomear e eliminar perfis
 
 ### Melhorado
-- 🎨 Visual da tabela com hover effects
-- 📱 Scroll horizontal em dispositivos móveis
+- 💾 Sincronização automática com Supabase
+- 🚀 Performance com lazy loading de componentes
 
 ---
 
-## [1.2.0] - 2024-11-10
+## [1.5.0] - 2025-12-03
+
+### Adicionado
+- 🎓 Onboarding para novos utilizadores
+- 📁 Upload inicial solicita nome do perfil
+
+### Melhorado
+- 🧹 Limpeza de ficheiros não utilizados
+- 📖 README.md atualizado com documentação
+
+---
+
+## [1.4.0] - 2025-12-02
+
+### Adicionado
+- 💡 8 Insights automáticos baseados no histórico de transações
+- 📊 Análise de padrões (melhor/pior mês, streaks, volatilidade)
+- 🎯 Dicas personalizadas para gestão de banca
+
+### Melhorado
+- 📱 Layout dos insights em grid 2x4
+
+---
+
+## [1.3.0] - 2025-12-02
+
+### Adicionado
+- 📊 3 KPIs principais lado a lado
+- 🎨 Cards secundários organizados em 2 linhas
+
+### Melhorado
+- ✂️ Removido card "Média Global" redundante
+
+---
+
+## [1.2.0] - 2025-12-02
 
 ### Adicionado
 - 📈 Gráfico de Saldo Acumulado ao longo do tempo
@@ -150,10 +144,11 @@ Todas as alterações notáveis neste projeto serão documentadas neste ficheiro
 ### Melhorado
 - 🎨 Design com gradientes e sombras premium
 - ✨ Animações suaves em hover
+- 🔮 Estilo glass/frosted em toda a aplicação
 
 ---
 
-## [1.1.0] - 2024-11-05
+## [1.1.0] - 2025-12-01
 
 ### Adicionado
 - 📁 Upload de ficheiros CSV com drag & drop
@@ -161,12 +156,13 @@ Todas as alterações notáveis neste projeto serão documentadas neste ficheiro
 - ✅ Validação de formato de ficheiro
 - 🔒 Aviso de privacidade (processamento local)
 
-### Corrigido
-- 🐛 Tratamento de ficheiros com encoding diferente
+### Melhorado
+- 🎨 Branding Betano com azul escuro (#0E0F22)
+- 📊 Header e tabelas com melhor contraste
 
 ---
 
-## [1.0.0] - 2024-11-01
+## [1.0.0] - 2025-12-01
 
 ### 🎉 Lançamento Inicial
 
@@ -175,6 +171,10 @@ Todas as alterações notáveis neste projeto serão documentadas neste ficheiro
 - 🎨 Interface com branding Betano (cores laranja e azul escuro)
 - 📱 Design responsivo básico
 - ⚡ Build com Vite + React + TypeScript
+- 📈 Gráficos: cumulativo, mensal, distribuição, histograma, MoM
+- 📋 Tabela de transações paginada e ordenável
+- 📤 Exportação para PDF, PNG e CSV
+- 🌙 Suporte a dark mode
 
 ---
 

@@ -15,6 +15,7 @@ import { InsightsCard } from './dashboard/InsightsCard';
 import { TransactionTable } from './dashboard/TransactionTable';
 import { ReloadModal } from './ReloadModal';
 import { ExportOverlay } from './common/ExportOverlay';
+import { VersionModal } from './VersionModal';
 
 const Dashboard: React.FC<DashboardProps> = ({
     rawData,
@@ -28,6 +29,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [showReloadModal, setShowReloadModal] = useState(false);
+    const [showVersionModal, setShowVersionModal] = useState(false);
 
     // Export overlay state
     const [exportOverlay, setExportOverlay] = useState<{
@@ -314,7 +316,13 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 </svg>
                             </a>
                         </div>
-                        <span className="footer-version">v2.2.4</span>
+                        <span
+                            className="footer-version"
+                            onClick={() => setShowVersionModal(true)}
+                            title="Ver histórico de versões"
+                        >
+                            v2.2.4
+                        </span>
                     </div>
                 </footer>
             </div>
@@ -328,6 +336,12 @@ const Dashboard: React.FC<DashboardProps> = ({
                     // For now, we'll just close and rely on Dashboard parent to reload
                     window.location.reload();
                 }}
+            />
+
+            {/* Version History Modal */}
+            <VersionModal
+                isOpen={showVersionModal}
+                onClose={() => setShowVersionModal(false)}
             />
         </>
     );
