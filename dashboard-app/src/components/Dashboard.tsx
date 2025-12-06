@@ -3,7 +3,7 @@ import { Instagram } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DashboardProps } from '@/types';
 import { processTransactions, calculateStatistics, filterTransactions } from '@/utils/calculations';
-import { exportDashboardAsPDF, exportAsPNG, exportTransactionsAsCSV } from '@/utils/export';
+import { exportDashboardAsPDF, exportDashboardAsPNG, exportTransactionsAsCSV } from '@/utils/exportServer';
 import { DashboardHeader } from './dashboard/DashboardHeader';
 import { KPISection } from './dashboard/KPISection';
 import { CumulativeChart } from './dashboard/CumulativeChart';
@@ -69,6 +69,11 @@ const Dashboard: React.FC<DashboardProps> = ({
         return filterTransactions(processedData, filterType, startDate, endDate);
     }, [processedData, filterType, startDate, endDate]);
 
+    // Calculate statistics (needed for export handlers below)
+    const stats = useMemo(() => {
+        return calculateStatistics(filteredTransactions);
+    }, [filteredTransactions]);
+
     // Handlers
     const handleStartDateChange = (date: string) => {
         const clamped = clampDate(date, datasetStart, endDate || datasetEnd);
@@ -124,24 +129,24 @@ const Dashboard: React.FC<DashboardProps> = ({
     const handleExportPDF = React.useCallback(async () => {
         try {
             toast.loading('A exportar PDF...', { id: 'export-pdf' });
-            await exportDashboardAsPDF('dashboard-container', 'betano-dashboard');
+            await exportDashboardAsPDF(stats, filteredTransactions, { start: startDate, end: endDate });
             toast.success('Dashboard exportado como PDF!', { id: 'export-pdf' });
         } catch (error) {
             toast.error('Erro ao exportar PDF', { id: 'export-pdf' });
             console.error('Export PDF error:', error);
         }
-    }, []);
+    }, [stats, filteredTransactions, startDate, endDate]);
 
     const handleExportPNG = React.useCallback(async () => {
         try {
             toast.loading('A exportar PNG...', { id: 'export-png' });
-            await exportAsPNG('dashboard-container', 'betano-dashboard');
+            await exportDashboardAsPNG(stats, filteredTransactions, { start: startDate, end: endDate });
             toast.success('Dashboard exportado como PNG!', { id: 'export-png' });
         } catch (error) {
             toast.error('Erro ao exportar PNG', { id: 'export-png' });
             console.error('Export PNG error:', error);
         }
-    }, []);
+    }, [stats, filteredTransactions, startDate, endDate]);
 
     const handleExportCSV = React.useCallback(() => {
         try {
@@ -181,10 +186,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleExportCSV, onCompareProfiles]);
 
-    // Calculate statistics
-    const stats = useMemo(() => {
-        return calculateStatistics(filteredTransactions);
-    }, [filteredTransactions]);
+
 
     const handleResetFilters = () => {
         setFilterType('All');
