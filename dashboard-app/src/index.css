@@ -3473,13 +3473,38 @@ tbody tr:hover {
     display: none;
   }
 
-  /* Hide text in buttons on small screens */
+  /* Hide text in buttons on small screens, except reload button */
   .header-right .btn-glass span {
     display: none;
   }
 
+  /* Show text in reload button (Carregar Ficheiro) */
+  .header-right .btn-glass.btn-reload span {
+    display: inline;
+  }
+
   .header-right .btn-glass {
     padding: 10px;
+  }
+
+  /* Reload button with text on mobile */
+  .header-right .btn-glass.btn-reload {
+    padding: 10px 16px;
+  }
+
+  /* Hide export dropdown on mobile */
+  .export-dropdown {
+    display: none !important;
+  }
+
+  /* Hide calendar icon in date inputs on mobile */
+  .date-input::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
+
+  /* Hide date icon component on mobile */
+  .date-icon {
+    display: none !important;
   }
 
   .header-separator {
