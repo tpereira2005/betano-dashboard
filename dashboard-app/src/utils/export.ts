@@ -543,7 +543,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
 
         const canvas = await html2canvas(element, {
             backgroundColor: getExportBackgroundColor(),
-            scale: 1.2, // Reduced for better performance
+            scale: 2, // High quality for PDF export
             logging: false,
             useCORS: true,
             allowTaint: true,
