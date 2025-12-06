@@ -91,9 +91,10 @@ export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({
                         outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
+                        stroke="none"
                     >
                         {data.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[entry.name as keyof typeof COLORS]} />
+                            <Cell key={`cell-${index}`} fill={COLORS[entry.name as keyof typeof COLORS]} stroke="none" />
                         ))}
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
