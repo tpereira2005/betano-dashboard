@@ -5187,6 +5187,42 @@ th {
 }
 
 /* ========================================
+   Chart Wrapper Styles
+   ======================================== */
+.chart-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chart-header-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chart-header-buttons .btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.chart-container {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ========================================
    Chart Fullscreen Overlay (Mobile)
    ======================================== */
 .chart-fullscreen-overlay {
