@@ -310,29 +310,68 @@ const fixChartsForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
- * Add padding to sections to help avoid page breaks cutting them
- * This adds a page-break-inside: avoid style to major sections
+ * Add page break avoidance to sections to prevent them from being cut
+ * Uses CSS break-inside: avoid and page-break-inside: avoid
  */
 const addPageBreakPadding = (container: HTMLElement): (() => void) => {
-    const modifiedElements: { el: HTMLElement; originalMarginTop: string }[] = [];
+    const modifiedElements: { el: HTMLElement; originalStyles: Record<string, string> }[] = [];
 
-    // Find the insights card using the specific class we added
+    // Selectors for sections that should not be split across pages
+    const sectionsToProtect = [
+        '.insights-card',       // Insights section
+        '.insights-grid',       // Insights grid
+        '.insight-card',        // Individual insight cards
+        '.kpi-section',         // KPI cards
+        '.charts-section',      // Charts section
+        '.chart-card',          // Individual chart cards
+        '.table-section',       // Transaction table
+        '.mom-chart-wrapper',   // Month over month chart
+        '[class*="stat-card"]'  // Stat cards
+    ];
+
+    sectionsToProtect.forEach(selector => {
+        const elements = container.querySelectorAll(selector);
+        elements.forEach(el => {
+            const htmlEl = el as HTMLElement;
+            modifiedElements.push({
+                el: htmlEl,
+                originalStyles: {
+                    breakInside: htmlEl.style.breakInside || '',
+                    pageBreakInside: (htmlEl.style as CSSStyleDeclaration & { pageBreakInside: string }).pageBreakInside || '',
+                    webkitColumnBreakInside: (htmlEl.style as CSSStyleDeclaration & { webkitColumnBreakInside: string }).webkitColumnBreakInside || ''
+                }
+            });
+
+            // Apply break avoidance properties
+            htmlEl.style.breakInside = 'avoid';
+            (htmlEl.style as CSSStyleDeclaration & { pageBreakInside: string }).pageBreakInside = 'avoid';
+            (htmlEl.style as CSSStyleDeclaration & { webkitColumnBreakInside: string }).webkitColumnBreakInside = 'avoid';
+        });
+    });
+
+    // Special handling for insights section - add margin to push to new page if needed
     const insightsCard = container.querySelector('.insights-card') as HTMLElement;
-
     if (insightsCard) {
         modifiedElements.push({
             el: insightsCard,
-            originalMarginTop: insightsCard.style.marginTop
+            originalStyles: {
+                marginTop: insightsCard.style.marginTop,
+                paddingTop: insightsCard.style.paddingTop,
+                breakBefore: insightsCard.style.breakBefore || ''
+            }
         });
-        // Add large margin-top to push the entire card to the next page
-        // margin-top creates space BEFORE the card using the app's background color (gray)
-        insightsCard.style.marginTop = '180px';
+        // Force page break before insights if it would be cut
+        insightsCard.style.marginTop = '50px';
+        insightsCard.style.paddingTop = '20px';
+        insightsCard.style.breakBefore = 'auto';
     }
 
     // Return restore function
     return () => {
-        modifiedElements.forEach(({ el, originalMarginTop }) => {
-            el.style.marginTop = originalMarginTop;
+        modifiedElements.forEach(({ el, originalStyles }) => {
+            Object.entries(originalStyles).forEach(([key, value]) => {
+                (el.style as Record<string, string>)[key] = value;
+            });
         });
     };
 };
