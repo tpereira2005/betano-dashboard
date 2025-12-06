@@ -318,15 +318,16 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
 
     // Selectors for sections that should not be split across pages
     const sectionsToProtect = [
-        '.insights-card',       // Insights section
-        '.insights-grid',       // Insights grid
-        '.insight-card',        // Individual insight cards
-        '.kpi-section',         // KPI cards
-        '.charts-section',      // Charts section
-        '.chart-card',          // Individual chart cards
-        '.table-section',       // Transaction table
-        '.mom-chart-wrapper',   // Month over month chart
-        '[class*="stat-card"]'  // Stat cards
+        '.insights-card-redesigned', // Insights section (main container)
+        '.insights-sections',        // Insights sections container
+        '.insights-category',        // Category sections
+        '.insight-card-new',         // Individual insight cards
+        '.kpi-section',              // KPI cards
+        '.charts-section',           // Charts section
+        '.chart-card',               // Individual chart cards
+        '.table-section',            // Transaction table
+        '.mom-chart-wrapper',        // Month over month chart
+        '[class*="stat-card"]'       // Stat cards
     ];
 
     sectionsToProtect.forEach(selector => {
@@ -350,7 +351,7 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
     });
 
     // Special handling for insights section - add margin to push to new page if needed
-    const insightsCard = container.querySelector('.insights-card') as HTMLElement;
+    const insightsCard = container.querySelector('.insights-card-redesigned') as HTMLElement;
     if (insightsCard) {
         modifiedElements.push({
             el: insightsCard,
