@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { PieChart as PieChartIcon, Camera } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatters';
 import html2canvas from 'html2canvas';
@@ -98,7 +98,6 @@ export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({
                         ))}
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend />
                 </PieChart>
             </ResponsiveContainer>
 
