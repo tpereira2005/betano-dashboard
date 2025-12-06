@@ -237,6 +237,15 @@ body,
   color: #FFFFFF;
 }
 
+/* Exception: Insight icons should keep their semantic colors */
+[data-theme="dark"] .card .insight-icon-new,
+[data-theme="dark"] .card .insight-icon-new svg,
+[data-theme="dark"] .card .insight-trend,
+[data-theme="dark"] .card .insight-trend svg,
+[data-theme="dark"] .card .insight-value-new {
+  color: inherit;
+}
+
 /* Stat cards */
 [data-theme="dark"] .stat-value {
   color: #FFFFFF !important;
