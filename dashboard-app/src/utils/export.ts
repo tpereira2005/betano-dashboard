@@ -310,6 +310,54 @@ const fixChartsForExport = (container: HTMLElement): (() => void) => {
 };
 
 /**
+ * Disable animations and force final state for animated elements
+ * This prevents html2canvas from capturing mid-animation states
+ */
+const disableAnimationsForExport = (container: HTMLElement): (() => void) => {
+    const modifiedElements: { el: HTMLElement; originalStyles: Record<string, string> }[] = [];
+
+    // Selectors for animated elements that need to be forced to final state
+    const animatedSelectors = [
+        '.insight-card-new',        // Insight cards with slideIn animation
+        '.insights-category',       // Category animations
+        '[style*="animation"]'      // Any element with inline animation
+    ];
+
+    animatedSelectors.forEach(selector => {
+        const elements = container.querySelectorAll(selector);
+        elements.forEach(el => {
+            const htmlEl = el as HTMLElement;
+            modifiedElements.push({
+                el: htmlEl,
+                originalStyles: {
+                    animation: htmlEl.style.animation || '',
+                    animationDelay: htmlEl.style.animationDelay || '',
+                    opacity: htmlEl.style.opacity || '',
+                    transform: htmlEl.style.transform || '',
+                    transition: htmlEl.style.transition || ''
+                }
+            });
+
+            // Force final animation state
+            htmlEl.style.animation = 'none';
+            htmlEl.style.animationDelay = '0s';
+            htmlEl.style.opacity = '1';
+            htmlEl.style.transform = 'translateY(0)';
+            htmlEl.style.transition = 'none';
+        });
+    });
+
+    // Return restore function
+    return () => {
+        modifiedElements.forEach(({ el, originalStyles }) => {
+            Object.entries(originalStyles).forEach(([key, value]) => {
+                (el.style as unknown as Record<string, string>)[key] = value;
+            });
+        });
+    };
+};
+
+/**
  * Add page break avoidance to sections to prevent them from being cut
  * Uses CSS break-inside: avoid and page-break-inside: avoid
  */
@@ -388,6 +436,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
     let restoreCharts: (() => void) | null = null;
     let restoreFooter: (() => void) | null = null;
     let restoreHeader: (() => void) | null = null;
+    let restoreAnimations: (() => void) | null = null;
 
     try {
         // Small initial yield to allow overlay to render
@@ -398,11 +447,12 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements, fix charts, footer and header before export
+        // Hide elements, fix charts, footer, header and disable animations before export
         restoreElements = hideElementsForExport(element);
         restoreCharts = fixChartsForExport(element);
         restoreFooter = fixFooterForExport(element);
         restoreHeader = fixHeaderForExport(element);
+        restoreAnimations = disableAnimationsForExport(element);
 
         // Yield to let UI update
         await yieldToMain();
@@ -417,15 +467,17 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
             removeContainer: true
         });
 
-        // Restore elements, charts, footer and header
+        // Restore elements, charts, footer, header and animations
         restoreElements();
         restoreCharts();
         restoreFooter();
         restoreHeader();
+        if (restoreAnimations) restoreAnimations();
         restoreElements = null;
         restoreCharts = null;
         restoreFooter = null;
         restoreHeader = null;
+        restoreAnimations = null;
 
         // Yield again before creating blob
         await yieldToMain();
@@ -443,6 +495,7 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         if (restoreCharts) restoreCharts();
         if (restoreFooter) restoreFooter();
         if (restoreHeader) restoreHeader();
+        if (restoreAnimations) restoreAnimations();
         console.error('Failed to export as PNG:', error);
 
         // Dispatch error event
@@ -466,6 +519,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
     let restorePageBreak: (() => void) | null = null;
     let restoreFooter: (() => void) | null = null;
     let restoreHeader: (() => void) | null = null;
+    let restoreAnimations: (() => void) | null = null;
 
     try {
         // Small initial yield to allow overlay to render
@@ -476,12 +530,13 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             throw new Error(`Element with id "${elementId}" not found`);
         }
 
-        // Hide elements, fix charts, footer, header and add page break padding before export
+        // Hide elements, fix charts, footer, header, page breaks and disable animations before export
         restoreElements = hideElementsForExport(element);
         restoreCharts = fixChartsForExport(element);
         restorePageBreak = addPageBreakPadding(element);
         restoreFooter = fixFooterForExport(element);
         restoreHeader = fixHeaderForExport(element);
+        restoreAnimations = disableAnimationsForExport(element);
 
         // Yield to let UI update (show loading indicator)
         await yieldToMain();
@@ -496,17 +551,19 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             removeContainer: true
         });
 
-        // Restore elements, charts, page breaks, footer and header
+        // Restore elements, charts, page breaks, footer, header and animations
         restoreElements();
         restoreCharts();
         restorePageBreak();
         restoreFooter();
         restoreHeader();
+        if (restoreAnimations) restoreAnimations();
         restoreElements = null;
         restoreCharts = null;
         restorePageBreak = null;
         restoreFooter = null;
         restoreHeader = null;
+        restoreAnimations = null;
 
         // Yield before PDF generation
         await yieldToMain();
@@ -571,6 +628,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         if (restorePageBreak) restorePageBreak();
         if (restoreFooter) restoreFooter();
         if (restoreHeader) restoreHeader();
+        if (restoreAnimations) restoreAnimations();
         console.error('Failed to export as PDF:', error);
 
         // Dispatch error event
