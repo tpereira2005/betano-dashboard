@@ -68,7 +68,7 @@ export interface Statistics {
     overallAvg: number;
     momChanges: MoMChange[];
     histogram: HistogramBucket[];
-    insights: string[];
+    insights: RichInsight[];
     avgDaysBetweenTransactions: number;
     largestTransaction: LargestTransaction | null;
     mostActiveMonth: string;
@@ -77,6 +77,19 @@ export interface Statistics {
     // Peak & Valley (Best/Worst Moments)
     peakMoment: { date: string; balance: number } | null;
     valleyMoment: { date: string; balance: number } | null;
+}
+
+// Rich Insight for the new Insights section
+export interface RichInsight {
+    id: string;
+    category: 'performance' | 'pattern' | 'recommendation';
+    type: 'success' | 'warning' | 'danger' | 'info';
+    icon: string;
+    title: string;
+    value?: string;
+    description: string;
+    trend?: 'up' | 'down' | 'stable';
+    priority: number;
 }
 
 // Component Props Types

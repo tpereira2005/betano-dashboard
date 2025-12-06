@@ -5,7 +5,8 @@
     MonthlyData,
     MoMChange,
     HistogramBucket,
-    LargestTransaction
+    LargestTransaction,
+    RichInsight
 } from '@/types';
 import { formatCurrency } from './formatters';
 
@@ -127,33 +128,98 @@ const calculateMoMChanges = (monthlyData: MonthlyData[]): MoMChange[] => {
 };
 
 /**
- * Generate automated insights with improved messages
+ * Generate rich automated insights with structured data
  */
 const generateInsights = (
     transactions: Transaction[],
     monthlyData: MonthlyData[],
     roi: number,
     winRate: number,
-    largestTransaction: LargestTransaction | null
-): string[] => {
-    const insights: string[] = [];
+    largestTransaction: LargestTransaction | null,
+    trendValue: number
+): RichInsight[] => {
+    const insights: RichInsight[] = [];
+    let priority = 0;
 
-    // 1. Transaction frequency
+    // ===== PERFORMANCE INSIGHTS =====
+
+    // 1. ROI
+    if (roi !== 0) {
+        const isPositive = roi > 0;
+        insights.push({
+            id: 'roi',
+            category: 'performance',
+            type: isPositive ? 'success' : 'danger',
+            icon: isPositive ? 'TrendingUp' : 'TrendingDown',
+            title: 'Retorno (ROI)',
+            value: `${isPositive ? '+' : ''}${roi.toFixed(1)}%`,
+            description: isPositive
+                ? 'O teu investimento está a gerar lucro'
+                : 'Estás a perder dinheiro em relação ao investido',
+            trend: isPositive ? 'up' : 'down',
+            priority: priority++
+        });
+    }
+
+    // 2. Win Rate
+    if (monthlyData.length > 0) {
+        const profitableMonths = monthlyData.filter(m => m.net > 0).length;
+        const isGood = winRate >= 50;
+        insights.push({
+            id: 'winrate',
+            category: 'performance',
+            type: isGood ? 'success' : 'warning',
+            icon: 'Target',
+            title: 'Taxa de Sucesso',
+            value: `${winRate.toFixed(0)}%`,
+            description: `${profitableMonths} de ${monthlyData.length} meses foram lucrativos`,
+            trend: isGood ? 'up' : 'down',
+            priority: priority++
+        });
+    }
+
+    // 3. Net Result Trend
+    if (trendValue !== 0) {
+        const isImproving = trendValue > 5;
+        const isDeclining = trendValue < -5;
+        if (isImproving || isDeclining) {
+            insights.push({
+                id: 'trend',
+                category: 'performance',
+                type: isImproving ? 'success' : 'danger',
+                icon: isImproving ? 'ArrowUpRight' : 'ArrowDownRight',
+                title: 'Tendência Atual',
+                value: `${trendValue > 0 ? '+' : ''}${trendValue.toFixed(0)}%`,
+                description: isImproving
+                    ? 'Últimos 3 meses acima da média anterior'
+                    : 'Últimos 3 meses abaixo da média anterior',
+                trend: isImproving ? 'up' : 'down',
+                priority: priority++
+            });
+        }
+    }
+
+    // ===== PATTERN INSIGHTS =====
+
+    // 4. Transaction Frequency
     if (transactions.length > 1) {
         const firstDate = transactions[0].rawDate.getTime();
         const lastDate = transactions[transactions.length - 1].rawDate.getTime();
         const daysDiff = (lastDate - firstDate) / (1000 * 60 * 60 * 24);
         const avgDays = Math.round(daysDiff / transactions.length);
-        insights.push(`Em média, fazes uma transação a cada ${avgDays} dias`);
+        insights.push({
+            id: 'frequency',
+            category: 'pattern',
+            type: 'info',
+            icon: 'Calendar',
+            title: 'Frequência',
+            value: `${avgDays} dias`,
+            description: 'Intervalo médio entre transações',
+            priority: priority++
+        });
     }
 
-    // 2. Largest transaction
-    if (largestTransaction) {
-        const typeText = largestTransaction.type === 'Deposit' ? 'depósito' : 'levantamento';
-        insights.push(`A tua maior transação foi um ${typeText} de ${formatCurrency(largestTransaction.value)}`);
-    }
-
-    // 3. Most active period
+    // 5. Most Active Period
     const transactionsByMonth: Record<string, number> = {};
     transactions.forEach(t => {
         const month = t.date.substring(0, 7);
@@ -162,37 +228,94 @@ const generateInsights = (
     const mostActive = Object.entries(transactionsByMonth)
         .reduce((max, [month, count]) => count > max.count ? { month, count } : max, { month: '', count: 0 });
     if (mostActive.month) {
-        const monthName = new Date(mostActive.month + '-01').toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' });
-        insights.push(`O teu período mais ativo foi ${monthName} com ${mostActive.count} transações`);
+        const monthName = new Date(mostActive.month + '-01').toLocaleDateString('pt-PT', { month: 'short', year: 'numeric' });
+        insights.push({
+            id: 'active-period',
+            category: 'pattern',
+            type: 'info',
+            icon: 'Activity',
+            title: 'Período Mais Ativo',
+            value: monthName,
+            description: `${mostActive.count} transações neste mês`,
+            priority: priority++
+        });
     }
 
-    // 4. ROI with context
-    if (roi > 0) {
-        insights.push(`Tens um ROI positivo de ${roi.toFixed(1)}% - continua assim! 📈`);
-    } else if (roi < 0) {
-        insights.push(`ROI negativo de ${Math.abs(roi).toFixed(1)}% - considera rever a tua estratégia`);
-    } else {
-        insights.push(`Estás no break-even (ROI 0%) - nem ganhas nem perdes`);
+    // 6. Best Streak (consecutive positive months)
+    if (monthlyData.length >= 2) {
+        let currentStreak = 0;
+        let bestStreak = 0;
+        monthlyData.forEach(m => {
+            if (m.net > 0) {
+                currentStreak++;
+                bestStreak = Math.max(bestStreak, currentStreak);
+            } else {
+                currentStreak = 0;
+            }
+        });
+        if (bestStreak >= 2) {
+            insights.push({
+                id: 'streak',
+                category: 'pattern',
+                type: 'success',
+                icon: 'Flame',
+                title: 'Melhor Sequência',
+                value: `${bestStreak} meses`,
+                description: 'Meses positivos consecutivos',
+                trend: 'up',
+                priority: priority++
+            });
+        }
     }
 
-    // 5. Win rate
-    if (winRate >= 50) {
-        insights.push(`Excelente! ${winRate.toFixed(0)}% dos teus meses foram lucrativos`);
-    } else if (winRate > 0) {
-        insights.push(`Apenas ${winRate.toFixed(0)}% dos meses foram lucrativos - há margem para melhorar`);
+    // 7. Largest Transaction
+    if (largestTransaction) {
+        const typeText = largestTransaction.type === 'Deposit' ? 'depósito' : 'levantamento';
+        insights.push({
+            id: 'largest',
+            category: 'pattern',
+            type: largestTransaction.type === 'Withdrawal' ? 'success' : 'info',
+            icon: 'DollarSign',
+            title: 'Maior Transação',
+            value: formatCurrency(largestTransaction.value),
+            description: `O teu maior ${typeText}`,
+            priority: priority++
+        });
     }
 
-    // 6. Activity pattern
+    // ===== RECOMMENDATION INSIGHTS =====
+
+    // 8. Deposit/Withdrawal Ratio
     const deposits = transactions.filter(t => t.type === 'Deposit');
     const withdrawals = transactions.filter(t => t.type === 'Withdrawal');
     const ratio = deposits.length > 0 ? withdrawals.length / deposits.length : 0;
+
     if (ratio > 1.5) {
-        insights.push(`Fazes ${ratio.toFixed(1)}× mais levantamentos que depósitos - boa gestão! 💰`);
-    } else if (ratio < 0.5) {
-        insights.push(`Fazes mais depósitos que levantamentos - atenção à gestão de bankroll`);
+        insights.push({
+            id: 'ratio-good',
+            category: 'recommendation',
+            type: 'success',
+            icon: 'ThumbsUp',
+            title: 'Boa Gestão',
+            value: `${ratio.toFixed(1)}×`,
+            description: 'Mais levantamentos que depósitos',
+            trend: 'up',
+            priority: priority++
+        });
+    } else if (ratio < 0.5 && deposits.length > 2) {
+        insights.push({
+            id: 'ratio-warning',
+            category: 'recommendation',
+            type: 'warning',
+            icon: 'AlertTriangle',
+            title: 'Atenção',
+            description: 'Fazes mais depósitos que levantamentos - revê a gestão de bankroll',
+            trend: 'down',
+            priority: priority++
+        });
     }
 
-    // 7. Consistency
+    // 9. Volatility Warning
     if (monthlyData.length >= 3) {
         const avg = monthlyData.reduce((sum, m) => sum + m.net, 0) / monthlyData.length;
         const stdDev = Math.sqrt(
@@ -200,21 +323,21 @@ const generateInsights = (
         );
         const volatility = Math.abs(avg) > 0 ? (stdDev / Math.abs(avg)) * 100 : 0;
 
-        if (volatility < 50) {
-            insights.push(`Os teus resultados mensais são bastante consistentes (volatilidade baixa)`);
-        } else if (volatility > 150) {
-            insights.push(`Alta volatilidade nos resultados - os teus meses variam muito`);
+        if (volatility > 150) {
+            insights.push({
+                id: 'volatility',
+                category: 'recommendation',
+                type: 'warning',
+                icon: 'TrendingUp',
+                title: 'Alta Volatilidade',
+                description: 'Os teus resultados mensais variam muito - considera uma estratégia mais consistente',
+                priority: priority++
+            });
         }
     }
 
-    // 12. Average Transaction Value (New 8th Insight)
-    if (transactions.length > 0) {
-        const totalValue = transactions.reduce((sum, t) => sum + t.value, 0);
-        const avgValue = totalValue / transactions.length;
-        insights.push(`O valor médio das tuas transações é de ${formatCurrency(avgValue)}`);
-    }
-
-    return insights;
+    // Sort by priority and return
+    return insights.sort((a, b) => a.priority - b.priority);
 };
 
 /**
@@ -347,7 +470,8 @@ export const calculateStatistics = (transactions: Transaction[]): Statistics => 
         monthlyArr,
         roi,
         winRate,
-        largestTransaction
+        largestTransaction,
+        trendValue
     );
 
     // 11. Peak & Valley Moments
