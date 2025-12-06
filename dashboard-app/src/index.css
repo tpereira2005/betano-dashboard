@@ -2372,10 +2372,183 @@ select.input option {
 }
 
 /* Enhanced Loading Spinner */
+/* ========================================
+   LOADING SCREEN - Premium Redesign
+   ======================================== */
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.loading-screen.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-bg);
+  z-index: 9999;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loading-logo {
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+.loading-logo img {
+  filter: drop-shadow(0 4px 20px rgba(255, 61, 0, 0.3));
+}
+
+@keyframes logoPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.loading-spinner-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner-ring {
+  border: 3px solid rgba(255, 61, 0, 0.15);
+  border-top: 3px solid var(--color-betano-orange);
+  border-right: 3px solid var(--color-betano-orange);
+  border-radius: 50%;
+  animation: spinnerRotate 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.loading-spinner-glow {
+  position: absolute;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 30px rgba(255, 61, 0, 0.4), 0 0 60px rgba(255, 61, 0, 0.2);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes spinnerRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glowPulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.loading-text {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.loading-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-betano-orange);
+  animation: dotBounce 1.4s ease-in-out infinite;
+}
+
+.loading-dots .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Dark mode loading screen */
+[data-theme="dark"] .loading-screen.fullscreen {
+  background: var(--color-bg);
+}
+
+[data-theme="dark"] .loading-text {
+  color: #FFFFFF;
+}
+
+[data-theme="dark"] .loading-spinner-glow {
+  box-shadow: 0 0 40px rgba(255, 61, 0, 0.5), 0 0 80px rgba(255, 61, 0, 0.3);
+}
+
+/* Legacy spinner (keep for backwards compatibility) */
 .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 200px;
   gap: 20px;
 }
 
@@ -2383,7 +2556,7 @@ select.input option {
   border: 4px solid rgba(255, 61, 0, 0.1);
   border-top: 4px solid var(--color-betano-orange);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spinnerRotate 0.8s linear infinite;
   box-shadow: 0 0 20px rgba(255, 61, 0, 0.2);
 }
 
@@ -2393,16 +2566,6 @@ select.input option {
   margin: 0;
   font-weight: 600;
   animation: pulse 2s infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes fadeIn {
