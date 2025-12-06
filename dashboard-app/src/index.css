@@ -4076,26 +4076,56 @@ tbody tr:hover {
 
 [data-theme="dark"] .insight-icon-new.type-success {
   background: rgba(16, 185, 129, 0.15);
+  color: #10B981 !important;
+}
+
+[data-theme="dark"] .insight-icon-new.type-success svg {
+  color: #10B981 !important;
 }
 
 [data-theme="dark"] .insight-icon-new.type-warning {
   background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B !important;
+}
+
+[data-theme="dark"] .insight-icon-new.type-warning svg {
+  color: #F59E0B !important;
 }
 
 [data-theme="dark"] .insight-icon-new.type-danger {
   background: rgba(239, 68, 68, 0.15);
+  color: #EF4444 !important;
+}
+
+[data-theme="dark"] .insight-icon-new.type-danger svg {
+  color: #EF4444 !important;
 }
 
 [data-theme="dark"] .insight-icon-new.type-info {
   background: rgba(59, 130, 246, 0.15);
+  color: #3B82F6 !important;
+}
+
+[data-theme="dark"] .insight-icon-new.type-info svg {
+  color: #3B82F6 !important;
 }
 
 [data-theme="dark"] .insight-trend.trend-up {
   background: rgba(16, 185, 129, 0.15);
+  color: #10B981 !important;
+}
+
+[data-theme="dark"] .insight-trend.trend-up svg {
+  color: #10B981 !important;
 }
 
 [data-theme="dark"] .insight-trend.trend-down {
   background: rgba(239, 68, 68, 0.15);
+  color: #EF4444 !important;
+}
+
+[data-theme="dark"] .insight-trend.trend-down svg {
+  color: #EF4444 !important;
 }
 
 /* Keep old styles for backwards compatibility */
