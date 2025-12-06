@@ -2,6 +2,36 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 /**
+ * Export Event Types for coordinating with UI overlay
+ */
+export type ExportEventType = 'export-start' | 'export-progress' | 'export-complete' | 'export-error';
+
+export interface ExportEventDetail {
+    type: 'pdf' | 'png' | 'csv';
+    progress?: number;
+    error?: string;
+}
+
+/**
+ * Dispatch export event for overlay coordination
+ */
+export const dispatchExportEvent = (eventType: ExportEventType, detail: ExportEventDetail): void => {
+    window.dispatchEvent(new CustomEvent(eventType, { detail }));
+};
+
+/**
+ * Subscribe to export events
+ */
+export const onExportEvent = (
+    eventType: ExportEventType,
+    handler: (event: CustomEvent<ExportEventDetail>) => void
+): (() => void) => {
+    const listener = (e: Event) => handler(e as CustomEvent<ExportEventDetail>);
+    window.addEventListener(eventType, listener);
+    return () => window.removeEventListener(eventType, listener);
+};
+
+/**
  * Utility to yield to the main thread, allowing UI updates
  * Uses longer delay to give browser time to process events
  */
@@ -311,12 +341,18 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
  * Export an element as PNG
  */
 export const exportAsPNG = async (elementId: string, filename: string): Promise<void> => {
+    // Dispatch start event for overlay
+    dispatchExportEvent('export-start', { type: 'png' });
+
     let restoreElements: (() => void) | null = null;
     let restoreCharts: (() => void) | null = null;
     let restoreFooter: (() => void) | null = null;
     let restoreHeader: (() => void) | null = null;
 
     try {
+        // Small initial yield to allow overlay to render
+        await yieldToMain(100);
+
         const element = document.getElementById(elementId);
         if (!element) {
             throw new Error(`Element with id "${elementId}" not found`);
@@ -358,6 +394,9 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         link.download = `${filename}.png`;
         link.href = canvas.toDataURL('image/png', 0.9);
         link.click();
+
+        // Dispatch complete event
+        dispatchExportEvent('export-complete', { type: 'png' });
     } catch (error) {
         // Restore elements on error
         if (restoreElements) restoreElements();
@@ -365,6 +404,12 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
         if (restoreFooter) restoreFooter();
         if (restoreHeader) restoreHeader();
         console.error('Failed to export as PNG:', error);
+
+        // Dispatch error event
+        dispatchExportEvent('export-error', {
+            type: 'png',
+            error: error instanceof Error ? error.message : 'Export failed'
+        });
         throw error;
     }
 };
@@ -373,6 +418,9 @@ export const exportAsPNG = async (elementId: string, filename: string): Promise<
  * Export dashboard as PDF
  */
 export const exportDashboardAsPDF = async (elementId: string, filename: string): Promise<void> => {
+    // Dispatch start event for overlay
+    dispatchExportEvent('export-start', { type: 'pdf' });
+
     let restoreElements: (() => void) | null = null;
     let restoreCharts: (() => void) | null = null;
     let restorePageBreak: (() => void) | null = null;
@@ -380,6 +428,9 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
     let restoreHeader: (() => void) | null = null;
 
     try {
+        // Small initial yield to allow overlay to render
+        await yieldToMain(100);
+
         const element = document.getElementById(elementId);
         if (!element) {
             throw new Error(`Element with id "${elementId}" not found`);
@@ -470,6 +521,9 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         await yieldToMain();
 
         pdf.save(`${filename}.pdf`);
+
+        // Dispatch complete event
+        dispatchExportEvent('export-complete', { type: 'pdf' });
     } catch (error) {
         // Restore elements on error
         if (restoreElements) restoreElements();
@@ -478,6 +532,12 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         if (restoreFooter) restoreFooter();
         if (restoreHeader) restoreHeader();
         console.error('Failed to export as PDF:', error);
+
+        // Dispatch error event
+        dispatchExportEvent('export-error', {
+            type: 'pdf',
+            error: error instanceof Error ? error.message : 'Export failed'
+        });
         throw error;
     }
 };

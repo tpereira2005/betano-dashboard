@@ -3,7 +3,7 @@ import { Instagram } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DashboardProps } from '@/types';
 import { processTransactions, calculateStatistics, filterTransactions } from '@/utils/calculations';
-import { exportDashboardAsPDF, exportAsPNG, exportTransactionsAsCSV } from '@/utils/export';
+import { exportDashboardAsPDF, exportAsPNG, exportTransactionsAsCSV, onExportEvent, ExportEventDetail } from '@/utils/export';
 import { DashboardHeader } from './dashboard/DashboardHeader';
 import { KPISection } from './dashboard/KPISection';
 import { CumulativeChart } from './dashboard/CumulativeChart';
@@ -14,6 +14,7 @@ import { MoMChart } from './dashboard/MoMChart';
 import { InsightsCard } from './dashboard/InsightsCard';
 import { TransactionTable } from './dashboard/TransactionTable';
 import { ReloadModal } from './ReloadModal';
+import { ExportOverlay } from './common/ExportOverlay';
 
 const Dashboard: React.FC<DashboardProps> = ({
     rawData,
@@ -27,6 +28,33 @@ const Dashboard: React.FC<DashboardProps> = ({
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [showReloadModal, setShowReloadModal] = useState(false);
+
+    // Export overlay state
+    const [exportOverlay, setExportOverlay] = useState<{
+        visible: boolean;
+        type: 'pdf' | 'png' | 'csv';
+    }>({ visible: false, type: 'pdf' });
+
+    // Listen for export events to show/hide overlay
+    useEffect(() => {
+        const unsubStart = onExportEvent('export-start', (e) => {
+            setExportOverlay({ visible: true, type: e.detail.type });
+        });
+
+        const unsubComplete = onExportEvent('export-complete', () => {
+            setExportOverlay(prev => ({ ...prev, visible: false }));
+        });
+
+        const unsubError = onExportEvent('export-error', () => {
+            setExportOverlay(prev => ({ ...prev, visible: false }));
+        });
+
+        return () => {
+            unsubStart();
+            unsubComplete();
+            unsubError();
+        };
+    }, []);
 
     // Process raw data
     const processedData = useMemo(() => {
@@ -199,6 +227,12 @@ const Dashboard: React.FC<DashboardProps> = ({
 
     return (
         <>
+            {/* Export Loading Overlay */}
+            <ExportOverlay
+                isVisible={exportOverlay.visible}
+                exportType={exportOverlay.type}
+            />
+
             <div className="container" id="dashboard-container">
                 <DashboardHeader
                     startDate={startDate}
