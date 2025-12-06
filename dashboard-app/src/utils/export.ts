@@ -360,17 +360,17 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
                 breakBefore: insightsCard.style.breakBefore || ''
             }
         });
-        // Force page break before insights if it would be cut
-        insightsCard.style.marginTop = '50px';
+        // Force page break before insights - use 180px to push entire section to next page
+        insightsCard.style.marginTop = '180px';
         insightsCard.style.paddingTop = '20px';
-        insightsCard.style.breakBefore = 'auto';
+        insightsCard.style.breakBefore = 'page';
     }
 
     // Return restore function
     return () => {
         modifiedElements.forEach(({ el, originalStyles }) => {
             Object.entries(originalStyles).forEach(([key, value]) => {
-                (el.style as Record<string, string>)[key] = value;
+                (el.style as unknown as Record<string, string>)[key] = value;
             });
         });
     };
