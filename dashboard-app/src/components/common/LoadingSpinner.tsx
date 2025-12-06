@@ -43,13 +43,6 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
                 {/* Message */}
                 <p className="loading-text">{message}</p>
-
-                {/* Animated dots */}
-                <div className="loading-dots">
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                </div>
             </div>
         </div>
     );
