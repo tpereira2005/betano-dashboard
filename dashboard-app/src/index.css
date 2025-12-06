@@ -4395,13 +4395,14 @@ tbody tr:hover {
 }
 
 .btn-reload:hover svg {
-  animation: spin-reload 0.8s linear infinite;
+  animation: spin-reload 0.5s ease-out forwards;
 }
 
 @keyframes spin-reload {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -4414,15 +4415,20 @@ tbody tr:hover {
 }
 
 .btn-export:hover svg:first-child {
-  animation: download-bounce 0.6s ease-in-out infinite;
+  animation: download-bounce 0.4s ease-in-out forwards;
 }
 
 @keyframes download-bounce {
-  0%, 100% {
+  0% {
     transform: translateY(0);
   }
-  50% {
+
+  40% {
     transform: translateY(3px);
+  }
+
+  100% {
+    transform: translateY(0);
   }
 }
 
