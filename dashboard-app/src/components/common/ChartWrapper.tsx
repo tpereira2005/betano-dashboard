@@ -1,6 +1,6 @@
-import React, { useRef, cloneElement, isValidElement } from 'react';
+import React, { useRef, useState, useEffect, cloneElement, isValidElement } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Camera } from 'lucide-react';
+import { Camera, Maximize2, Minimize2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
 
@@ -20,12 +20,30 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
     ariaLabel
 }) => {
     const chartRef = useRef<HTMLDivElement>(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Check if mobile
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Listen for fullscreen changes
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
 
     const handleDownload = async () => {
         try {
             toast.loading('A gerar gráfico HD...', { id: 'chart-export' });
 
-            // Create temporary container with desktop dimensions
             const tempContainer = document.createElement('div');
             tempContainer.style.cssText = `
                 position: fixed;
@@ -38,7 +56,6 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
             `;
             document.body.appendChild(tempContainer);
 
-            // Create header
             const header = document.createElement('div');
             header.style.cssText = `
                 display: flex;
@@ -52,25 +69,19 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
             `;
             tempContainer.appendChild(header);
 
-            // Create chart container with fixed height
             const chartContainer = document.createElement('div');
             chartContainer.style.cssText = 'width: 100%; height: 400px; overflow: visible;';
             tempContainer.appendChild(chartContainer);
 
-            // Clone the chart children with new dimensions
             const chartRoot = createRoot(chartContainer);
-
-            // If children is a ResponsiveContainer, we need to render it
             if (isValidElement(children)) {
                 chartRoot.render(cloneElement(children as React.ReactElement));
             } else {
                 chartRoot.render(<>{children}</>);
             }
 
-            // Wait for chart to fully render (Recharts needs time)
             await new Promise(resolve => setTimeout(resolve, 1500));
 
-            // Capture the temporary container
             const canvas = await html2canvas(tempContainer, {
                 backgroundColor: '#ffffff',
                 scale: 2,
@@ -79,11 +90,9 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
                 allowTaint: true,
             });
 
-            // Cleanup
             chartRoot.unmount();
             document.body.removeChild(tempContainer);
 
-            // Download
             const link = document.createElement('a');
             link.download = `${chartId}-${new Date().toISOString().split('T')[0]}.png`;
             link.href = canvas.toDataURL('image/png');
@@ -96,34 +105,97 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
         }
     };
 
+    const toggleFullscreen = async () => {
+        if (!chartRef.current) return;
+
+        try {
+            if (!isFullscreen) {
+                // Enter fullscreen
+                if (chartRef.current.requestFullscreen) {
+                    await chartRef.current.requestFullscreen();
+                }
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                }
+            }
+        } catch (error) {
+            console.error('Fullscreen error:', error);
+            toast.error('Erro ao entrar em tela cheia');
+        }
+    };
+
     return (
         <div
-            className={`card chart-card ${className}`}
+            className={`card chart-card ${className} ${isFullscreen ? 'chart-is-fullscreen' : ''}`}
             ref={chartRef}
             role="img"
             aria-label={ariaLabel || title}
+            style={isFullscreen ? {
+                background: 'var(--color-bg)',
+                padding: '20px',
+                display: 'flex',
+                flexDirection: 'column'
+            } : undefined}
         >
-            <div className="chart-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <div
+                className="chart-header"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '16px',
+                    flexShrink: 0
+                }}
+            >
                 <h3 className="section-title" style={{ marginBottom: 0 }}>{title}</h3>
-                <button
-                    className="btn btn-outline btn-icon"
-                    onClick={handleDownload}
-                    title="Baixar este gráfico"
-                    aria-label={`Exportar ${title} como imagem`}
-                    style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '32px',
-                        height: '32px',
-                        padding: 0,
-                        borderRadius: '8px'
-                    }}
-                >
-                    <Camera size={16} />
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    {isMobile && (
+                        <button
+                            className="btn btn-outline btn-icon"
+                            onClick={toggleFullscreen}
+                            title={isFullscreen ? "Sair de tela cheia" : "Ver em tela cheia"}
+                            aria-label={isFullscreen ? "Sair de tela cheia" : `Ver ${title} em tela cheia`}
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '32px',
+                                height: '32px',
+                                padding: 0,
+                                borderRadius: '8px'
+                            }}
+                        >
+                            {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                        </button>
+                    )}
+                    <button
+                        className="btn btn-outline btn-icon"
+                        onClick={handleDownload}
+                        title="Baixar este gráfico"
+                        aria-label={`Exportar ${title} como imagem`}
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '32px',
+                            height: '32px',
+                            padding: 0,
+                            borderRadius: '8px'
+                        }}
+                    >
+                        <Camera size={16} />
+                    </button>
+                </div>
             </div>
-            <div className="chart-container" style={{ height: '300px' }}>
+            <div
+                className="chart-container"
+                style={{
+                    height: isFullscreen ? 'calc(100% - 60px)' : '300px',
+                    flex: isFullscreen ? 1 : undefined
+                }}
+            >
                 {children}
             </div>
         </div>
