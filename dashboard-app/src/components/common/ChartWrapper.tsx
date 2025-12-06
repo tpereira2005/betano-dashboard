@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, cloneElement, isValidElement } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Camera, Maximize2, Minimize2 } from 'lucide-react';
+import { Camera, Maximize2, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
 
@@ -12,6 +12,86 @@ interface ChartWrapperProps {
     ariaLabel?: string;
 }
 
+// Fullscreen Modal Component (simple overlay)
+const FullscreenModal: React.FC<{
+    title: string;
+    children: React.ReactNode;
+    onClose: () => void;
+}> = ({ title, children, onClose }) => {
+    // Prevent body scroll
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = ''; };
+    }, []);
+
+    // Close on escape key
+    useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, [onClose]);
+
+    return (
+        <div
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'var(--color-bg, #0D0E1A)',
+                zIndex: 99999,
+                display: 'flex',
+                flexDirection: 'column'
+            }}
+        >
+            {/* Header */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 16px',
+                backgroundColor: '#0E0F22',
+                color: 'white',
+                flexShrink: 0
+            }}>
+                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>{title}</h3>
+                <button
+                    onClick={onClose}
+                    style={{
+                        background: 'rgba(255,255,255,0.15)',
+                        border: 'none',
+                        padding: '8px',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white'
+                    }}
+                >
+                    <X size={24} />
+                </button>
+            </div>
+            {/* Chart content */}
+            <div style={{
+                flex: 1,
+                padding: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: 0
+            }}>
+                <div style={{ width: '100%', height: '100%', minHeight: '200px' }}>
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export const ChartWrapper: React.FC<ChartWrapperProps> = ({
     title,
     chartId,
@@ -20,24 +100,14 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
     ariaLabel
 }) => {
     const chartRef = useRef<HTMLDivElement>(null);
-    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [showFullscreen, setShowFullscreen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
-    // Check if mobile
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth <= 768);
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    // Listen for fullscreen changes
-    useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullscreen(!!document.fullscreenElement);
-        };
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
-        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
     }, []);
 
     const handleDownload = async () => {
@@ -105,58 +175,49 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
         }
     };
 
-    const toggleFullscreen = async () => {
-        if (!chartRef.current) return;
-
-        try {
-            if (!isFullscreen) {
-                // Enter fullscreen
-                if (chartRef.current.requestFullscreen) {
-                    await chartRef.current.requestFullscreen();
-                }
-            } else {
-                // Exit fullscreen
-                if (document.exitFullscreen) {
-                    await document.exitFullscreen();
-                }
-            }
-        } catch (error) {
-            console.error('Fullscreen error:', error);
-            toast.error('Erro ao entrar em tela cheia');
-        }
-    };
-
     return (
-        <div
-            className={`card chart-card ${className} ${isFullscreen ? 'chart-is-fullscreen' : ''}`}
-            ref={chartRef}
-            role="img"
-            aria-label={ariaLabel || title}
-            style={isFullscreen ? {
-                background: 'var(--color-bg)',
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column'
-            } : undefined}
-        >
+        <>
             <div
-                className="chart-header"
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '16px',
-                    flexShrink: 0
-                }}
+                className={`card chart-card ${className}`}
+                ref={chartRef}
+                role="img"
+                aria-label={ariaLabel || title}
             >
-                <h3 className="section-title" style={{ marginBottom: 0 }}>{title}</h3>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    {isMobile && (
+                <div
+                    className="chart-header"
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '16px'
+                    }}
+                >
+                    <h3 className="section-title" style={{ marginBottom: 0 }}>{title}</h3>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        {isMobile && (
+                            <button
+                                className="btn btn-outline btn-icon"
+                                onClick={() => setShowFullscreen(true)}
+                                title="Ver em tela cheia"
+                                aria-label={`Ver ${title} em tela cheia`}
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '32px',
+                                    height: '32px',
+                                    padding: 0,
+                                    borderRadius: '8px'
+                                }}
+                            >
+                                <Maximize2 size={16} />
+                            </button>
+                        )}
                         <button
                             className="btn btn-outline btn-icon"
-                            onClick={toggleFullscreen}
-                            title={isFullscreen ? "Sair de tela cheia" : "Ver em tela cheia"}
-                            aria-label={isFullscreen ? "Sair de tela cheia" : `Ver ${title} em tela cheia`}
+                            onClick={handleDownload}
+                            title="Baixar este gráfico"
+                            aria-label={`Exportar ${title} como imagem`}
                             style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
@@ -167,37 +228,24 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
                                 borderRadius: '8px'
                             }}
                         >
-                            {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                            <Camera size={16} />
                         </button>
-                    )}
-                    <button
-                        className="btn btn-outline btn-icon"
-                        onClick={handleDownload}
-                        title="Baixar este gráfico"
-                        aria-label={`Exportar ${title} como imagem`}
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '32px',
-                            height: '32px',
-                            padding: 0,
-                            borderRadius: '8px'
-                        }}
-                    >
-                        <Camera size={16} />
-                    </button>
+                    </div>
+                </div>
+                <div className="chart-container" style={{ height: '300px' }}>
+                    {children}
                 </div>
             </div>
-            <div
-                className="chart-container"
-                style={{
-                    height: isFullscreen ? 'calc(100% - 60px)' : '300px',
-                    flex: isFullscreen ? 1 : undefined
-                }}
-            >
-                {children}
-            </div>
-        </div>
+
+            {/* Fullscreen Modal */}
+            {showFullscreen && (
+                <FullscreenModal
+                    title={title}
+                    onClose={() => setShowFullscreen(false)}
+                >
+                    {children}
+                </FullscreenModal>
+            )}
+        </>
     );
 };
