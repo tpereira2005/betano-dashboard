@@ -11,8 +11,8 @@ import {
     AlertTriangle,
     ArrowUpRight,
     ArrowDownRight,
-    ChevronUp,
-    ChevronDown,
+    ArrowUp,
+    ArrowDown,
     Lightbulb,
     BarChart3,
     Zap,
@@ -80,8 +80,8 @@ export const InsightsCard: React.FC<InsightsCardProps> = ({ insights }) => {
                     <span className="insight-title-new">{insight.title}</span>
                     {insight.trend && (
                         <span className={`insight-trend trend-${insight.trend}`}>
-                            {insight.trend === 'up' ? <ChevronUp size={16} /> :
-                                insight.trend === 'down' ? <ChevronDown size={16} /> : null}
+                            {insight.trend === 'up' ? <ArrowUp size={14} strokeWidth={2.5} /> :
+                                insight.trend === 'down' ? <ArrowDown size={14} strokeWidth={2.5} /> : null}
                         </span>
                     )}
                 </div>
