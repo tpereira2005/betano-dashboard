@@ -128,7 +128,7 @@ export const MoMChart: React.FC<MoMChartProps> = React.memo(({ data }) => {
                     stroke="#9CA3AF"
                     tickFormatter={(value) => `${value}%`}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip />} trigger="hover" />
                 <ReferenceLine y={0} stroke="#6B7280" strokeDasharray="3 3" />
                 <Line
                     type="monotone"

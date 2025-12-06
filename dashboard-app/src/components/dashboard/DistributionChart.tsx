@@ -97,7 +97,7 @@ export const DistributionChart: React.FC<DistributionChartProps> = React.memo(({
                             <Cell key={`cell-${index}`} fill={COLORS[entry.name as keyof typeof COLORS]} stroke="none" />
                         ))}
                     </Pie>
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip />} trigger="hover" />
                 </PieChart>
             </ResponsiveContainer>
 

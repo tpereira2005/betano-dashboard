@@ -87,7 +87,7 @@ export const HistogramChart: React.FC<HistogramChartProps> = React.memo(({ data 
                         tick={{ fontSize: 12 }}
                         stroke="#9CA3AF"
                     />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip />} trigger="hover" />
                     <Bar dataKey="count" fill="#3B82F6" radius={[8, 8, 0, 0]} />
                 </BarChart>
             </ResponsiveContainer>
