@@ -143,57 +143,85 @@ const generateInsights = (
 
     // ===== PERFORMANCE INSIGHTS =====
 
-    // 1. ROI
-    if (roi !== 0) {
-        const isPositive = roi > 0;
+    // 1. Volatilidade - Consistency of results (standard deviation)
+    if (monthlyData.length >= 3) {
+        const netResults = monthlyData.map(m => m.net);
+        const avg = netResults.reduce((a, b) => a + b, 0) / netResults.length;
+        const variance = netResults.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / netResults.length;
+        const stdDev = Math.sqrt(variance);
+        const avgAbs = Math.abs(avg) || 1;
+        const volatilityPercent = (stdDev / avgAbs) * 100;
+        const isStable = volatilityPercent < 50;
+
         insights.push({
-            id: 'roi',
+            id: 'volatility',
             category: 'performance',
-            type: isPositive ? 'success' : 'danger',
-            icon: isPositive ? 'TrendingUp' : 'TrendingDown',
-            title: 'Retorno (ROI)',
-            value: `${isPositive ? '+' : ''}${roi.toFixed(1)}%`,
-            description: isPositive
-                ? 'O teu investimento está a gerar lucro'
-                : 'Estás a perder dinheiro em relação ao investido',
-            trend: isPositive ? 'up' : 'down',
+            type: isStable ? 'success' : 'warning',
+            icon: 'Activity',
+            title: 'Volatilidade',
+            value: isStable ? 'Estável' : 'Alta',
+            description: isStable
+                ? 'Resultados consistentes entre meses'
+                : 'Grande variação nos resultados mensais',
+            trend: isStable ? 'up' : 'down',
             priority: priority++
         });
     }
 
-    // 2. Win Rate
-    if (monthlyData.length > 0) {
-        const profitableMonths = monthlyData.filter(m => m.net > 0).length;
-        const isGood = winRate >= 50;
-        insights.push({
-            id: 'winrate',
-            category: 'performance',
-            type: isGood ? 'success' : 'warning',
-            icon: 'Target',
-            title: 'Taxa de Sucesso',
-            value: `${winRate.toFixed(0)}%`,
-            description: `${profitableMonths} de ${monthlyData.length} meses foram lucrativos`,
-            trend: isGood ? 'up' : 'down',
-            priority: priority++
-        });
-    }
+    // 2. Recuperação - Recovery rate from negative months
+    if (monthlyData.length >= 2) {
+        let negativeMonths = 0;
+        let recoveries = 0;
 
-    // 3. Net Result Trend
-    if (trendValue !== 0) {
-        const isImproving = trendValue > 5;
-        const isDeclining = trendValue < -5;
-        if (isImproving || isDeclining) {
+        for (let i = 0; i < monthlyData.length - 1; i++) {
+            if (monthlyData[i].net < 0) {
+                negativeMonths++;
+                if (monthlyData[i + 1].net > 0) {
+                    recoveries++;
+                }
+            }
+        }
+
+        if (negativeMonths > 0) {
+            const recoveryRate = (recoveries / negativeMonths) * 100;
+            const isGood = recoveryRate >= 50;
             insights.push({
-                id: 'trend',
+                id: 'recovery',
                 category: 'performance',
-                type: isImproving ? 'success' : 'danger',
-                icon: isImproving ? 'ArrowUpRight' : 'ArrowDownRight',
-                title: 'Tendência Atual',
-                value: `${trendValue > 0 ? '+' : ''}${trendValue.toFixed(0)}%`,
-                description: isImproving
-                    ? 'Últimos 3 meses acima da média anterior'
-                    : 'Últimos 3 meses abaixo da média anterior',
-                trend: isImproving ? 'up' : 'down',
+                type: isGood ? 'success' : 'warning',
+                icon: isGood ? 'TrendingUp' : 'TrendingDown',
+                title: 'Recuperação',
+                value: `${recoveries}/${negativeMonths}`,
+                description: isGood
+                    ? 'Boa capacidade de recuperar de perdas'
+                    : 'Dificuldade em recuperar de meses negativos',
+                trend: isGood ? 'up' : 'down',
+                priority: priority++
+            });
+        }
+    }
+
+    // 3. Momentum - Last month vs overall average
+    if (monthlyData.length >= 2) {
+        const lastMonth = monthlyData[monthlyData.length - 1];
+        const allMonthsAvg = monthlyData.reduce((sum, m) => sum + m.net, 0) / monthlyData.length;
+        const avgAbs = Math.abs(allMonthsAvg) || 1;
+        const momentumPercent = ((lastMonth.net - allMonthsAvg) / avgAbs) * 100;
+        const isPositive = momentumPercent > 10;
+        const isNegative = momentumPercent < -10;
+
+        if (isPositive || isNegative) {
+            insights.push({
+                id: 'momentum',
+                category: 'performance',
+                type: isPositive ? 'success' : 'danger',
+                icon: isPositive ? 'ArrowUpRight' : 'ArrowDownRight',
+                title: 'Momentum',
+                value: `${momentumPercent > 0 ? '+' : ''}${momentumPercent.toFixed(0)}%`,
+                description: isPositive
+                    ? 'Último mês acima da média histórica'
+                    : 'Último mês abaixo da média histórica',
+                trend: isPositive ? 'up' : 'down',
                 priority: priority++
             });
         }
