@@ -3865,12 +3865,16 @@ tbody tr:hover {
    ======================================== */
 [data-theme="dark"] .insight-card-new {
   background: linear-gradient(135deg, rgba(28, 30, 46, 0.95) 0%, rgba(22, 24, 38, 0.9) 100%);
-  border-color: rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.08);
+  border-right-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="dark"] .insight-card-new:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255, 255, 255, 0.12);
+  border-right-color: rgba(255, 255, 255, 0.12);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme="dark"] .insight-card-new.type-success:hover {
