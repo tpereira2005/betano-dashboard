@@ -135,7 +135,10 @@ export const ChartWrapper: React.FC<ChartWrapperProps> = ({
                     </button>
                 </div>
                 <div className="chart-fullscreen-content">
-                    {children}
+                    {/* Explicit dimensions wrapper to prevent ResponsiveContainer loop */}
+                    <div style={{ width: '100%', height: '100%', minHeight: '250px' }}>
+                        {children}
+                    </div>
                 </div>
             </div>
         );
