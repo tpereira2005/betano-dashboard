@@ -409,9 +409,9 @@ const addPageBreakPadding = (container: HTMLElement): (() => void) => {
                 breakBefore: insightsCard.style.breakBefore || ''
             }
         });
-        // Force page break before insights - use 180px to push entire section to next page
-        insightsCard.style.marginTop = '180px';
-        insightsCard.style.paddingTop = '20px';
+        // Force page break before insights - use 220px to push entire section to next page
+        insightsCard.style.marginTop = '220px';
+        insightsCard.style.paddingTop = '30px';
         insightsCard.style.breakBefore = 'page';
     }
 
