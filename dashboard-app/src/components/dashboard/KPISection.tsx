@@ -12,7 +12,7 @@ import {
     ArrowDownToLine,
     ArrowUpFromLine,
     Trophy,
-    Anchor
+    Skull
 } from 'lucide-react';
 import { KPISectionProps } from '@/types';
 import { StatCard } from '@/components/common/StatCard';
@@ -157,7 +157,7 @@ export const KPISection: React.FC<KPISectionProps> = ({ stats }) => {
                     title="Pior Momento"
                     value={stats.valleyMoment ? formatCurrency(stats.valleyMoment.balance) : 'N/A'}
                     subValue={stats.valleyMoment ? stats.valleyMoment.date : '-'}
-                    icon={Anchor}
+                    icon={Skull}
                     type="danger"
                     variant="compact"
                 />
