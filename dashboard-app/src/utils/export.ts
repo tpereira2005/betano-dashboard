@@ -543,7 +543,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
 
         const canvas = await html2canvas(element, {
             backgroundColor: getExportBackgroundColor(),
-            scale: 1.5, // Good balance between quality and performance
+            scale: 1.2, // Safe scale that works reliably
             logging: false,
             useCORS: true,
             allowTaint: true,
@@ -568,7 +568,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         // Yield before PDF generation
         await yieldToMain();
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.85);
+        const imgData = canvas.toDataURL('image/png'); // PNG for better quality
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
@@ -600,7 +600,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
         pdf.rect(0, 0, imgWidth, pageHeight, 'F');
 
         // Add first page image
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
         // Add additional pages if content is longer
@@ -610,7 +610,7 @@ export const exportDashboardAsPDF = async (elementId: string, filename: string):
             // Fill each new page with background color
             pdf.setFillColor(rgb.r, rgb.g, rgb.b);
             pdf.rect(0, 0, imgWidth, pageHeight, 'F');
-            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
         }
 
