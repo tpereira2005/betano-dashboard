@@ -8,246 +8,171 @@
 ![Vite](https://img.shields.io/badge/Vite-7-purple?logo=vite)
 ![Supabase](https://img.shields.io/badge/Supabase-Auth-green?logo=supabase)
 
-**Aplicação web moderna para análise detalhada do histórico de transações da Betano.**
+**A modern web application for detailed analysis of Betano transaction history.**
 
-Importe o seu ficheiro CSV e obtenha insights instantâneos sobre os seus ganhos, perdas e performance ao longo do tempo.
+Import your CSV file and get instant insights about your wins, losses, and performance over time.
 
-[🌐 Demo Live](https://betano-dashboard.vercel.app) • [📖 Documentação](#-como-começar) • [📋 Changelog](CHANGELOG.md) • [🐛 Reportar Bug](https://github.com/tpereira2005/betano-dashboard/issues)
-
-</div>
-
----
-
-## 🖼️ Screenshots
-
-<div align="center">
-
-| Light Mode | Dark Mode |
-|------------|-----------|
-| ![Dashboard Light](https://via.placeholder.com/400x250/ffffff/0E0F22?text=Dashboard+Light) | ![Dashboard Dark](https://via.placeholder.com/400x250/0D0E1A/FF3D00?text=Dashboard+Dark) |
+[🌐 Live Demo](https://betano-dashboard.vercel.app) • [📋 Changelog](CHANGELOG.md) • [🐛 Report Bug](https://github.com/tpereira2005/betano-dashboard/issues)
 
 </div>
 
 ---
 
-## ✨ Funcionalidades
+## ✨ Features
 
-### 📈 Análise Visual Completa
-- **Gráfico Cumulativo** - Evolução do saldo ao longo do tempo
-- **Gráfico Mensal** - Resultados organizados por mês
-- **Gráfico de Distribuição** - Depósitos vs Levantamentos
-- **Histograma** - Distribuição de valores por faixas
-- **Variação MoM** - Mudança percentual mês-a-mês
+### 📈 Complete Visual Analysis
+- **Cumulative Chart** - Balance evolution over time
+- **Monthly Chart** - Results organized by month
+- **Distribution Chart** - Deposits vs Withdrawals
+- **Histogram** - Value distribution by ranges
+- **MoM Variation** - Month-over-month percentage change
 
-### 💡 Insights Automáticos
-8 insights inteligentes gerados automaticamente:
-- 🏆 Melhor e pior mês
-- 📊 ROI e taxa de sucesso
-- 🔥 Sequências de meses lucrativos
-- 💰 Médias de depósito e levantamento
-- 📈 Tendências e volatilidade
-- 💡 Dicas personalizadas de gestão
+### 💡 Automatic Insights
+8 smart insights generated automatically:
+- 🏆 Best and worst month
+- 📊 ROI and success rate
+- 🔥 Profitable month streaks
+- 💰 Deposit and withdrawal averages
+- 📈 Trends and volatility analysis
+- 💡 Personalized bankroll tips
 
-### 👥 Sistema de Perfis
-- **Múltiplos Perfis** - Gira várias contas separadamente
-- **Vista Combinada** - Agrega dados de todos os perfis
-- **Comparação Visual** - Compara 2 perfis lado a lado com gráficos
-- **Banner de Vencedor** - Destaca o perfil com melhor performance
+### 👥 Profile System
+- **Multiple Profiles** - Manage several accounts separately
+- **Combined View** - Aggregate data from all profiles
+- **Visual Comparison** - Compare 2 profiles side by side with charts
+- **Winner Banner** - Highlights the best performing profile
 
-### 🔐 Autenticação Segura
-- Login e Registo com Supabase Auth
-- Recuperação de password por email
-- Indicador de força da password
-- Sessões persistentes e seguras
+### 🔐 Secure Authentication
+- Login and Registration with Supabase Auth
+- Password recovery via email
+- Password strength indicator
+- Persistent and secure sessions
 
-### 📤 Exportação Profissional
-- **PDF** - Dashboard completo em alta qualidade
-- **PNG** - Imagem do dashboard ou gráficos individuais
-- **CSV** - Dados tabelares para Excel/Sheets
+### 📤 Professional Export
+- **PDF** - Complete dashboard in high quality
+- **PNG** - Dashboard image or individual charts
+- **CSV** - Tabular data for Excel/Sheets
 
-### 🎨 Design Premium
-- 🌙 **Dark Mode** com cores vibrantes (neon verde/vermelho)
-- ✨ **Glassmorphism** - Efeitos de vidro fosco
-- 📱 **Responsivo** - Otimizado para mobile
-- 🎯 **Scrollbar Personalizada** - Cores Betano
+### 🎨 Premium Design
+- 🌙 **Dark Mode** with vibrant colors (neon green/red)
+- ✨ **Glassmorphism** - Frosted glass effects
+- 📱 **Responsive** - Mobile optimized
+- 🎯 **Custom Scrollbar** - Betano branding colors
 
 ---
 
-## 🚀 Como Começar
+## 🚀 Getting Started
 
-### Pré-requisitos
-- Node.js 18+ (recomendado: 20 LTS)
-- npm ou yarn
-- Conta Supabase (gratuita)
+### Prerequisites
+- Node.js 18+ (recommended: 20 LTS)
+- npm or yarn
+- Supabase account (free tier)
 
-### Instalação Local
+### Local Installation
 
 ```bash
-# 1. Clone o repositório
+# 1. Clone the repository
 git clone https://github.com/tpereira2005/betano-dashboard.git
 
-# 2. Entre na pasta do projeto
+# 2. Navigate to project folder
 cd betano-dashboard/dashboard-app
 
-# 3. Instale as dependências
+# 3. Install dependencies
 npm install
 
-# 4. Configure as variáveis de ambiente
+# 4. Configure environment variables
 cp .env.example .env
-# Edite .env com as suas credenciais Supabase
+# Edit .env with your Supabase credentials
 
-# 5. Inicie o servidor de desenvolvimento
+# 5. Start development server
 npm run dev
 ```
 
-A aplicação estará disponível em `http://localhost:5173`
+The app will be available at `http://localhost:5173`
 
-### Variáveis de Ambiente
+### Environment Variables
 
-Crie um ficheiro `.env` na raiz do `dashboard-app`:
+Create a `.env` file in the `dashboard-app` root:
 
 ```env
-VITE_SUPABASE_URL=https://seu-projeto.supabase.co
-VITE_SUPABASE_ANON_KEY=sua-anon-key-aqui
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
 ---
 
-## 🛠️ Stack Tecnológica
+## 🛠️ Tech Stack
 
 <div align="center">
 
-| Frontend | Backend | Styling | Ferramentas |
-|----------|---------|---------|-------------|
-| React 18 | Supabase | CSS Moderno | Vite 7 |
+| Frontend | Backend | Styling | Tools |
+|----------|---------|---------|-------|
+| React 18 | Supabase | Modern CSS | Vite 7 |
 | TypeScript 5 | PostgreSQL | Glassmorphism | ESLint |
-| Recharts | Row Level Security | Animações CSS | html2canvas |
+| Recharts | Row Level Security | CSS Animations | html2canvas |
 | React Router | Supabase Auth | Dark Mode | jsPDF |
 
 </div>
 
-### Dependências Principais
+---
 
-```json
-{
-  "react": "^18.3.1",
-  "typescript": "~5.8.3",
-  "vite": "^7.2.6",
-  "@supabase/supabase-js": "^2.49.5",
-  "recharts": "^2.15.2",
-  "lucide-react": "^0.507.0",
-  "papaparse": "^5.5.3",
-  "html2canvas": "^1.4.1",
-  "jspdf": "^3.0.1"
-}
-```
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl + E` | Export transactions to CSV |
+| `Ctrl + K` | Open profile comparison |
+| `Tab` | Accessible navigation |
 
 ---
 
-## ⌨️ Atalhos de Teclado
-
-| Atalho | Ação |
-|--------|------|
-| `Ctrl + E` | Exportar transações para CSV |
-| `Ctrl + K` | Abrir comparador de perfis |
-| `Tab` | Navegação acessível entre elementos |
-
----
-
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 dashboard-app/
 ├── src/
 │   ├── components/
-│   │   ├── Dashboard.tsx       # Componente principal
-│   │   ├── UploadScreen.tsx    # Ecrã de upload CSV
-│   │   ├── ProfileManager.tsx  # Gestão de perfis
-│   │   ├── ProfileComparison.tsx # Comparação de perfis
-│   │   ├── VersionModal.tsx    # Modal de versões
-│   │   ├── dashboard/          # Sub-componentes
-│   │   │   ├── DashboardHeader.tsx
-│   │   │   ├── KPISection.tsx
-│   │   │   ├── CumulativeChart.tsx
-│   │   │   ├── MonthlyChart.tsx
-│   │   │   ├── DistributionChart.tsx
-│   │   │   ├── HistogramChart.tsx
-│   │   │   ├── MoMChart.tsx
-│   │   │   ├── InsightsCard.tsx
-│   │   │   └── TransactionTable.tsx
-│   │   └── common/
-│   │       ├── ChartWrapper.tsx
-│   │       └── ExportOverlay.tsx
-│   ├── utils/
-│   │   ├── calculations.ts     # Lógica de cálculos
-│   │   ├── export.ts           # Exportação PDF/PNG
-│   │   └── insights.ts         # Geração de insights
-│   ├── lib/
-│   │   └── supabase.ts         # Cliente Supabase
-│   ├── types/
-│   │   └── index.ts            # Tipos TypeScript
-│   ├── index.css               # Estilos globais
-│   └── App.tsx                 # Entrada da app
-├── public/
-│   └── betano-logo.svg
-├── CHANGELOG.md                # Histórico de versões
+│   │   ├── Dashboard.tsx         # Main dashboard
+│   │   ├── UploadScreen.tsx      # CSV upload screen
+│   │   ├── ProfileManager.tsx    # Profile management
+│   │   ├── ProfileComparison.tsx # Profile comparison
+│   │   ├── VersionModal.tsx      # Version history modal
+│   │   ├── dashboard/            # Dashboard components
+│   │   └── common/               # Reusable components
+│   ├── utils/                    # Utility functions
+│   ├── lib/                      # Supabase config
+│   ├── types/                    # TypeScript types
+│   └── index.css                 # Global styles
+├── CHANGELOG.md                  # Version history
 └── package.json
 ```
 
 ---
 
-## 🔧 Scripts Disponíveis
+## 🚀 Deployment
 
-```bash
-npm run dev      # Servidor de desenvolvimento
-npm run build    # Build de produção
-npm run preview  # Preview do build
-npm run lint     # Verificação ESLint
-```
+### Vercel (Recommended)
 
----
-
-## 🚀 Deploy
-
-### Vercel (Recomendado)
-
-1. Fork este repositório
-2. Importa no [Vercel](https://vercel.com)
-3. Adiciona as variáveis de ambiente
-4. Deploy automático em cada push
-
-### Netlify
-
-```bash
-npm run build
-# Upload da pasta dist/
-```
+1. Fork this repository
+2. Import to [Vercel](https://vercel.com)
+3. Add environment variables
+4. Automatic deploy on each push
 
 ---
 
-## 📊 Como Obter o CSV da Betano
+## 🤝 Contributing
 
-1. Acede à tua conta Betano
-2. Vai a **Conta > Histórico de Transações**
-3. Seleciona o período desejado
-4. Clica em **Exportar para CSV**
-5. Faz upload do ficheiro na aplicação
+Contributions are welcome! To contribute:
 
----
-
-## 🤝 Contribuir
-
-Contribuições são bem-vindas! Para contribuir:
-
-1. Fork o projeto
-2. Cria uma branch (`git checkout -b feature/NovaFuncionalidade`)
-3. Commit as alterações (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
-5. Abre um Pull Request
+1. Fork the project
+2. Create a branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add new feature'`)
+4. Push to branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request
 
 ---
 
-## 👤 Autor
+## 👤 Author
 
 <div align="center">
 
@@ -261,23 +186,23 @@ Contribuições são bem-vindas! Para contribuir:
 
 ---
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está sob a licença MIT. Veja o ficheiro [LICENSE](LICENSE) para mais detalhes.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
 
-### ⚠️ Aviso Legal
+### ⚠️ Disclaimer
 
-Esta aplicação é uma ferramenta de análise pessoal e **não promove o jogo**.
-Joga com responsabilidade. Se tens problemas com jogo, procura ajuda em [jogoresponsavel.pt](https://www.jogoresponsavel.pt).
+This application is a personal analysis tool and **does not promote gambling**.
+Please gamble responsibly. If you have gambling problems, seek help.
 
 ---
 
-Desenvolvido com ❤️ para ajudar jogadores a gerir a sua banca de forma inteligente.
+Built with ❤️ to help manage your bankroll intelligently.
 
-⭐ **Se este projeto te ajudou, deixa uma estrela!** ⭐
+⭐ **If this project helped you, leave a star!** ⭐
 
 </div>
