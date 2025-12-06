@@ -91,12 +91,6 @@ export const HistogramChart: React.FC<HistogramChartProps> = React.memo(({ data 
                     <Bar dataKey="count" fill="#3B82F6" radius={[8, 8, 0, 0]} />
                 </BarChart>
             </ResponsiveContainer>
-
-            <div style={{ marginTop: '16px', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-                <p style={{ margin: 0 }}>
-                    📊 Mostra a frequência de transações por faixa de valor
-                </p>
-            </div>
         </div>
     );
 });

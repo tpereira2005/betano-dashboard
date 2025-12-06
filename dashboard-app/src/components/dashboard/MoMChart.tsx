@@ -192,12 +192,6 @@ export const MoMChart: React.FC<MoMChartProps> = React.memo(({ data }) => {
             </div>
 
             <ChartContent />
-
-            <div style={{ marginTop: '16px', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-                <p style={{ margin: 0 }}>
-                    📈 Variação percentual do resultado entre meses consecutivos
-                </p>
-            </div>
         </div>
     );
 });
