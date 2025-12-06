@@ -3,7 +3,7 @@ import { Instagram } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DashboardProps } from '@/types';
 import { processTransactions, calculateStatistics, filterTransactions } from '@/utils/calculations';
-import { exportDashboardAsPDF, exportDashboardAsPNG, exportTransactionsAsCSV } from '@/utils/exportServer';
+import { exportDashboardAsPDF, exportAsPNG, exportTransactionsAsCSV } from '@/utils/export';
 import { DashboardHeader } from './dashboard/DashboardHeader';
 import { KPISection } from './dashboard/KPISection';
 import { CumulativeChart } from './dashboard/CumulativeChart';
@@ -129,24 +129,24 @@ const Dashboard: React.FC<DashboardProps> = ({
     const handleExportPDF = React.useCallback(async () => {
         try {
             toast.loading('A exportar PDF...', { id: 'export-pdf' });
-            await exportDashboardAsPDF(stats, filteredTransactions, { start: startDate, end: endDate });
+            await exportDashboardAsPDF('dashboard-container', 'betano-dashboard');
             toast.success('Dashboard exportado como PDF!', { id: 'export-pdf' });
         } catch (error) {
             toast.error('Erro ao exportar PDF', { id: 'export-pdf' });
             console.error('Export PDF error:', error);
         }
-    }, [stats, filteredTransactions, startDate, endDate]);
+    }, []);
 
     const handleExportPNG = React.useCallback(async () => {
         try {
             toast.loading('A exportar PNG...', { id: 'export-png' });
-            await exportDashboardAsPNG(stats, filteredTransactions, { start: startDate, end: endDate });
+            await exportAsPNG('dashboard-container', 'betano-dashboard');
             toast.success('Dashboard exportado como PNG!', { id: 'export-png' });
         } catch (error) {
             toast.error('Erro ao exportar PNG', { id: 'export-png' });
             console.error('Export PNG error:', error);
         }
-    }, [stats, filteredTransactions, startDate, endDate]);
+    }, []);
 
     const handleExportCSV = React.useCallback(() => {
         try {
