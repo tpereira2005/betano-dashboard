@@ -1516,9 +1516,14 @@ button {
 }
 
 .date-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #FFFFFF;
   font-size: 1rem;
   font-weight: 300;
+  line-height: 1;
+  padding: 0 4px;
 }
 
 /* Glass Button Style */
