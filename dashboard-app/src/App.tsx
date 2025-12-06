@@ -1,6 +1,7 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { RawTransaction } from '@/types';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
@@ -136,6 +137,7 @@ function App() {
     return (
         <ErrorBoundary>
             <ThemeProvider>
+                <Analytics />
                 <Toaster
                     position="top-right"
                     containerClassName="toast-container"
