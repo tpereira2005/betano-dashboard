@@ -5185,3 +5185,31 @@ th {
   content-visibility: auto;
   contain-intrinsic-size: auto 100px;
 }
+
+/* ========================================
+   Profile Selector Skeleton (Loading State)
+   ======================================== */
+.profile-selector-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  opacity: 0;
+  animation: none;
+}
+
+.profile-selector-skeleton .skeleton {
+  background: var(--color-bg-secondary);
+  border-radius: 4px;
+}
+
+.profile-selector-skeleton .skeleton-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.profile-selector-skeleton .skeleton-text {
+  width: 80px;
+  height: 14px;
+}
