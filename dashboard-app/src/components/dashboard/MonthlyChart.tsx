@@ -24,6 +24,7 @@ export const MonthlyChart: React.FC<MonthlyChartProps> = React.memo(({ data }) =
             title="Resultado Mensal"
             chartId="chart-monthly"
             className="full-width-chart"
+            height={350}
             ariaLabel="Gráfico de barras mostrando o resultado líquido mensal"
         >
             <ResponsiveContainer width="100%" height="100%">
