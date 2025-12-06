@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Image, Loader2 } from 'lucide-react';
+import { FileText, Image } from 'lucide-react';
 import './ExportOverlay.css';
 
 interface ExportOverlayProps {
@@ -51,9 +51,6 @@ export const ExportOverlay: React.FC<ExportOverlayProps> = ({
                     {/* Animated icon */}
                     <div className="export-overlay-icon">
                         {getIcon()}
-                        <div className="export-overlay-spinner">
-                            <Loader2 size={80} />
-                        </div>
                     </div>
 
                     {/* Label */}
