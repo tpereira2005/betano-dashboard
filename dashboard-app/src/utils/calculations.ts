@@ -133,10 +133,7 @@ const calculateMoMChanges = (monthlyData: MonthlyData[]): MoMChange[] => {
 const generateInsights = (
     transactions: Transaction[],
     monthlyData: MonthlyData[],
-    roi: number,
-    winRate: number,
-    largestTransaction: LargestTransaction | null,
-    trendValue: number
+    largestTransaction: LargestTransaction | null
 ): RichInsight[] => {
     const insights: RichInsight[] = [];
     let priority = 0;
@@ -496,10 +493,7 @@ export const calculateStatistics = (transactions: Transaction[]): Statistics => 
     const insights = generateInsights(
         transactions,
         monthlyArr,
-        roi,
-        winRate,
-        largestTransaction,
-        trendValue
+        largestTransaction
     );
 
     // 11. Peak & Valley Moments
