@@ -132,7 +132,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     />
                 )}
                 <button
-                    className="btn btn-glass"
+                    className="btn btn-glass btn-reload"
                     onClick={onReload}
                 >
                     <RefreshCw size={16} />

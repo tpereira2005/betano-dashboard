@@ -4385,6 +4385,47 @@ tbody tr:hover {
   transform: rotate(15deg) scale(1.1);
 }
 
+/* ========================================
+   BUTTON HOVER ANIMATIONS - Premium Effects
+   ======================================== */
+
+/* Reload Button - Spinning Animation */
+.btn-reload svg {
+  transition: transform 0.3s ease;
+}
+
+.btn-reload:hover svg {
+  animation: spin-reload 0.8s linear infinite;
+}
+
+@keyframes spin-reload {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Export Button - Arrow "entering the box" Animation */
+.btn-export svg:first-child {
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.btn-export:hover svg:first-child {
+  animation: download-bounce 0.6s ease-in-out infinite;
+}
+
+@keyframes download-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
 /* Smooth theme transition */
 * {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease;
