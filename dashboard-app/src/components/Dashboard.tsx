@@ -156,7 +156,6 @@ const Dashboard: React.FC<DashboardProps> = ({
 
     const handleExportPDF = React.useCallback(async () => {
         try {
-            toast.loading('A exportar PDF...', { id: 'export-pdf' });
             await exportDashboardAsPDF('dashboard-container', 'betano-dashboard');
             toast.success('Dashboard exportado como PDF!', { id: 'export-pdf' });
         } catch (error) {
@@ -167,7 +166,6 @@ const Dashboard: React.FC<DashboardProps> = ({
 
     const handleExportPNG = React.useCallback(async () => {
         try {
-            toast.loading('A exportar PNG...', { id: 'export-png' });
             await exportAsPNG('dashboard-container', 'betano-dashboard');
             toast.success('Dashboard exportado como PNG!', { id: 'export-png' });
         } catch (error) {
