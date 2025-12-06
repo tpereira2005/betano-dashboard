@@ -132,7 +132,7 @@ export const CumulativeChart: React.FC<CumulativeChartProps> = React.memo(({ dat
                         fontSize={12}
                     />
                     <YAxis stroke="#999" fontSize={12} />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip />} trigger="hover" />
                     <ReferenceLine y={0} stroke="#666" strokeDasharray="3 3" />
                     {renderGradient()}
                 </AreaChart>

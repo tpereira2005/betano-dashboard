@@ -32,7 +32,7 @@ export const MonthlyChart: React.FC<MonthlyChartProps> = React.memo(({ data }) =
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
                     <XAxis dataKey="month" stroke="#999" fontSize={12} />
                     <YAxis stroke="#999" fontSize={12} />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip />} trigger="hover" />
                     <ReferenceLine y={0} stroke="#666" />
                     <Bar dataKey="net" name="Resultado Líquido" radius={[4, 4, 0, 0]}>
                         {data.map((entry, index) => (
