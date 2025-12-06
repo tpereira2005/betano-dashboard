@@ -3493,7 +3493,9 @@ tbody tr:hover {
   }
 
   /* Hide export dropdown on mobile */
-  .export-dropdown {
+  .export-dropdown,
+  .dropdown-wrapper,
+  .btn-export {
     display: none !important;
   }
 
