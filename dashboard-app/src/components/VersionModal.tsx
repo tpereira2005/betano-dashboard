@@ -215,7 +215,7 @@ export const VersionModal: React.FC<VersionModalProps> = ({ isOpen, onClose }) =
             <div
                 className="modal-content version-modal"
                 onClick={(e) => e.stopPropagation()}
-                style={{ maxWidth: '600px', maxHeight: '80vh' }}
+                style={{ maxWidth: '600px', maxHeight: '80vh', overflow: 'hidden' }}
             >
                 <div className="modal-header">
                     <h3>📋 Histórico de Versões</h3>
