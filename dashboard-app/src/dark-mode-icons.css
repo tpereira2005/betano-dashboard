@@ -14,7 +14,54 @@
     color: #FF6E40 !important;
 }
 
-/* Insights icons - force all orange in dark mode */
-[data-theme="dark"] .insight-icon svg {
-    color: #FF6E40 !important;
+/* ===========================================
+   EXCEPTION: Insight icons keep semantic colors
+   =========================================== */
+/* These icons should NOT be orange - they have their own colors */
+[data-theme="dark"] .insight-icon-new.type-success svg {
+    color: #10B981 !important;
+    stroke: #10B981 !important;
+}
+
+[data-theme="dark"] .insight-icon-new.type-warning svg {
+    color: #F59E0B !important;
+    stroke: #F59E0B !important;
+}
+
+[data-theme="dark"] .insight-icon-new.type-danger svg {
+    color: #EF4444 !important;
+    stroke: #EF4444 !important;
+}
+
+[data-theme="dark"] .insight-icon-new.type-info svg {
+    color: #3B82F6 !important;
+    stroke: #3B82F6 !important;
+}
+
+/* Trend arrows also keep semantic colors */
+[data-theme="dark"] .insight-trend.trend-up svg {
+    color: #10B981 !important;
+    stroke: #10B981 !important;
+}
+
+[data-theme="dark"] .insight-trend.trend-down svg {
+    color: #EF4444 !important;
+    stroke: #EF4444 !important;
+}
+
+/* Value colors in insights */
+[data-theme="dark"] .insight-value-new.type-success {
+    color: #10B981 !important;
+}
+
+[data-theme="dark"] .insight-value-new.type-warning {
+    color: #F59E0B !important;
+}
+
+[data-theme="dark"] .insight-value-new.type-danger {
+    color: #EF4444 !important;
+}
+
+[data-theme="dark"] .insight-value-new.type-info {
+    color: #3B82F6 !important;
 }
